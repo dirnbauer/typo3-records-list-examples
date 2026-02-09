@@ -1,0 +1,233 @@
+/**
+ * Catalog View - Large image cards with clean typography
+ * Part of EXT:records_list_examples
+ *
+ * Uses TYPO3 CSS variables for automatic dark mode support.
+ */
+
+/* Container */
+.rle-catalog-container {
+    --cat-accent: var(--typo3-state-default-primary-color, #3b82f6);
+    --cat-accent-bg: var(--typo3-state-default-primary-bg, #eff6ff);
+    --cat-bg: var(--typo3-component-bg, #ffffff);
+    --cat-bg-muted: var(--typo3-surface-container-low, #fafafa);
+    --cat-bg-subtle: var(--typo3-surface-container-default, #f4f4f5);
+    --cat-border: var(--typo3-component-border-color, #e4e4e7);
+    --cat-text: var(--typo3-text-color-base, #18181b);
+    --cat-text-muted: var(--typo3-text-color-variant, #71717a);
+    --cat-text-subtle: var(--typo3-text-color-variant, #a1a1aa);
+    --cat-danger: #ef4444;
+    --cat-danger-bg: #fef2f2;
+    --cat-warning: #f59e0b;
+    --cat-warning-bg: #fffbeb;
+    --cat-radius: var(--typo3-component-border-radius, 0.5rem);
+    --cat-shadow: var(--typo3-shadow-1, 0 1px 3px 0 rgb(0 0 0 / 0.1));
+    --cat-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* Grid layout */
+.rle-catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+    padding: 1.25rem;
+}
+
+@media (min-width: 1400px) {
+    .rle-catalog-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+}
+
+/* Card */
+.rle-catalog-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--cat-bg);
+    border: 1px solid var(--cat-border);
+    border-radius: var(--cat-radius);
+    box-shadow: var(--cat-shadow);
+    overflow: hidden;
+    transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.rle-catalog-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--cat-shadow-md);
+    border-color: var(--cat-accent);
+}
+
+/* Hidden state */
+.rle-catalog-card--hidden {
+    opacity: 0.7;
+}
+
+.rle-catalog-card--hidden .rle-catalog-card__body {
+    border-left: 3px solid var(--cat-warning);
+}
+
+/* Image area */
+.rle-catalog-card__image {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background:
+        repeating-conic-gradient(var(--cat-bg-subtle) 0% 25%, var(--cat-bg) 0% 50%)
+        50% / 16px 16px;
+}
+
+.rle-catalog-card__image a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.rle-catalog-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 300ms ease;
+}
+
+.rle-catalog-card:hover .rle-catalog-card__img {
+    transform: scale(1.03);
+}
+
+/* Placeholder */
+.rle-catalog-card__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--cat-text-subtle);
+}
+
+/* Badge overlay */
+.rle-catalog-card__badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.rle-catalog-card__badge .icon {
+    width: 12px;
+    height: 12px;
+}
+
+.rle-catalog-card__badge--hidden {
+    background: var(--cat-warning-bg);
+    color: #92400e;
+    border: 1px solid var(--cat-warning);
+}
+
+/* Body */
+.rle-catalog-card__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--cat-border);
+}
+
+.rle-catalog-card__title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.rle-catalog-card__title {
+    flex: 1;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--cat-text);
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rle-catalog-card__title:hover {
+    color: var(--cat-accent);
+}
+
+.rle-catalog-card__uid {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.625rem;
+    color: var(--cat-text-subtle);
+    flex-shrink: 0;
+}
+
+/* Teaser */
+.rle-catalog-card__teaser {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--cat-text-muted);
+    margin: 0 0 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+}
+
+/* Actions */
+.rle-catalog-card__actions {
+    display: flex;
+    gap: 0.25rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--cat-border);
+    margin-top: auto;
+}
+
+.rle-catalog-card__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border: 1px solid var(--cat-border);
+    background: var(--cat-bg);
+    color: var(--cat-text-muted);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 100ms ease;
+    text-decoration: none;
+}
+
+.rle-catalog-card__action:hover {
+    background: var(--cat-accent-bg);
+    border-color: var(--cat-accent);
+    color: var(--cat-accent);
+}
+
+.rle-catalog-card__action--danger:hover {
+    background: var(--cat-danger-bg);
+    border-color: var(--cat-danger);
+    color: var(--cat-danger);
+}
+
+.rle-catalog-card__action .icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .rle-catalog-grid {
+        grid-template-columns: 1fr;
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+}

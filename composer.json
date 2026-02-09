@@ -1,0 +1,34 @@
+{
+    "name": "webconsulting/records-list-examples",
+    "type": "typo3-cms-extension",
+    "description": "Example view types for the Records List Types extension - Timeline, Catalog, Address Book, Event List, Photo Gallery, Dashboard",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Webconsulting",
+            "email": "office@webconsulting.at"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "typo3/cms-core": "^14.0",
+        "webconsulting/records-list-types": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webconsulting\\RecordsListExamples\\": "Classes/"
+        }
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "records_list_examples"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        }
+    }
+}
