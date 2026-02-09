@@ -166,18 +166,20 @@
     position: relative;
 }
 
-/* Arrow connector pointing to the date circle - prominent chevron "<" */
+/* Arrow connector - flush with card border, no gap */
 .rle-timeline__card::before {
     content: '';
     position: absolute;
-    left: -0.625rem;
+    /* Position so the rotated square's right edge sits exactly on the card's left border */
+    left: -0.4375rem;
     top: 1.5rem;
     width: 0.75rem;
     height: 0.75rem;
     background: var(--tl-bg);
-    border-left: 1.5px solid var(--tl-border);
-    border-bottom: 1.5px solid var(--tl-border);
+    border-left: 1px solid var(--tl-border);
+    border-bottom: 1px solid var(--tl-border);
     transform: rotate(45deg);
+    z-index: 1;
 }
 
 .rle-timeline__card:hover::before {
@@ -189,14 +191,15 @@
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
-/* Hidden state */
+/* Hidden state - keep the chevron, add warning accent */
 .rle-timeline__item--hidden .rle-timeline__card {
     opacity: 0.7;
     border-left: 3px solid var(--tl-warning);
 }
 
 .rle-timeline__item--hidden .rle-timeline__card::before {
-    display: none;
+    background: var(--tl-bg);
+    border-color: var(--tl-warning);
 }
 
 /* =============================================================================
