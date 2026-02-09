@@ -34,6 +34,9 @@
     --tl-warning-circle-bg: #fef9c3;
     --tl-warning-circle-border: #d97706;
 
+    /* Connecting line - very subtle */
+    --tl-line: #e4e4e7;
+
     --tl-radius: var(--typo3-component-border-radius, 0.5rem);
     --tl-shadow: var(--typo3-shadow-1, 0 1px 3px 0 rgb(0 0 0 / 0.1));
 }
@@ -43,6 +46,7 @@
     --tl-circle-bg: #27272a;
     --tl-circle-border: #3f3f46;
     --tl-circle-text: #a1a1aa;
+    --tl-line: #3f3f46;
     --tl-warning-bg: rgba(180, 83, 9, 0.15);
     --tl-warning-circle-bg: rgba(217, 119, 6, 0.15);
     --tl-warning-circle-border: #92400e;
@@ -54,6 +58,7 @@
         --tl-circle-bg: #27272a;
         --tl-circle-border: #3f3f46;
         --tl-circle-text: #a1a1aa;
+        --tl-line: #3f3f46;
         --tl-warning-bg: rgba(180, 83, 9, 0.15);
         --tl-warning-circle-bg: rgba(217, 119, 6, 0.15);
         --tl-warning-circle-border: #92400e;
@@ -88,18 +93,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 5.5rem;
+    width: 6rem;
     flex-shrink: 0;
 }
 
-/* Date circle - subtle neutral tone */
+/* Date circle - subtle neutral tone, slightly larger */
 .rle-timeline__date-circle {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 5rem;
-    height: 5rem;
+    width: 5.3rem;
+    height: 5.3rem;
     border-radius: 50%;
     background: var(--tl-circle-bg);
     border: 1.5px solid var(--tl-circle-border);
@@ -114,12 +119,12 @@
 }
 
 .rle-timeline__date-value {
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     font-weight: 600;
     color: var(--tl-circle-text);
     text-align: center;
     line-height: 1.3;
-    padding: 0 0.25rem;
+    padding: 0 0.3rem;
     word-break: break-word;
 }
 
@@ -133,11 +138,11 @@
     color: var(--tl-warning);
 }
 
-/* Connecting line segment between circles */
+/* Connecting line segment between circles - subtle, not dominant */
 .rle-timeline__line-segment {
     flex: 1;
-    width: 2px;
-    background: var(--tl-border);
+    width: 1px;
+    background: var(--tl-line);
     min-height: 1rem;
 }
 
@@ -161,18 +166,22 @@
     position: relative;
 }
 
-/* Arrow pointing to the date circle */
+/* Arrow connector pointing to the date circle - prominent chevron "<" */
 .rle-timeline__card::before {
     content: '';
     position: absolute;
-    left: -0.5rem;
-    top: 1.25rem;
-    width: 0.5rem;
-    height: 0.5rem;
+    left: -0.625rem;
+    top: 1.5rem;
+    width: 0.75rem;
+    height: 0.75rem;
     background: var(--tl-bg);
-    border-left: 1px solid var(--tl-border);
-    border-bottom: 1px solid var(--tl-border);
+    border-left: 1.5px solid var(--tl-border);
+    border-bottom: 1.5px solid var(--tl-border);
     transform: rotate(45deg);
+}
+
+.rle-timeline__card:hover::before {
+    border-color: var(--tl-accent);
 }
 
 .rle-timeline__card:hover {
@@ -309,12 +318,12 @@
     }
 
     .rle-timeline__date-col {
-        width: 4rem;
+        width: 4.5rem;
     }
 
     .rle-timeline__date-circle {
-        width: 3.5rem;
-        height: 3.5rem;
+        width: 3.75rem;
+        height: 3.75rem;
     }
 
     .rle-timeline__date-value {
