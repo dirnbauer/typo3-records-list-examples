@@ -73,6 +73,14 @@
                                             </f:else>
                                         </f:if>
 
+                                        <f:comment>Preview hint - shown when image exists</f:comment>
+                                        <f:if condition="{record.thumbnailUrl}">
+                                            <div class="rle-catalog-card__image-hint">
+                                                <core:icon identifier="actions-info" size="small" />
+                                                <f:translate key="LLL:EXT:records_list_types/Resources/Private/Language/locallang.xlf:image.previewOnly" default="Preview only — may not appear on the frontend for this record type." />
+                                            </div>
+                                        </f:if>
+
                                         <f:comment>Hidden badge overlay</f:comment>
                                         <f:if condition="{record.hidden}">
                                             <span class="rle-catalog-card__badge rle-catalog-card__badge--hidden">

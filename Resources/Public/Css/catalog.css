@@ -118,6 +118,24 @@
     letter-spacing: 0.05em;
 }
 
+/* Image preview hint */
+.rle-catalog-card__image-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.75rem;
+    font-size: 0.625rem;
+    color: var(--cat-text-subtle);
+    background: var(--cat-bg-subtle);
+    opacity: 0.7;
+}
+
+.rle-catalog-card__image-hint .icon {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+}
+
 /* Badge overlay */
 .rle-catalog-card__badge {
     position: absolute;
