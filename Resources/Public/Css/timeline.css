@@ -166,13 +166,13 @@
     position: relative;
 }
 
-/* Arrow connector - flush with card border, no gap */
+/* Arrow connector - points to center of the date circle */
 .rle-timeline__card::before {
     content: '';
     position: absolute;
-    /* Position so the rotated square's right edge sits exactly on the card's left border */
     left: -0.4375rem;
-    top: 1.5rem;
+    /* Align with circle center: (5.3rem / 2) - (0.75rem / 2) ≈ 2.275rem */
+    top: 2.275rem;
     width: 0.75rem;
     height: 0.75rem;
     background: var(--tl-bg);
