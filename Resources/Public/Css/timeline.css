@@ -7,20 +7,58 @@
  */
 
 .rle-timeline-container {
+    /* Accent - used for links/hovers, NOT for circles */
     --tl-accent: var(--typo3-state-default-primary-color, #3b82f6);
     --tl-accent-bg: var(--typo3-state-default-primary-bg, #eff6ff);
+
+    /* Surfaces */
     --tl-bg: var(--typo3-component-bg, #ffffff);
     --tl-bg-muted: var(--typo3-surface-container-low, #fafafa);
     --tl-border: var(--typo3-component-border-color, #e4e4e7);
+
+    /* Text */
     --tl-text: var(--typo3-text-color-base, #18181b);
     --tl-text-muted: var(--typo3-text-color-variant, #71717a);
     --tl-text-subtle: var(--typo3-text-color-variant, #a1a1aa);
+
+    /* Circle - subtle neutral tones */
+    --tl-circle-bg: var(--typo3-surface-container-default, #f4f4f5);
+    --tl-circle-border: var(--typo3-component-border-color, #d4d4d8);
+    --tl-circle-text: var(--typo3-text-color-variant, #52525b);
+
+    /* Status */
     --tl-danger: #ef4444;
     --tl-danger-bg: #fef2f2;
-    --tl-warning: #f59e0b;
-    --tl-warning-bg: #fffbeb;
+    --tl-warning: #b45309;
+    --tl-warning-bg: #fef3c7;
+    --tl-warning-circle-bg: #fef9c3;
+    --tl-warning-circle-border: #d97706;
+
     --tl-radius: var(--typo3-component-border-radius, 0.5rem);
     --tl-shadow: var(--typo3-shadow-1, 0 1px 3px 0 rgb(0 0 0 / 0.1));
+}
+
+/* Dark mode overrides */
+[data-color-scheme="dark"] .rle-timeline-container {
+    --tl-circle-bg: #27272a;
+    --tl-circle-border: #3f3f46;
+    --tl-circle-text: #a1a1aa;
+    --tl-warning-bg: rgba(180, 83, 9, 0.15);
+    --tl-warning-circle-bg: rgba(217, 119, 6, 0.15);
+    --tl-warning-circle-border: #92400e;
+    --tl-danger-bg: rgba(239, 68, 68, 0.15);
+}
+
+@media (prefers-color-scheme: dark) {
+    html:not([data-color-scheme="light"]) .rle-timeline-container {
+        --tl-circle-bg: #27272a;
+        --tl-circle-border: #3f3f46;
+        --tl-circle-text: #a1a1aa;
+        --tl-warning-bg: rgba(180, 83, 9, 0.15);
+        --tl-warning-circle-bg: rgba(217, 119, 6, 0.15);
+        --tl-warning-circle-border: #92400e;
+        --tl-danger-bg: rgba(239, 68, 68, 0.15);
+    }
 }
 
 /* =============================================================================
@@ -54,7 +92,7 @@
     flex-shrink: 0;
 }
 
-/* Date circle */
+/* Date circle - subtle neutral tone */
 .rle-timeline__date-circle {
     display: flex;
     flex-direction: column;
@@ -63,27 +101,32 @@
     width: 5rem;
     height: 5rem;
     border-radius: 50%;
-    background: var(--tl-accent-bg);
-    border: 2px solid var(--tl-accent);
+    background: var(--tl-circle-bg);
+    border: 1.5px solid var(--tl-circle-border);
     flex-shrink: 0;
     position: relative;
     z-index: 1;
+    transition: border-color 150ms ease, background 150ms ease;
+}
+
+.rle-timeline__item:hover .rle-timeline__date-circle {
+    border-color: var(--tl-accent);
 }
 
 .rle-timeline__date-value {
     font-size: 0.6875rem;
     font-weight: 600;
-    color: var(--tl-accent);
+    color: var(--tl-circle-text);
     text-align: center;
     line-height: 1.3;
     padding: 0 0.25rem;
     word-break: break-word;
 }
 
-/* Hidden item: amber circle */
+/* Hidden item: muted amber circle */
 .rle-timeline__item--hidden .rle-timeline__date-circle {
-    background: var(--tl-warning-bg);
-    border-color: var(--tl-warning);
+    background: var(--tl-warning-circle-bg);
+    border-color: var(--tl-warning-circle-border);
 }
 
 .rle-timeline__item--hidden .rle-timeline__date-value {
