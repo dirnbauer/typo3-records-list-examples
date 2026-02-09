@@ -58,7 +58,7 @@ mod.web_list.viewMode {
     # -------------------------------------------------------------------------
     types.addressbook {
         label = Address Book
-        icon = actions-address
+        icon = actions-user
         description = Dense contact list with key fields
         template = CompactView
         css = EXT:records_list_types/Resources/Public/Css/compact-view.css
