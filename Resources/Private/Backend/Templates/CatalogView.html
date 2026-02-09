@@ -67,7 +67,10 @@
                                             </f:then>
                                             <f:else>
                                                 <div class="rle-catalog-card__placeholder">
-                                                    <core:icon identifier="{record.iconIdentifier}" size="default" />
+                                                    <core:icon identifier="actions-image" size="default" />
+                                                    <span class="rle-catalog-card__placeholder-text">
+                                                        <f:translate key="LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.no_title" default="No preview" />
+                                                    </span>
                                                 </div>
                                             </f:else>
                                         </f:if>
