@@ -61,6 +61,7 @@ mod.web_list.viewMode {
         icon = actions-address
         description = Dense contact list with key fields
         template = CompactView
+        css = EXT:records_list_types/Resources/Public/Css/compact-view.css
         displayColumns = label,teaser
         columnsFromTCA = 0
         itemsPerPage = 500
@@ -76,6 +77,7 @@ mod.web_list.viewMode {
         icon = actions-clock
         description = Date-focused event cards
         template = TeaserView
+        css = EXT:records_list_types/Resources/Public/Css/teaser-view.css
         displayColumns = label,datetime,teaser
         columnsFromTCA = 0
         itemsPerPage = 30
@@ -91,6 +93,7 @@ mod.web_list.viewMode {
         icon = actions-image
         description = Photo gallery with large thumbnails
         template = GridView
+        css = EXT:records_list_types/Resources/Public/Css/grid-view.css
         displayColumns = label
         columnsFromTCA = 0
         itemsPerPage = 48
@@ -106,6 +109,7 @@ mod.web_list.viewMode {
         icon = content-widget-list
         description = Overview cards with editor-selected columns
         template = GridView
+        css = EXT:records_list_types/Resources/Public/Css/grid-view.css
         columnsFromTCA = 1
         itemsPerPage = 20
     }

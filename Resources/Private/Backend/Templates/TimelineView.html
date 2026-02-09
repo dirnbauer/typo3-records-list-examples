@@ -4,7 +4,8 @@
       data-namespace-typo3-fluid="true">
 
 <f:comment>
-    Timeline View - Vertical timeline with date markers and content cards.
+    Timeline View - Classic vertical timeline.
+    Left: date circle. Right: content card.
     Part of EXT:records_list_examples.
 </f:comment>
 
@@ -14,7 +15,6 @@
         <f:then>
             <f:for each="{tableData}" as="table">
                 <div class="recordlist" id="t3-table-{table.tableName}">
-                    <f:comment>Table heading (from base.css)</f:comment>
                     <div class="recordlist-heading">
                         <div class="recordlist-heading-row">
                             <div class="recordlist-heading-title">
@@ -39,9 +39,6 @@
                                 <f:if condition="{table.actionButtons.newRecordButton}">
                                     <f:format.raw>{table.actionButtons.newRecordButton}</f:format.raw>
                                 </f:if>
-                                <f:if condition="{table.actionButtons.downloadButton}">
-                                    <f:format.raw>{table.actionButtons.downloadButton}</f:format.raw>
-                                </f:if>
                                 <f:if condition="{table.actionButtons.collapseButton}">
                                     <f:format.raw>{table.actionButtons.collapseButton}</f:format.raw>
                                 </f:if>
@@ -53,69 +50,80 @@
                         <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'top'}" />
 
                         <div class="rle-timeline">
-                            <div class="rle-timeline__line"></div>
-
-                            <f:for each="{table.records}" as="record" iteration="iter">
+                            <f:for each="{table.records}" as="record">
                                 <div class="rle-timeline__item{f:if(condition: record.hidden, then: ' rle-timeline__item--hidden')}">
-                                    <f:comment>Marker dot</f:comment>
-                                    <div class="rle-timeline__marker">
-                                        <core:icon identifier="{record.iconIdentifier}" size="small" />
+
+                                    <f:comment>Left side: date circle</f:comment>
+                                    <div class="rle-timeline__date-col">
+                                        <div class="rle-timeline__date-circle">
+                                            <f:for each="{record.displayValues}" as="field">
+                                                <f:if condition="{field.type} == 'datetime' && !{field.isEmpty}">
+                                                    <span class="rle-timeline__date-value">{field.formatted}</span>
+                                                </f:if>
+                                            </f:for>
+                                            <f:comment>Fallback if no date</f:comment>
+                                            <f:variable name="hasDate" value="0" />
+                                            <f:for each="{record.displayValues}" as="field">
+                                                <f:if condition="{field.type} == 'datetime' && !{field.isEmpty}">
+                                                    <f:variable name="hasDate" value="1" />
+                                                </f:if>
+                                            </f:for>
+                                            <f:if condition="{hasDate} == 0">
+                                                <span class="rle-timeline__date-value">#{record.uid}</span>
+                                            </f:if>
+                                        </div>
+                                        <div class="rle-timeline__line-segment"></div>
                                     </div>
 
-                                    <f:comment>Content card</f:comment>
-                                    <div class="rle-timeline__card">
-                                        <div class="rle-timeline__header">
-                                            <be:link.editRecord uid="{record.uid}" table="{record.tableName}" class="rle-timeline__title">
-                                                {record.title}
-                                            </be:link.editRecord>
-                                            <span class="rle-timeline__uid">#{record.uid}</span>
-                                        </div>
+                                    <f:comment>Right side: content card</f:comment>
+                                    <div class="rle-timeline__content">
+                                        <div class="rle-timeline__card">
+                                            <div class="rle-timeline__header">
+                                                <span class="rle-timeline__icon">
+                                                    <core:icon identifier="{record.iconIdentifier}" size="small" />
+                                                </span>
+                                                <be:link.editRecord uid="{record.uid}" table="{record.tableName}" class="rle-timeline__title">
+                                                    {record.title}
+                                                </be:link.editRecord>
+                                                <span class="rle-timeline__uid">#{record.uid}</span>
+                                            </div>
 
-                                        <f:comment>Date and teaser fields</f:comment>
-                                        <f:for each="{record.displayValues}" as="field">
-                                            <f:if condition="{field.type} == 'datetime' && !{field.isEmpty}">
-                                                <div class="rle-timeline__date">
-                                                    <core:icon identifier="actions-calendar" size="small" />
-                                                    <span>{field.formatted}</span>
-                                                </div>
-                                            </f:if>
-                                            <f:if condition="{field.type} == 'text' && !{field.isLabelField} && !{field.isEmpty}">
-                                                <p class="rle-timeline__teaser">{field.formatted -> f:format.crop(maxCharacters: 200, append: '…')}</p>
-                                            </f:if>
-                                        </f:for>
+                                            <f:for each="{record.displayValues}" as="field">
+                                                <f:if condition="{field.type} == 'text' && !{field.isLabelField} && !{field.isEmpty}">
+                                                    <p class="rle-timeline__teaser">{field.formatted -> f:format.crop(maxCharacters: 200, append: '…')}</p>
+                                                </f:if>
+                                            </f:for>
 
-                                        <f:comment>Actions</f:comment>
-                                        <div class="rle-timeline__actions">
-                                            <be:link.editRecord uid="{record.uid}" table="{record.tableName}"
-                                                class="rle-timeline__action" title="Edit">
-                                                <core:icon identifier="actions-open" size="small" />
-                                            </be:link.editRecord>
-                                            <f:if condition="{record.hidden}">
-                                                <f:then>
-                                                    <button type="button" class="rle-timeline__action"
-                                                            data-gridview-action="show"
-                                                            data-table="{record.tableName}" data-uid="{record.uid}"
-                                                            title="Show">
-                                                        <core:icon identifier="actions-edit-unhide" size="small" />
-                                                    </button>
-                                                </f:then>
-                                                <f:else>
-                                                    <button type="button" class="rle-timeline__action"
-                                                            data-gridview-action="hide"
-                                                            data-table="{record.tableName}" data-uid="{record.uid}"
-                                                            title="Hide">
-                                                        <core:icon identifier="actions-edit-hide" size="small" />
-                                                    </button>
-                                                </f:else>
-                                            </f:if>
-                                            <button type="button" class="rle-timeline__action rle-timeline__action--danger"
-                                                    data-gridview-action="delete"
-                                                    data-table="{record.tableName}" data-uid="{record.uid}"
-                                                    title="Delete">
-                                                <core:icon identifier="actions-edit-delete" size="small" />
-                                            </button>
+                                            <div class="rle-timeline__actions">
+                                                <be:link.editRecord uid="{record.uid}" table="{record.tableName}"
+                                                    class="rle-timeline__action" title="Edit">
+                                                    <core:icon identifier="actions-open" size="small" />
+                                                </be:link.editRecord>
+                                                <f:if condition="{record.hidden}">
+                                                    <f:then>
+                                                        <button type="button" class="rle-timeline__action"
+                                                                data-gridview-action="show"
+                                                                data-table="{record.tableName}" data-uid="{record.uid}" title="Show">
+                                                            <core:icon identifier="actions-edit-unhide" size="small" />
+                                                        </button>
+                                                    </f:then>
+                                                    <f:else>
+                                                        <button type="button" class="rle-timeline__action"
+                                                                data-gridview-action="hide"
+                                                                data-table="{record.tableName}" data-uid="{record.uid}" title="Hide">
+                                                            <core:icon identifier="actions-edit-hide" size="small" />
+                                                        </button>
+                                                    </f:else>
+                                                </f:if>
+                                                <button type="button" class="rle-timeline__action rle-timeline__action--danger"
+                                                        data-gridview-action="delete"
+                                                        data-table="{record.tableName}" data-uid="{record.uid}" title="Delete">
+                                                    <core:icon identifier="actions-edit-delete" size="small" />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </f:for>
                         </div>
