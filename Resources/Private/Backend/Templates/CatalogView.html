@@ -109,7 +109,9 @@
                                         <div class="rle-catalog-card__title-row">
                                             <label class="rle-catalog-card__checkbox">
                                                 <input class="form-check-input t3js-multi-record-selection-check"
-                                                       type="checkbox" />
+                                                       type="checkbox"
+                                                       name="CBC[{record.tableName}|{record.uid}]"
+                                                       value="1" />
                                             </label>
                                             <be:link.editRecord uid="{record.uid}" table="{record.tableName}" class="rle-catalog-card__title">
                                                 {record.title}
