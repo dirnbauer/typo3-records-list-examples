@@ -16,6 +16,9 @@
             <f:for each="{tableData}" as="table">
                 <div class="recordlist" id="t3-table-{table.tableName}"
                      data-multi-record-selection-identifier="t3-table-{table.tableName}">
+                    <form action="{table.formActionUrl}#t3-table-{table.tableName}" method="post" name="list-table-form-{table.tableName}">
+                    <input type="hidden" name="cmd_table" value="{table.tableName}" />
+                    <input type="hidden" name="cmd" />
                     <div class="recordlist-heading multi-record-selection-panel">
                         <div class="recordlist-heading-row">
                             <div class="recordlist-heading-title">
@@ -213,6 +216,7 @@
                             <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'bottom'}" />
                         </f:if>
                     </div>
+                    </form>
                 </div>
             </f:for>
         </f:then>
