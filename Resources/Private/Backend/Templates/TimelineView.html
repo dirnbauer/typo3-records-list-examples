@@ -14,8 +14,9 @@
     <f:if condition="{tableData}">
         <f:then>
             <f:for each="{tableData}" as="table">
-                <div class="recordlist" id="t3-table-{table.tableName}">
-                    <div class="recordlist-heading">
+                <div class="recordlist" id="t3-table-{table.tableName}"
+                     data-multi-record-selection-identifier="t3-table-{table.tableName}">
+                    <div class="recordlist-heading multi-record-selection-panel">
                         <div class="recordlist-heading-row">
                             <div class="recordlist-heading-title">
                                 <f:if condition="{currentTable}">
@@ -44,6 +45,18 @@
                                 </f:if>
                             </div>
                         </div>
+
+                        <f:comment>Multi Record Selection action bar</f:comment>
+                        <f:if condition="{table.multiRecordSelectionActionsHtml}">
+                            <div class="recordlist-heading-row t3js-multi-record-selection-actions hidden">
+                                <div class="recordlist-heading-title">
+                                    <strong><f:translate key="LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.selection" default="Selection" /></strong>
+                                </div>
+                                <div class="recordlist-heading-actions">
+                                    <f:format.raw>{table.multiRecordSelectionActionsHtml}</f:format.raw>
+                                </div>
+                            </div>
+                        </f:if>
                     </div>
 
                     <div class="collapse show" data-state="expanded" id="recordlist-{table.tableName}">
@@ -51,9 +64,11 @@
                             <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'top'}" />
                         </f:if>
 
-                        <div class="rle-timeline">
+                        <div class="rle-timeline" data-multi-record-selection-row-selection="true">
                             <f:for each="{table.records}" as="record">
-                                <div class="rle-timeline__item{f:if(condition: record.hidden, then: ' rle-timeline__item--hidden')}">
+                                <div class="rle-timeline__item{f:if(condition: record.hidden, then: ' rle-timeline__item--hidden')}"
+                                     data-multi-record-selection-element="true"
+                                     data-uid="{record.uid}">
 
                                     <f:comment>Left side: date circle</f:comment>
                                     <div class="rle-timeline__date-col">
@@ -81,13 +96,10 @@
                                     <div class="rle-timeline__content">
                                         <div class="rle-timeline__card">
                                             <div class="rle-timeline__header">
-                                                <f:if condition="{clipboardEnabled}">
-                                                    <label class="rle-timeline__checkbox">
-                                                        <input type="checkbox" class="form-check-input cv-clipboard-check"
-                                                               name="CBC[{record.tableName}|{record.uid}]" value="1"
-                                                               data-table="{record.tableName}" data-uid="{record.uid}" />
-                                                    </label>
-                                                </f:if>
+                                                <label class="rle-timeline__checkbox">
+                                                    <input class="form-check-input t3js-multi-record-selection-check"
+                                                           type="checkbox" />
+                                                </label>
                                                 <span class="rle-timeline__icon">
                                                     <core:icon identifier="{record.iconIdentifier}" size="small" />
                                                 </span>
