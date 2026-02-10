@@ -92,6 +92,13 @@
                                     <f:comment>Info area</f:comment>
                                     <div class="rle-catalog-card__body">
                                         <div class="rle-catalog-card__title-row">
+                                            <f:if condition="{clipboardEnabled}">
+                                                <label class="rle-catalog-card__checkbox">
+                                                    <input type="checkbox" class="form-check-input cv-clipboard-check"
+                                                           name="CBC[{record.tableName}|{record.uid}]" value="1"
+                                                           data-table="{record.tableName}" data-uid="{record.uid}" />
+                                                </label>
+                                            </f:if>
                                             <be:link.editRecord uid="{record.uid}" table="{record.tableName}" class="rle-catalog-card__title">
                                                 {record.title}
                                             </be:link.editRecord>
@@ -130,6 +137,55 @@
                                                     data-table="{record.tableName}" data-uid="{record.uid}" title="Delete">
                                                 <core:icon identifier="actions-edit-delete" size="small" />
                                             </button>
+
+                                            <f:comment>More Actions dropdown</f:comment>
+                                            <div class="dropdown">
+                                                <button type="button" class="rle-catalog-card__action"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false"
+                                                        title="More actions">
+                                                    <core:icon identifier="actions-menu-alternative" size="small" />
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a class="dropdown-item" href="#"
+                                                           data-gridview-action="info"
+                                                           data-table="{record.tableName}"
+                                                           data-uid="{record.uid}">
+                                                            <core:icon identifier="actions-document-info" size="small" />
+                                                            <span>Info</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#"
+                                                           data-gridview-action="history"
+                                                           data-table="{record.tableName}"
+                                                           data-uid="{record.uid}">
+                                                            <core:icon identifier="actions-document-history-open" size="small" />
+                                                            <span>History</span>
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#"
+                                                           data-gridview-action="copy"
+                                                           data-table="{record.tableName}"
+                                                           data-uid="{record.uid}">
+                                                            <core:icon identifier="actions-edit-copy" size="small" />
+                                                            <span>Copy</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#"
+                                                           data-gridview-action="cut"
+                                                           data-table="{record.tableName}"
+                                                           data-uid="{record.uid}">
+                                                            <core:icon identifier="actions-edit-cut" size="small" />
+                                                            <span>Cut</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
