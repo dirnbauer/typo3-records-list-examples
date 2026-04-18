@@ -1,5 +1,5 @@
 # =============================================================================
-# Records List Examples - Additional view types for the Records module
+# Records List Examples - Additional view types for the TYPO3 Records module
 #
 # These view types are available on ALL pages by default.
 # To restrict a view type to specific pages, use TSconfig conditions:
@@ -17,7 +17,8 @@ mod.web_list.viewMode {
 
     # -------------------------------------------------------------------------
     # Timeline View
-    # Vertical timeline with date markers. Custom template.
+    # Vertical timeline with date markers. Custom template using the
+    # shared records_list_types heading/systematic + TYPO3 core sanitization
     # Best for: events, changelog, history, milestones
     # -------------------------------------------------------------------------
     types.timeline {
@@ -35,7 +36,8 @@ mod.web_list.viewMode {
 
     # -------------------------------------------------------------------------
     # Catalog View
-    # Large image cards with overlay title. Custom template.
+    # Large image cards with overlay title. Custom template using the
+    # shared records_list_types heading/systematic + TYPO3 core sanitization
     # Best for: products, portfolio, team members, media assets
     # -------------------------------------------------------------------------
     types.catalog {
