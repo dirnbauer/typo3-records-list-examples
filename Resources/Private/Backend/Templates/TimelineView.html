@@ -223,6 +223,11 @@
                                                     </ul>
                                                 </div>
                                             </div>
+
+                                            <f:comment>Translation strip: one slot per available site language</f:comment>
+                                            <f:if condition="{record.translations}">
+                                                <f:render partial="TimelineTranslations" arguments="{record: record}" />
+                                            </f:if>
                                         </div>
                                     </div>
 
