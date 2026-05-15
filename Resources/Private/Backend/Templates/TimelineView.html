@@ -14,8 +14,10 @@
     - TYPO3 14 native typo3-backend-contextual-record-edit-trigger for edit links
     - permission-aware action rendering (canEdit, canToggleVisibility, canDelete, …)
     - shared Pagination partial for single-table pagination
+    - records-list-types-actions Lit host for shared action JavaScript
 </f:comment>
 
+<records-list-types-actions>
 <div class="rle-timeline-container">
 
     <f:if condition="{tableData}">
@@ -263,6 +265,7 @@
     </f:if>
 
 </div>
+</records-list-types-actions>
 
 <f:comment>
     Translation strip section.

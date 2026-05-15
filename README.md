@@ -23,12 +23,14 @@ The two custom templates follow the current `records_list_types` template system
 - permission-aware action rendering (`record.permissions.canEdit`, `canToggleVisibility`, `canDelete`, `canShowInfo`, `canHistory`, `canCopy`)
 - "More actions" popover that reuses the same pattern as the records_list_types built-in templates
 - shared `Pagination` partial for single-table pagination
+- `<records-list-types-actions>` Lit host so the shared action JavaScript initializes custom templates
 
 That means the custom templates keep TYPO3 backend behavior that editors already expect:
 
 - Multi Record Selection checkboxes and action bar
 - visibility / delete / info / history / copy / cut actions only when the current backend user is allowed to use them
 - TYPO3's native contextual edit sheet instead of legacy edit links
+- shared sorting, pagination input handling, scroll-shadow checks, and action binding from `GridViewActions.js`
 - translated labels for view types and template UI via XLIFF (`en` + `de`)
 
 All views follow TYPO3 Core pagination behavior: multi-table mode shows a preview with "Expand table" button, single-table mode shows full pagination.
@@ -153,6 +155,7 @@ This is the pattern for creating your own custom view types: TSconfig + optional
 - permission-aware actions (`record.permissions.*`)
 - "More actions" popover button (`popovertarget` + `popover`) that mirrors the built-in Card / TeaserCard / CompactRow partials
 - compatibility with the built-in `Pagination` partial and Multi Record Selection handling
+- wrapping custom view markup in `<records-list-types-actions>` for the Lit-based shared action module
 
 See the [Custom View Types documentation](https://github.com/dirnbauer/typo3-records-list-types/blob/main/Documentation/CustomViewTypes.md) for full details.
 
