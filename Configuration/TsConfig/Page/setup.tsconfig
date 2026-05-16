@@ -1,0 +1,112 @@
+# =============================================================================
+# Records List Examples - Additional view types for the Records module
+#
+# These view types are available on ALL pages by default.
+# To restrict a view type to specific pages, use TSconfig conditions:
+#
+#   [page["uid"] == 42]
+#       mod.web_list.viewMode.allowed = list,timeline
+#       mod.web_list.viewMode.default = timeline
+#   [end]
+# =============================================================================
+
+mod.web_list.viewMode {
+
+    # Make all example views available alongside the built-in ones
+    allowed = list,grid,compact,teaser,timeline,catalog,addressbook,eventlist,gallery,dashboard
+
+    # -------------------------------------------------------------------------
+    # Timeline View
+    # Vertical timeline with date markers. Custom template.
+    # Best for: events, changelog, history, milestones
+    # -------------------------------------------------------------------------
+    types.timeline {
+        label = Timeline
+        icon = actions-calendar
+        description = Chronological timeline with date markers
+        template = TimelineView
+        templateRootPath = EXT:records_list_examples/Resources/Private/Backend/Templates/
+        partialRootPath = EXT:records_list_examples/Resources/Private/Backend/Partials/
+        css = EXT:records_list_examples/Resources/Public/Css/timeline.css
+        displayColumns = label,datetime,teaser
+        columnsFromTCA = 0
+        itemsPerPage = 50
+    }
+
+    # -------------------------------------------------------------------------
+    # Catalog View
+    # Large image cards with overlay title. Custom template.
+    # Best for: products, portfolio, team members, media assets
+    # -------------------------------------------------------------------------
+    types.catalog {
+        label = Catalog
+        icon = actions-viewmode-tiles
+        description = Visual catalog with large image cards
+        template = CatalogView
+        templateRootPath = EXT:records_list_examples/Resources/Private/Backend/Templates/
+        partialRootPath = EXT:records_list_examples/Resources/Private/Backend/Partials/
+        css = EXT:records_list_examples/Resources/Public/Css/catalog.css
+        displayColumns = label,teaser
+        columnsFromTCA = 0
+        itemsPerPage = 24
+    }
+
+    # -------------------------------------------------------------------------
+    # Address Book
+    # Dense table with fixed contact columns. Reuses built-in CompactView.
+    # Best for: contacts, members, employees, organizations
+    # -------------------------------------------------------------------------
+    types.addressbook {
+        label = Address Book
+        icon = actions-address
+        description = Dense contact list with key fields
+        template = CompactView
+        displayColumns = label,teaser
+        columnsFromTCA = 0
+        itemsPerPage = 500
+    }
+
+    # -------------------------------------------------------------------------
+    # Event List
+    # Date-focused teaser cards. Reuses built-in TeaserView.
+    # Best for: events, conferences, meetups, deadlines
+    # -------------------------------------------------------------------------
+    types.eventlist {
+        label = Event List
+        icon = actions-clock
+        description = Date-focused event cards
+        template = TeaserView
+        displayColumns = label,datetime,teaser
+        columnsFromTCA = 0
+        itemsPerPage = 30
+    }
+
+    # -------------------------------------------------------------------------
+    # Photo Gallery
+    # Image-heavy grid with minimal text. Reuses built-in GridView.
+    # Best for: images, media files, artwork, screenshots
+    # -------------------------------------------------------------------------
+    types.gallery {
+        label = Gallery
+        icon = actions-image
+        description = Photo gallery with large thumbnails
+        template = GridView
+        displayColumns = label
+        columnsFromTCA = 0
+        itemsPerPage = 48
+    }
+
+    # -------------------------------------------------------------------------
+    # Dashboard
+    # Card grid with editor-selected columns. Reuses built-in GridView.
+    # Best for: editorial overview, content dashboard, record management
+    # -------------------------------------------------------------------------
+    types.dashboard {
+        label = Dashboard
+        icon = content-widget-list
+        description = Overview cards with editor-selected columns
+        template = GridView
+        columnsFromTCA = 1
+        itemsPerPage = 20
+    }
+}
