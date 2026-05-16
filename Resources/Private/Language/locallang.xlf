@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="messages" date="2026-04-20T12:00:00Z" product-name="records_list_examples">
+        <header/>
+        <body>
+            <!-- View type labels -->
+            <trans-unit id="viewMode.timeline" resname="viewMode.timeline">
+                <source>Timeline</source>
+            </trans-unit>
+            <trans-unit id="viewMode.timeline.description" resname="viewMode.timeline.description">
+                <source>Chronological timeline with date markers</source>
+            </trans-unit>
+            <trans-unit id="viewMode.catalog" resname="viewMode.catalog">
+                <source>Catalog</source>
+            </trans-unit>
+            <trans-unit id="viewMode.catalog.description" resname="viewMode.catalog.description">
+                <source>Visual catalog with large image cards</source>
+            </trans-unit>
+            <trans-unit id="viewMode.addressbook" resname="viewMode.addressbook">
+                <source>Address Book</source>
+            </trans-unit>
+            <trans-unit id="viewMode.addressbook.description" resname="viewMode.addressbook.description">
+                <source>Dense contact list with key fields</source>
+            </trans-unit>
+            <trans-unit id="viewMode.eventlist" resname="viewMode.eventlist">
+                <source>Event List</source>
+            </trans-unit>
+            <trans-unit id="viewMode.eventlist.description" resname="viewMode.eventlist.description">
+                <source>Date-focused event cards</source>
+            </trans-unit>
+            <trans-unit id="viewMode.gallery" resname="viewMode.gallery">
+                <source>Gallery</source>
+            </trans-unit>
+            <trans-unit id="viewMode.gallery.description" resname="viewMode.gallery.description">
+                <source>Photo gallery with large thumbnails</source>
+            </trans-unit>
+            <trans-unit id="viewMode.dashboard" resname="viewMode.dashboard">
+                <source>Dashboard</source>
+            </trans-unit>
+            <trans-unit id="viewMode.dashboard.description" resname="viewMode.dashboard.description">
+                <source>Overview cards with editor-selected columns</source>
+            </trans-unit>
+
+            <!-- Catalog view template strings -->
+            <trans-unit id="catalog.placeholder.noImage" resname="catalog.placeholder.noImage">
+                <source>No image</source>
+            </trans-unit>
+            <trans-unit id="catalog.badge.hidden" resname="catalog.badge.hidden">
+                <source>Hidden</source>
+            </trans-unit>
+
+            <!-- Shared action labels -->
+            <trans-unit id="action.edit" resname="action.edit">
+                <source>Edit</source>
+            </trans-unit>
+            <trans-unit id="action.show" resname="action.show">
+                <source>Show</source>
+            </trans-unit>
+            <trans-unit id="action.hide" resname="action.hide">
+                <source>Hide</source>
+            </trans-unit>
+            <trans-unit id="action.delete" resname="action.delete">
+                <source>Delete</source>
+            </trans-unit>
+            <trans-unit id="action.more" resname="action.more">
+                <source>More actions</source>
+            </trans-unit>
+            <trans-unit id="action.info" resname="action.info">
+                <source>Info</source>
+            </trans-unit>
+            <trans-unit id="action.history" resname="action.history">
+                <source>History</source>
+            </trans-unit>
+            <trans-unit id="action.copy" resname="action.copy">
+                <source>Copy</source>
+            </trans-unit>
+            <trans-unit id="action.cut" resname="action.cut">
+                <source>Cut</source>
+            </trans-unit>
+
+            <!-- Misc -->
+            <trans-unit id="noRecords" resname="noRecords">
+                <source>No records found on this page.</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

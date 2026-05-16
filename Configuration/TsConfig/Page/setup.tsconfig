@@ -1,5 +1,5 @@
 # =============================================================================
-# Records List Examples - Additional view types for the Records module
+# Records List Examples - Additional view types for the TYPO3 Records module
 #
 # These view types are available on ALL pages by default.
 # To restrict a view type to specific pages, use TSconfig conditions:
@@ -17,16 +17,16 @@ mod.web_list.viewMode {
 
     # -------------------------------------------------------------------------
     # Timeline View
-    # Vertical timeline with date markers. Custom template.
+    # Vertical timeline with date markers. Custom template using the
+    # shared records_list_types heading/systematic + TYPO3 core sanitization.
     # Best for: events, changelog, history, milestones
     # -------------------------------------------------------------------------
     types.timeline {
-        label = Timeline
+        label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.timeline
         icon = actions-calendar
-        description = Chronological timeline with date markers
+        description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.timeline.description
         template = TimelineView
         templateRootPath = EXT:records_list_examples/Resources/Private/Backend/Templates/
-        partialRootPath = EXT:records_list_examples/Resources/Private/Backend/Partials/
         css = EXT:records_list_examples/Resources/Public/Css/timeline.css
         displayColumns = label,datetime,teaser
         columnsFromTCA = 0
@@ -35,16 +35,16 @@ mod.web_list.viewMode {
 
     # -------------------------------------------------------------------------
     # Catalog View
-    # Large image cards with overlay title. Custom template.
+    # Large image cards with overlay title. Custom template using the
+    # shared records_list_types heading/systematic + TYPO3 core sanitization.
     # Best for: products, portfolio, team members, media assets
     # -------------------------------------------------------------------------
     types.catalog {
-        label = Catalog
+        label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.catalog
         icon = actions-viewmode-tiles
-        description = Visual catalog with large image cards
+        description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.catalog.description
         template = CatalogView
         templateRootPath = EXT:records_list_examples/Resources/Private/Backend/Templates/
-        partialRootPath = EXT:records_list_examples/Resources/Private/Backend/Partials/
         css = EXT:records_list_examples/Resources/Public/Css/catalog.css
         displayColumns = label,teaser
         columnsFromTCA = 0
@@ -57,9 +57,9 @@ mod.web_list.viewMode {
     # Best for: contacts, members, employees, organizations
     # -------------------------------------------------------------------------
     types.addressbook {
-        label = Address Book
+        label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.addressbook
         icon = actions-user
-        description = Dense contact list with key fields
+        description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.addressbook.description
         template = CompactView
         css = EXT:records_list_types/Resources/Public/Css/compact-view.css
         displayColumns = label,teaser
@@ -73,9 +73,9 @@ mod.web_list.viewMode {
     # Best for: events, conferences, meetups, deadlines
     # -------------------------------------------------------------------------
     types.eventlist {
-        label = Event List
+        label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.eventlist
         icon = actions-clock
-        description = Date-focused event cards
+        description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.eventlist.description
         template = TeaserView
         css = EXT:records_list_types/Resources/Public/Css/teaser-view.css
         displayColumns = label,datetime,teaser
@@ -89,9 +89,9 @@ mod.web_list.viewMode {
     # Best for: images, media files, artwork, screenshots
     # -------------------------------------------------------------------------
     types.gallery {
-        label = Gallery
+        label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.gallery
         icon = actions-image
-        description = Photo gallery with large thumbnails
+        description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.gallery.description
         template = GridView
         css = EXT:records_list_types/Resources/Public/Css/grid-view.css
         displayColumns = label
@@ -105,9 +105,9 @@ mod.web_list.viewMode {
     # Best for: editorial overview, content dashboard, record management
     # -------------------------------------------------------------------------
     types.dashboard {
-        label = Dashboard
+        label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.dashboard
         icon = content-widget-list
-        description = Overview cards with editor-selected columns
+        description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.dashboard.description
         template = GridView
         css = EXT:records_list_types/Resources/Public/Css/grid-view.css
         columnsFromTCA = 1

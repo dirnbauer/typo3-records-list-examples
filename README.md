@@ -1,6 +1,6 @@
 # Records List Examples for TYPO3 v14
 
-Example view types for the [Records List Types](https://github.com/dirnbauer/typo3-records-list-types) extension. Install this extension to get 6 additional view modes in the TYPO3 backend Records module -- ready to use, no configuration needed.
+Example view types for the [Records List Types](https://github.com/dirnbauer/typo3-records-list-types) extension. Install this extension to get 6 additional custom view types in the TYPO3 backend Records module -- ready to use, no extra PHP needed.
 
 ## View Types
 
@@ -13,7 +13,16 @@ Example view types for the [Records List Types](https://github.com/dirnbauer/typ
 | **Gallery** | GridView | Photo gallery with large thumbnails, minimal text, 48 per page |
 | **Dashboard** | GridView | Editor-controlled columns via TYPO3's "Show columns" selector |
 
-**Timeline** and **Catalog** have custom templates and CSS with full dark mode support. The other 4 reuse built-in templates with different configurations -- demonstrating that new view types often need zero custom files.
+**Timeline** and **Catalog** have custom templates and CSS with full dark mode support. The other 4 reuse built-in templates with different configurations -- demonstrating that many custom view types need only TSconfig and optional assets.
+
+The two custom templates follow the current `records_list_types` template systematic, so they keep working as the main extension evolves:
+
+- shared `TableHeading` partial for the table heading (single-table mode + multi-record-selection panel)
+- TYPO3 core `f:sanitize.html(build: 'records-list-types-backend-fragments')` for TYPO3-generated backend fragments (action buttons, multi-record-selection actions)
+- TYPO3 14 native `<typo3-backend-contextual-record-edit-trigger>` for record edit links
+- permission-aware action rendering (`record.permissions.canEdit`, `canToggleVisibility`, `canDelete`, `canShowInfo`, `canHistory`, `canCopy`)
+- "More actions" popover that reuses the same pattern as the records_list_types built-in templates
+- shared `Pagination` partial for single-table pagination
 
 All views follow TYPO3 Core pagination behavior: multi-table mode shows a preview with "Expand table" button, single-table mode shows full pagination.
 
@@ -37,7 +46,18 @@ Activate the extension:
 ./vendor/bin/typo3 extension:activate records_list_examples
 ```
 
-After activation, the 6 new view types appear in the view mode switcher in **Content > Records**.
+After activation, the 6 new custom view types appear in the view switcher in **Content > Records**.
+
+## Localization
+
+All view-type labels (Timeline, Catalog, Address Book, Event List, Gallery, Dashboard) and descriptions are translatable via XLIFF and shipped in:
+
+- `Resources/Private/Language/locallang.xlf` (English, default)
+- `Resources/Private/Language/de.locallang.xlf` (German)
+
+The custom Timeline and Catalog templates also use translated labels for action buttons and template strings (`No image`, `Hidden`, `Edit`, `Show`, `Hide`, `Delete`, `More actions`, `Info`, `History`, `Copy`, `Cut`). The image preview hint reuses the existing `image.previewOnly` translation from the main `records_list_types` extension.
+
+To override or extend the translations, drop your own `locallang.xlf` overrides into your sitepackage and TYPO3 will pick them up via the standard XLIFF override mechanism.
 
 ## Customization
 
@@ -87,33 +107,47 @@ mod.web_list.viewMode.types.gallery.itemsPerPage = 96
 ```
 records_list_examples/
 ├── Configuration/
+│   ├── page.tsconfig                       # Loads the setup.tsconfig
 │   └── TsConfig/Page/
-│       └── setup.tsconfig              # All 6 view type registrations
+│       └── setup.tsconfig                  # All 6 view type registrations
 ├── Resources/
-│   ├── Private/Backend/
-│   │   └── Templates/
-│   │       ├── TimelineView.html       # Timeline: vertical timeline layout
-│   │       └── CatalogView.html        # Catalog: large image card grid
+│   ├── Private/
+│   │   ├── Backend/
+│   │   │   └── Templates/
+│   │   │       ├── TimelineView.html       # Timeline: vertical timeline layout
+│   │   │       └── CatalogView.html        # Catalog: large image card grid
+│   │   └── Language/
+│   │       ├── locallang.xlf               # English labels (view types + template strings)
+│   │       └── de.locallang.xlf            # German translations
 │   └── Public/Css/
-│       ├── timeline.css                # Timeline styles (dark mode support)
-│       └── catalog.css                 # Catalog styles (dark mode support)
+│       ├── timeline.css                    # Timeline styles (dark mode support)
+│       └── catalog.css                     # Catalog styles (dark mode support)
 ├── composer.json
 ├── ext_emconf.php
-├── ext_localconf.php
 └── README.md
 ```
 
 ## How It Works
 
-This extension contains **zero PHP classes**. It registers view types purely through TSconfig and Fluid templates:
+This extension contains **zero PHP classes**. It registers custom view types purely through TSconfig and Fluid templates:
 
-- **TSconfig** (`setup.tsconfig`) -- registers 6 view types with labels, icons, templates, CSS, and column configuration
-- **Templates** (`TimelineView.html`, `CatalogView.html`) -- custom Fluid templates for Timeline and Catalog
+- **TSconfig** (`setup.tsconfig`) -- registers 6 view types with translated labels (`LLL:` references), icons, templates, CSS, and column configuration
+- **Templates** (`TimelineView.html`, `CatalogView.html`) -- custom Fluid templates for Timeline and Catalog using the current `records_list_types` heading/sanitizer/permissions/popover systematic
 - **CSS** (`timeline.css`, `catalog.css`) -- view-specific styles using TYPO3 CSS variables for dark mode
+- **XLIFF** (`locallang.xlf`, `de.locallang.xlf`) -- translatable labels for view types, descriptions, action buttons, and template strings
 
 The other 4 views (Address Book, Event List, Gallery, Dashboard) reuse the built-in templates (`CompactView`, `TeaserView`, `GridView`) from `records_list_types` -- they only need TSconfig configuration.
 
-This is the pattern for creating your own view types: TSconfig + optional template + optional CSS. See the [Custom View Types documentation](https://github.com/dirnbauer/typo3-records-list-types/blob/main/Documentation/CustomViewTypes.md) for full details.
+This is the pattern for creating your own custom view types: TSconfig + optional template + optional CSS. The two custom templates in this repo demonstrate the current `records_list_types` systematic for:
+
+- shared `TableHeading` partial rendering
+- TYPO3 core `f:sanitize.html(build: 'records-list-types-backend-fragments')` for TYPO3/core-generated backend fragments
+- TYPO3 14 native contextual record edit trigger (`<typo3-backend-contextual-record-edit-trigger>`)
+- permission-aware actions (`record.permissions.*`)
+- "More actions" popover button (`popovertarget` + `popover`) that mirrors the built-in Card / TeaserCard / CompactRow partials
+- compatibility with the built-in `Pagination` partial and Multi Record Selection handling
+
+See the [Custom View Types documentation](https://github.com/dirnbauer/typo3-records-list-types/blob/main/Documentation/CustomViewTypes.md) for full details.
 
 ## License
 

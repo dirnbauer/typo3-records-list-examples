@@ -7,6 +7,13 @@
     Timeline View - Classic vertical timeline.
     Left: date circle. Right: content card.
     Part of EXT:records_list_examples.
+
+    Mirrors the records_list_types template systematic:
+    - shared TableHeading partial for the table heading
+    - TYPO3 core f:sanitize.html for backend-generated action button fragments
+    - TYPO3 14 native typo3-backend-contextual-record-edit-trigger for edit links
+    - permission-aware action rendering (canEdit, canToggleVisibility, canDelete, …)
+    - shared Pagination partial for single-table pagination
 </f:comment>
 
 <div class="rle-timeline-container">
@@ -15,48 +22,36 @@
         <f:then>
             <f:for each="{tableData}" as="table">
                 <div class="recordlist" id="t3-table-{table.tableName}"
-                     data-multi-record-selection-identifier="t3-table-{table.tableName}">
+                     {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-identifier=\"t3-table-{table.tableName}\"')}>
                     <form action="{table.formActionUrl}#t3-table-{table.tableName}" method="post" name="list-table-form-{table.tableName}">
                     <input type="hidden" name="cmd_table" value="{table.tableName}" />
                     <input type="hidden" name="cmd" />
-                    <div class="recordlist-heading multi-record-selection-panel">
+                    <div class="recordlist-heading{f:if(condition: table.multiSelectEnabled, then: ' multi-record-selection-panel')}">
                         <div class="recordlist-heading-row">
                             <div class="recordlist-heading-title">
-                                <f:if condition="{currentTable}">
-                                    <f:then>
-                                        <a href="{table.clearTableUrl}">
-                                            <span class="fw-bold">{table.tableLabel}</span>
-                                            <span>({table.recordCount})</span>
-                                            <span class="ms-1"><core:icon identifier="actions-view-table-collapse" size="small" /></span>
-                                        </a>
-                                    </f:then>
-                                    <f:else>
-                                        <a href="{table.singleTableUrl}">
-                                            <span class="fw-bold">{table.tableLabel}</span>
-                                            <span>({table.recordCount})</span>
-                                            <span class="ms-1"><core:icon identifier="actions-view-table-expand" size="small" /></span>
-                                        </a>
-                                    </f:else>
-                                </f:if>
+                                <f:render partial="TableHeading" arguments="{heading: table.tableHeading}" />
                             </div>
                             <div class="recordlist-heading-actions">
                                 <f:if condition="{table.actionButtons.newRecordButton}">
-                                    <f:format.raw>{table.actionButtons.newRecordButton}</f:format.raw>
+                                    <f:sanitize.html build="records-list-types-backend-fragments">{table.actionButtons.newRecordButton}</f:sanitize.html>
                                 </f:if>
                                 <f:if condition="{table.actionButtons.collapseButton}">
-                                    <f:format.raw>{table.actionButtons.collapseButton}</f:format.raw>
+                                    <f:sanitize.html build="records-list-types-backend-fragments">{table.actionButtons.collapseButton}</f:sanitize.html>
                                 </f:if>
                             </div>
                         </div>
 
                         <f:comment>Multi Record Selection action bar</f:comment>
-                        <f:if condition="{table.multiRecordSelectionActionsHtml}">
+                        <f:if condition="{table.multiSelectEnabled} && {table.multiRecordSelectionActionsHtml}">
                             <div class="recordlist-heading-row t3js-multi-record-selection-actions hidden">
-                                <div class="recordlist-heading-title">
-                                    <strong><f:translate key="LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.selection" default="Selection" /></strong>
+                                <div class="recordlist-heading-title d-flex flex-wrap align-items-baseline column-gap-2 row-gap-1">
+                                    <span class="t3js-multi-record-selection-table-title">
+                                        <f:render partial="TableHeading" arguments="{heading: table.tableHeading}" />
+                                    </span>
+                                    <strong class="text-nowrap"><f:translate key="LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.selection" default="Selection" /></strong>
                                 </div>
                                 <div class="recordlist-heading-actions">
-                                    <f:format.raw>{table.multiRecordSelectionActionsHtml}</f:format.raw>
+                                    <f:sanitize.html build="records-list-types-backend-fragments">{table.multiRecordSelectionActionsHtml}</f:sanitize.html>
                                 </div>
                             </div>
                         </f:if>
@@ -67,25 +62,24 @@
                             <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'top'}" />
                         </f:if>
 
-                        <div class="rle-timeline" data-multi-record-selection-row-selection="true">
+                        <div class="rle-timeline"
+                             {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-row-selection=\"true\"')}>
                             <f:for each="{table.records}" as="record">
                                 <div class="rle-timeline__item{f:if(condition: record.hidden, then: ' rle-timeline__item--hidden')}"
-                                     data-multi-record-selection-element="true"
+                                     {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-element=\"true\"')}
+                                     data-table="{record.tableName}"
                                      data-uid="{record.uid}">
 
                                     <f:comment>Left side: date circle</f:comment>
                                     <div class="rle-timeline__date-col">
                                         <div class="rle-timeline__date-circle">
-                                            <f:for each="{record.displayValues}" as="field">
-                                                <f:if condition="{field.type} == 'datetime' && !{field.isEmpty}">
-                                                    <span class="rle-timeline__date-value">{field.formatted}</span>
-                                                </f:if>
-                                            </f:for>
-                                            <f:comment>Fallback if no date</f:comment>
                                             <f:variable name="hasDate" value="0" />
                                             <f:for each="{record.displayValues}" as="field">
                                                 <f:if condition="{field.type} == 'datetime' && !{field.isEmpty}">
-                                                    <f:variable name="hasDate" value="1" />
+                                                    <f:if condition="{hasDate} == 0">
+                                                        <span class="rle-timeline__date-value">{field.formatted}</span>
+                                                        <f:variable name="hasDate" value="1" />
+                                                    </f:if>
                                                 </f:if>
                                             </f:for>
                                             <f:if condition="{hasDate} == 0">
@@ -99,18 +93,30 @@
                                     <div class="rle-timeline__content">
                                         <div class="rle-timeline__card">
                                             <div class="rle-timeline__header">
-                                                <label class="rle-timeline__checkbox">
-                                                    <input class="form-check-input t3js-multi-record-selection-check"
-                                                           type="checkbox"
-                                                           name="CBC[{record.tableName}|{record.uid}]"
-                                                           value="1" />
-                                                </label>
+                                                <f:if condition="{table.multiSelectEnabled}">
+                                                    <label class="rle-timeline__checkbox">
+                                                        <input class="form-check-input t3js-multi-record-selection-check"
+                                                               type="checkbox"
+                                                               name="CBC[{record.tableName}|{record.uid}]"
+                                                               value="1" />
+                                                    </label>
+                                                </f:if>
                                                 <span class="rle-timeline__icon">
                                                     <core:icon identifier="{record.iconIdentifier}" size="small" />
                                                 </span>
-                                                <be:link.editRecord uid="{record.uid}" table="{record.tableName}" class="rle-timeline__title">
-                                                    {record.title}
-                                                </be:link.editRecord>
+                                                <f:if condition="{record.permissions.canEdit}">
+                                                    <f:then>
+                                                        <typo3-backend-contextual-record-edit-trigger
+                                                            class="rle-timeline__title"
+                                                            edit-url="{record.editUrl}"
+                                                            url="{record.contextualEditUrl}">
+                                                            {record.title}
+                                                        </typo3-backend-contextual-record-edit-trigger>
+                                                    </f:then>
+                                                    <f:else>
+                                                        <span class="rle-timeline__title">{record.title}</span>
+                                                    </f:else>
+                                                </f:if>
                                                 <span class="rle-timeline__uid">#{record.uid}</span>
                                             </div>
 
@@ -121,78 +127,99 @@
                                             </f:for>
 
                                             <div class="rle-timeline__actions">
-                                                <be:link.editRecord uid="{record.uid}" table="{record.tableName}"
-                                                    class="rle-timeline__action" title="Edit">
-                                                    <core:icon identifier="actions-open" size="small" />
-                                                </be:link.editRecord>
-                                                <f:if condition="{record.hidden}">
-                                                    <f:then>
-                                                        <button type="button" class="rle-timeline__action"
-                                                                data-gridview-action="show"
-                                                                data-table="{record.tableName}" data-uid="{record.uid}" title="Show">
-                                                            <core:icon identifier="actions-edit-unhide" size="small" />
-                                                        </button>
-                                                    </f:then>
-                                                    <f:else>
-                                                        <button type="button" class="rle-timeline__action"
-                                                                data-gridview-action="hide"
-                                                                data-table="{record.tableName}" data-uid="{record.uid}" title="Hide">
-                                                            <core:icon identifier="actions-edit-hide" size="small" />
-                                                        </button>
-                                                    </f:else>
+                                                <f:if condition="{record.permissions.canEdit}">
+                                                    <typo3-backend-contextual-record-edit-trigger
+                                                        class="rle-timeline__action"
+                                                        title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.edit', default: 'Edit')}"
+                                                        edit-url="{record.editUrl}"
+                                                        url="{record.contextualEditUrl}">
+                                                        <core:icon identifier="actions-open" size="small" />
+                                                    </typo3-backend-contextual-record-edit-trigger>
                                                 </f:if>
-                                                <button type="button" class="rle-timeline__action rle-timeline__action--danger"
-                                                        data-gridview-action="delete"
-                                                        data-table="{record.tableName}" data-uid="{record.uid}" title="Delete">
-                                                    <core:icon identifier="actions-edit-delete" size="small" />
-                                                </button>
+                                                <f:if condition="{record.permissions.canToggleVisibility}">
+                                                    <f:if condition="{record.hidden}">
+                                                        <f:then>
+                                                            <button type="button" class="rle-timeline__action"
+                                                                    data-gridview-action="show"
+                                                                    data-table="{record.tableName}" data-uid="{record.uid}"
+                                                                    data-hidden-field="{tableConfig.hiddenField}"
+                                                                    title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.show', default: 'Show')}">
+                                                                <core:icon identifier="actions-edit-unhide" size="small" />
+                                                            </button>
+                                                        </f:then>
+                                                        <f:else>
+                                                            <button type="button" class="rle-timeline__action"
+                                                                    data-gridview-action="hide"
+                                                                    data-table="{record.tableName}" data-uid="{record.uid}"
+                                                                    data-hidden-field="{tableConfig.hiddenField}"
+                                                                    title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.hide', default: 'Hide')}">
+                                                                <core:icon identifier="actions-edit-hide" size="small" />
+                                                            </button>
+                                                        </f:else>
+                                                    </f:if>
+                                                </f:if>
+                                                <f:if condition="{record.permissions.canDelete}">
+                                                    <button type="button" class="rle-timeline__action rle-timeline__action--danger"
+                                                            data-gridview-action="delete"
+                                                            data-table="{record.tableName}" data-uid="{record.uid}"
+                                                            title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.delete', default: 'Delete')}">
+                                                        <core:icon identifier="actions-edit-delete" size="small" />
+                                                    </button>
+                                                </f:if>
 
-                                                <f:comment>More Actions dropdown</f:comment>
+                                                <f:comment>More Actions popover (matches records_list_types pattern)</f:comment>
+                                                <f:variable name="actionsPopoverId">rle-timeline-actions-{record.tableName}-{record.uid}</f:variable>
                                                 <div class="dropdown">
-                                                    <button type="button" class="rle-timeline__action"
-                                                            data-bs-toggle="dropdown"
-                                                            aria-expanded="false"
-                                                            title="More actions">
+                                                    <button type="button" class="rle-timeline__action dropdown-toggle dropdown-toggle-no-chevron"
+                                                            popovertarget="{actionsPopoverId}"
+                                                            title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.more', default: 'More actions')}"
+                                                            aria-label="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.more', default: 'More actions')}">
                                                         <core:icon identifier="actions-menu-alternative" size="small" />
                                                     </button>
-                                                    <ul class="dropdown-menu dropdown-menu-end">
-                                                        <li>
-                                                            <a class="dropdown-item" href="#"
-                                                               data-gridview-action="info"
-                                                               data-table="{record.tableName}"
-                                                               data-uid="{record.uid}">
-                                                                <core:icon identifier="actions-document-info" size="small" />
-                                                                <span>Info</span>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item" href="#"
-                                                               data-gridview-action="history"
-                                                               data-table="{record.tableName}"
-                                                               data-uid="{record.uid}">
-                                                                <core:icon identifier="actions-document-history-open" size="small" />
-                                                                <span>History</span>
-                                                            </a>
-                                                        </li>
-                                                        <li><hr class="dropdown-divider"></li>
-                                                        <li>
-                                                            <a class="dropdown-item" href="#"
-                                                               data-gridview-action="copy"
-                                                               data-table="{record.tableName}"
-                                                               data-uid="{record.uid}">
-                                                                <core:icon identifier="actions-edit-copy" size="small" />
-                                                                <span>Copy</span>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item" href="#"
-                                                               data-gridview-action="cut"
-                                                               data-table="{record.tableName}"
-                                                               data-uid="{record.uid}">
-                                                                <core:icon identifier="actions-edit-cut" size="small" />
-                                                                <span>Cut</span>
-                                                            </a>
-                                                        </li>
+                                                    <ul id="{actionsPopoverId}" class="dropdown-menu dropdown-menu-end" popover>
+                                                        <f:if condition="{record.permissions.canShowInfo}">
+                                                            <li>
+                                                                <a class="dropdown-item" href="#"
+                                                                   data-gridview-action="info"
+                                                                   data-table="{record.tableName}"
+                                                                   data-uid="{record.uid}">
+                                                                    <core:icon identifier="actions-document-info" size="small" />
+                                                                    <span><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.info" default="Info" /></span>
+                                                                </a>
+                                                            </li>
+                                                        </f:if>
+                                                        <f:if condition="{record.permissions.canHistory}">
+                                                            <li>
+                                                                <a class="dropdown-item" href="#"
+                                                                   data-gridview-action="history"
+                                                                   data-table="{record.tableName}"
+                                                                   data-uid="{record.uid}">
+                                                                    <core:icon identifier="actions-document-history-open" size="small" />
+                                                                    <span><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.history" default="History" /></span>
+                                                                </a>
+                                                            </li>
+                                                        </f:if>
+                                                        <f:if condition="{record.permissions.canCopy}">
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            <li>
+                                                                <a class="dropdown-item" href="#"
+                                                                   data-gridview-action="copy"
+                                                                   data-table="{record.tableName}"
+                                                                   data-uid="{record.uid}">
+                                                                    <core:icon identifier="actions-edit-copy" size="small" />
+                                                                    <span><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.copy" default="Copy" /></span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item" href="#"
+                                                                   data-gridview-action="cut"
+                                                                   data-table="{record.tableName}"
+                                                                   data-uid="{record.uid}">
+                                                                    <core:icon identifier="actions-edit-cut" size="small" />
+                                                                    <span><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.cut" default="Cut" /></span>
+                                                                </a>
+                                                            </li>
+                                                        </f:if>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -224,7 +251,7 @@
             <div class="callout callout-info">
                 <div class="callout-body">
                     <core:icon identifier="actions-info" size="small" />
-                    <span class="ms-2">No records found on this page.</span>
+                    <span class="ms-2"><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:noRecords" default="No records found on this page." /></span>
                 </div>
             </div>
         </f:else>
