@@ -164,6 +164,8 @@ This is the pattern for creating your own custom view types: TSconfig + optional
 - "More actions" popover button (`popovertarget` + `popover`) that mirrors the built-in Card / TeaserCard / CompactRow partials
 - compatibility with the built-in `Pagination` partial and Multi Record Selection handling
 
+These templates are backend Records module examples. They intentionally do not render frontend page content areas and should not use Visual Editor page ViewHelpers such as `f:render.contentArea` or `f:mark.contentArea`. Bootstrap, shadcn/ui, and other frontend theme presets belong in a sitepackage such as Desiderio, not in this backend examples package.
+
 See the [Custom View Types documentation](https://github.com/dirnbauer/typo3-records-list-types/blob/main/Documentation/CustomViewTypes.md) for full details.
 
 ## Validation
