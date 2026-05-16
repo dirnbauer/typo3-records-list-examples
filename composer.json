@@ -1,7 +1,7 @@
 {
     "name": "webconsulting/records-list-examples",
     "type": "typo3-cms-extension",
-    "description": "Example view types for the Records List Types extension - Timeline, Catalog, Address Book, Event List, Photo Gallery, Dashboard",
+    "description": "TYPO3 v14 example view types for the Records List Types extension: Timeline, Catalog, Address Book, Event List, Gallery, and Dashboard.",
     "license": "GPL-2.0-or-later",
     "authors": [
         {
@@ -10,19 +10,40 @@
         }
     ],
     "require": {
-        "php": "^8.3",
-        "typo3/cms-core": "^14.0",
-        "webconsulting/records-list-types": "^1.0"
+        "php": "^8.2",
+        "typo3/cms-backend": "^14.3",
+        "typo3/cms-core": "^14.3",
+        "typo3/cms-fluid": "^14.3",
+        "webconsulting/records-list-types": "dev-main as 14.0.0"
     },
-    "autoload": {
-        "psr-4": {
-            "Webconsulting\\RecordsListExamples\\": "Classes/"
-        }
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "saschaegerer/phpstan-typo3": "^3.0"
     },
     "extra": {
         "typo3/cms": {
-            "extension-key": "records_list_examples"
+            "extension-key": "records_list_examples",
+            "version": "14.0.0"
         }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/dirnbauer/typo3-records-list-types.git"
+        }
+    ],
+    "scripts": {
+        "ci": [
+            "@check",
+            "@phpstan"
+        ],
+        "check": [
+            "composer validate --strict --no-check-publish",
+            "@check:xlf"
+        ],
+        "phpstan": "phpstan analyse --no-progress --memory-limit=512M",
+        "check:xlf": "php Build/Scripts/validate-xlf.php"
     },
     "config": {
         "sort-packages": true,

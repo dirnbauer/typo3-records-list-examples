@@ -1,0 +1,12 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/saschaegerer/phpstan-typo3/extension.neon
+
+parameters:
+    level: max
+    paths:
+        - ext_emconf.php
+        - Build/Scripts/validate-xlf.php
+    treatPhpDocTypesAsCertain: false
+    featureToggles:
+        rawMessageInBaseline: true

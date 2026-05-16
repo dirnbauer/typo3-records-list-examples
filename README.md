@@ -2,6 +2,8 @@
 
 Example view types for the [Records List Types](https://github.com/dirnbauer/typo3-records-list-types) extension. Install this extension to get 6 additional custom view types in the TYPO3 backend Records module -- ready to use, no extra PHP needed.
 
+This package is **TYPO3 v14 only**. Version 14.0.0 targets TYPO3 14.3 LTS and later, uses Records List Types v14, and intentionally drops TYPO3 v13 support.
+
 ## View Types
 
 | View | Template | Description |
@@ -37,9 +39,11 @@ All views follow TYPO3 Core pagination behavior: multi-table mode shows a previe
 
 ## Requirements
 
-- TYPO3 v14.0+
-- PHP 8.3+
-- [webconsulting/records-list-types](https://github.com/dirnbauer/typo3-records-list-types) (installed automatically as dependency)
+- TYPO3 v14.3+
+- PHP 8.2 through 8.5
+- [webconsulting/records-list-types](https://github.com/dirnbauer/typo3-records-list-types) v14
+
+The extension depends explicitly on TYPO3 Core, Backend, and Fluid packages because its templates use TYPO3 backend components and Fluid ViewHelpers directly.
 
 ## Installation
 
@@ -127,6 +131,11 @@ records_list_examples/
 │   ├── page.tsconfig                       # Loads the setup.tsconfig
 │   └── TsConfig/Page/
 │       └── setup.tsconfig                  # All 6 view type registrations
+├── Build/
+│   └── Scripts/
+│       ├── runTests.sh                     # Local suite runner
+│       └── validate-xlf.php                # XLIFF validation
+├── Documentation/                          # TYPO3 documentation and reports
 ├── Resources/
 │   ├── Private/
 │   │   ├── Backend/
@@ -141,6 +150,7 @@ records_list_examples/
 │       └── catalog.css                     # Catalog styles (dark mode support)
 ├── composer.json
 ├── ext_emconf.php
+├── phpstan.neon
 └── README.md
 ```
 
@@ -170,15 +180,20 @@ See the [Custom View Types documentation](https://github.com/dirnbauer/typo3-rec
 
 ## Validation
 
-For lightweight checks during development, these commands are enough:
+Run the local CI checks during development:
 
 ```bash
-composer validate --no-check-publish
-php -r 'var_dump(simplexml_load_file("Resources/Private/Language/locallang.xlf") !== false);'
-php -r 'var_dump(simplexml_load_file("Resources/Private/Language/de.locallang.xlf") !== false);'
+composer install
+composer ci
 ```
 
-This validates the Composer metadata and confirms that both XLIFF files are well-formed XML.
+This validates Composer metadata, validates both XLIFF files, and runs PHPStan at level `max`.
+
+The same checks run in GitHub Actions:
+
+- Composer validation and `composer audit`
+- XLIFF validation
+- PHPStan level `max`
 
 ## License
 

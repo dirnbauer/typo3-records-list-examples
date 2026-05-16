@@ -30,6 +30,7 @@ var/
 typo3temp/
 public/
 .Build/
+Documentation-GENERATED-temp/
 
 # PHP
 *.cache
