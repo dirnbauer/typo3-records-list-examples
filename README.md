@@ -23,12 +23,14 @@ The two custom templates follow the current `records_list_types` template system
 - permission-aware action rendering (`record.permissions.canEdit`, `canToggleVisibility`, `canDelete`, `canShowInfo`, `canHistory`, `canCopy`)
 - "More actions" popover that reuses the same pattern as the records_list_types built-in templates
 - shared `Pagination` partial for single-table pagination
+- shared JavaScript hooks from the main `records_list_types` extension for backend record actions
 
 That means the custom templates keep TYPO3 backend behavior that editors already expect:
 
 - Multi Record Selection checkboxes and action bar
 - visibility / delete / info / history / copy / cut actions only when the current backend user is allowed to use them
 - TYPO3's native contextual edit sheet instead of legacy edit links
+- shared sorting, pagination input handling, scroll-shadow checks, and action binding from `GridViewActions.js`
 - translated labels for view types and template UI via XLIFF (`en` + `de`)
 
 All views follow TYPO3 Core pagination behavior: multi-table mode shows a preview with "Expand table" button, single-table mode shows full pagination.
@@ -65,6 +67,14 @@ All view-type labels (Timeline, Catalog, Address Book, Event List, Gallery, Dash
 The custom Timeline and Catalog templates also use translated labels for action buttons and template strings (`No image`, `Hidden`, `Edit`, `Show`, `Hide`, `Delete`, `More actions`, `Info`, `History`, `Copy`, `Cut`). The image preview hint reuses the existing `image.previewOnly` translation from the main `records_list_types` extension.
 
 To override or extend the translations, drop your own `locallang.xlf` overrides into your sitepackage and TYPO3 will pick them up via the standard XLIFF override mechanism.
+
+## JavaScript
+
+This examples extension does not ship custom JavaScript and does not use Lit directly. Timeline and Catalog are intentionally implemented with Fluid templates and CSS only.
+
+Interactive behavior such as record actions, visibility toggles, pagination input handling, multi-record selection, and TYPO3 backend web components is provided by `records_list_types` and TYPO3 core. Custom templates should keep using the documented `data-gridview-action` attributes and TYPO3 backend elements so they continue to work with the shared JavaScript from the main extension.
+
+If a future custom view needs genuinely stateful client-side behavior, add a dedicated ES module via the view type `js` option and load it only for that view. Lit should stay out of this examples package unless such a view has a concrete need for a web component.
 
 ## Customization
 
@@ -153,6 +163,8 @@ This is the pattern for creating your own custom view types: TSconfig + optional
 - permission-aware actions (`record.permissions.*`)
 - "More actions" popover button (`popovertarget` + `popover`) that mirrors the built-in Card / TeaserCard / CompactRow partials
 - compatibility with the built-in `Pagination` partial and Multi Record Selection handling
+
+These templates are backend Records module examples. They intentionally do not render frontend page content areas and should not use Visual Editor page ViewHelpers such as `f:render.contentArea` or `f:mark.contentArea`. Bootstrap, shadcn/ui, and other frontend theme presets belong in a sitepackage such as Desiderio, not in this backend examples package.
 
 See the [Custom View Types documentation](https://github.com/dirnbauer/typo3-records-list-types/blob/main/Documentation/CustomViewTypes.md) for full details.
 
