@@ -6,14 +6,16 @@ Example view types for the [Records List Types](https://github.com/dirnbauer/typ
 
 | View | Template | Description |
 |------|----------|-------------|
-| **Timeline** | Custom | Vertical timeline with date markers and content cards |
-| **Catalog** | Custom | Large image cards with 4:3 thumbnails and teaser text |
-| **Address Book** | CompactView | Dense contact list with fixed columns |
-| **Event List** | TeaserView | Date-focused event cards with calendar icon |
-| **Gallery** | GridView | Photo gallery with large thumbnails, 48 per page |
-| **Dashboard** | GridView | Editor-controlled columns via "Show columns" selector |
+| **Timeline** | Custom | Classic vertical timeline with date circles, connecting lines, and content cards with chevron connectors |
+| **Catalog** | Custom | Large 4:3 image cards with hover zoom, "No image" placeholder, and preview hint for editors |
+| **Address Book** | CompactView | Dense contact list with fixed columns, 500 records per page |
+| **Event List** | TeaserView | Date-focused event cards with calendar icon, 30 per page |
+| **Gallery** | GridView | Photo gallery with large thumbnails, minimal text, 48 per page |
+| **Dashboard** | GridView | Editor-controlled columns via TYPO3's "Show columns" selector |
 
-**Timeline** and **Catalog** have custom templates and CSS. The other 4 reuse built-in templates with different configurations -- demonstrating that new view types often need zero custom files.
+**Timeline** and **Catalog** have custom templates and CSS with full dark mode support. The other 4 reuse built-in templates with different configurations -- demonstrating that new view types often need zero custom files.
+
+All views follow TYPO3 Core pagination behavior: multi-table mode shows a preview with "Expand table" button, single-table mode shows full pagination.
 
 ## Requirements
 

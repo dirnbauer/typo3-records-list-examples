@@ -13,9 +13,13 @@
     <f:if condition="{tableData}">
         <f:then>
             <f:for each="{tableData}" as="table">
-                <div class="recordlist" id="t3-table-{table.tableName}">
+                <div class="recordlist" id="t3-table-{table.tableName}"
+                     data-multi-record-selection-identifier="t3-table-{table.tableName}">
+                    <form action="{table.formActionUrl}#t3-table-{table.tableName}" method="post" name="list-table-form-{table.tableName}">
+                    <input type="hidden" name="cmd_table" value="{table.tableName}" />
+                    <input type="hidden" name="cmd" />
                     <f:comment>Table heading (from base.css)</f:comment>
-                    <div class="recordlist-heading">
+                    <div class="recordlist-heading multi-record-selection-panel">
                         <div class="recordlist-heading-row">
                             <div class="recordlist-heading-title">
                                 <f:if condition="{currentTable}">
@@ -47,6 +51,18 @@
                                 </f:if>
                             </div>
                         </div>
+
+                        <f:comment>Multi Record Selection action bar</f:comment>
+                        <f:if condition="{table.multiRecordSelectionActionsHtml}">
+                            <div class="recordlist-heading-row t3js-multi-record-selection-actions hidden">
+                                <div class="recordlist-heading-title">
+                                    <strong><f:translate key="LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.selection" default="Selection" /></strong>
+                                </div>
+                                <div class="recordlist-heading-actions">
+                                    <f:format.raw>{table.multiRecordSelectionActionsHtml}</f:format.raw>
+                                </div>
+                            </div>
+                        </f:if>
                     </div>
 
                     <div class="collapse show" data-state="expanded" id="recordlist-{table.tableName}">
@@ -54,9 +70,11 @@
                             <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'top'}" />
                         </f:if>
 
-                        <div class="rle-catalog-grid">
+                        <div class="rle-catalog-grid" data-multi-record-selection-row-selection="true">
                             <f:for each="{table.records}" as="record">
-                                <div class="rle-catalog-card{f:if(condition: record.hidden, then: ' rle-catalog-card--hidden')}">
+                                <div class="rle-catalog-card{f:if(condition: record.hidden, then: ' rle-catalog-card--hidden')}"
+                                     data-multi-record-selection-element="true"
+                                     data-uid="{record.uid}">
                                     <f:comment>Image area</f:comment>
                                     <div class="rle-catalog-card__image">
                                         <f:if condition="{record.thumbnailUrl}">
@@ -92,6 +110,12 @@
                                     <f:comment>Info area</f:comment>
                                     <div class="rle-catalog-card__body">
                                         <div class="rle-catalog-card__title-row">
+                                            <label class="rle-catalog-card__checkbox">
+                                                <input class="form-check-input t3js-multi-record-selection-check"
+                                                       type="checkbox"
+                                                       name="CBC[{record.tableName}|{record.uid}]"
+                                                       value="1" />
+                                            </label>
                                             <be:link.editRecord uid="{record.uid}" table="{record.tableName}" class="rle-catalog-card__title">
                                                 {record.title}
                                             </be:link.editRecord>
@@ -130,6 +154,55 @@
                                                     data-table="{record.tableName}" data-uid="{record.uid}" title="Delete">
                                                 <core:icon identifier="actions-edit-delete" size="small" />
                                             </button>
+
+                                            <f:comment>More Actions dropdown</f:comment>
+                                            <div class="dropdown">
+                                                <button type="button" class="rle-catalog-card__action"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false"
+                                                        title="More actions">
+                                                    <core:icon identifier="actions-menu-alternative" size="small" />
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li>
+                                                        <a class="dropdown-item" href="#"
+                                                           data-gridview-action="info"
+                                                           data-table="{record.tableName}"
+                                                           data-uid="{record.uid}">
+                                                            <core:icon identifier="actions-document-info" size="small" />
+                                                            <span>Info</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#"
+                                                           data-gridview-action="history"
+                                                           data-table="{record.tableName}"
+                                                           data-uid="{record.uid}">
+                                                            <core:icon identifier="actions-document-history-open" size="small" />
+                                                            <span>History</span>
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#"
+                                                           data-gridview-action="copy"
+                                                           data-table="{record.tableName}"
+                                                           data-uid="{record.uid}">
+                                                            <core:icon identifier="actions-edit-copy" size="small" />
+                                                            <span>Copy</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#"
+                                                           data-gridview-action="cut"
+                                                           data-table="{record.tableName}"
+                                                           data-uid="{record.uid}">
+                                                            <core:icon identifier="actions-edit-cut" size="small" />
+                                                            <span>Cut</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -149,6 +222,7 @@
                             <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'bottom'}" />
                         </f:if>
                     </div>
+                    </form>
                 </div>
             </f:for>
         </f:then>
