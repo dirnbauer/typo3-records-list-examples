@@ -27,6 +27,7 @@ mod.web_list.viewMode {
         description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.timeline.description
         template = TimelineView
         templateRootPath = EXT:records_list_examples/Resources/Private/Backend/Templates/
+        partialRootPath = EXT:records_list_examples/Resources/Private/Backend/Partials/
         css = EXT:records_list_examples/Resources/Public/Css/timeline.css
         displayColumns = label,datetime,teaser
         columnsFromTCA = 0
@@ -45,6 +46,7 @@ mod.web_list.viewMode {
         description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.catalog.description
         template = CatalogView
         templateRootPath = EXT:records_list_examples/Resources/Private/Backend/Templates/
+        partialRootPath = EXT:records_list_examples/Resources/Private/Backend/Partials/
         css = EXT:records_list_examples/Resources/Public/Css/catalog.css
         displayColumns = label,teaser
         columnsFromTCA = 0

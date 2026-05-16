@@ -24,6 +24,13 @@ The two custom templates follow the current `records_list_types` template system
 - "More actions" popover that reuses the same pattern as the records_list_types built-in templates
 - shared `Pagination` partial for single-table pagination
 
+That means the custom templates keep TYPO3 backend behavior that editors already expect:
+
+- Multi Record Selection checkboxes and action bar
+- visibility / delete / info / history / copy / cut actions only when the current backend user is allowed to use them
+- TYPO3's native contextual edit sheet instead of legacy edit links
+- translated labels for view types and template UI via XLIFF (`en` + `de`)
+
 All views follow TYPO3 Core pagination behavior: multi-table mode shows a preview with "Expand table" button, single-table mode shows full pagination.
 
 ## Requirements
@@ -148,6 +155,18 @@ This is the pattern for creating your own custom view types: TSconfig + optional
 - compatibility with the built-in `Pagination` partial and Multi Record Selection handling
 
 See the [Custom View Types documentation](https://github.com/dirnbauer/typo3-records-list-types/blob/main/Documentation/CustomViewTypes.md) for full details.
+
+## Validation
+
+For lightweight checks during development, these commands are enough:
+
+```bash
+composer validate --no-check-publish
+php -r 'var_dump(simplexml_load_file("Resources/Private/Language/locallang.xlf") !== false);'
+php -r 'var_dump(simplexml_load_file("Resources/Private/Language/de.locallang.xlf") !== false);'
+```
+
+This validates the Composer metadata and confirms that both XLIFF files are well-formed XML.
 
 ## License
 
