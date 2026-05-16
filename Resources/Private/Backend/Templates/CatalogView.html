@@ -50,7 +50,9 @@
                     </div>
 
                     <div class="collapse show" data-state="expanded" id="recordlist-{table.tableName}">
-                        <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'top'}" />
+                        <f:if condition="{currentTable}">
+                            <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'top'}" />
+                        </f:if>
 
                         <div class="rle-catalog-grid">
                             <f:for each="{table.records}" as="record">
@@ -65,9 +67,18 @@
                                             </f:then>
                                             <f:else>
                                                 <div class="rle-catalog-card__placeholder">
-                                                    <core:icon identifier="{record.iconIdentifier}" size="default" />
+                                                    <core:icon identifier="actions-image" size="default" />
+                                                    <span class="rle-catalog-card__placeholder-text">No image</span>
                                                 </div>
                                             </f:else>
+                                        </f:if>
+
+                                        <f:comment>Preview hint - shown when image exists</f:comment>
+                                        <f:if condition="{record.thumbnailUrl}">
+                                            <div class="rle-catalog-card__image-hint">
+                                                <core:icon identifier="actions-info" size="small" />
+                                                <f:translate key="LLL:EXT:records_list_types/Resources/Private/Language/locallang.xlf:image.previewOnly" default="Preview only — may not appear on the frontend for this record type." />
+                                            </div>
                                         </f:if>
 
                                         <f:comment>Hidden badge overlay</f:comment>
@@ -125,7 +136,18 @@
                             </f:for>
                         </div>
 
-                        <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'bottom'}" />
+                        <f:if condition="!{currentTable} && {table.hasMore}">
+                            <div class="text-center py-2 border-top">
+                                <a href="{table.singleTableUrl}" class="btn btn-sm btn-default">
+                                    <core:icon identifier="actions-caret-down" size="small" />
+                                    <f:translate key="LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.expandTable" default="Expand table" />
+                                </a>
+                            </div>
+                        </f:if>
+
+                        <f:if condition="{currentTable}">
+                            <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'bottom'}" />
+                        </f:if>
                     </div>
                 </div>
             </f:for>
