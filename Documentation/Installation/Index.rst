@@ -4,19 +4,25 @@
 Installation
 ============
 
-Install the extension with Composer:
+Install the extension with Composer. If Composer cannot find these
+packages on Packagist, add both GitHub repositories as VCS repositories
+in your TYPO3 project's root :file:`composer.json`; Composer does not
+inherit repository definitions from dependencies.
 
 .. code-block:: bash
     :caption: Composer installation
 
-    composer require webconsulting/records-list-examples
+    composer config repositories.records-list-types vcs https://github.com/dirnbauer/typo3-records-list-types.git
+    composer config repositories.records-list-examples vcs https://github.com/dirnbauer/typo3-records-list-examples.git
+    composer require webconsulting/records-list-examples:dev-main
 
-Activate the extension:
+Set up the extension and clear caches:
 
 .. code-block:: bash
-    :caption: Activate extension
+    :caption: Extension setup
 
-    ./vendor/bin/typo3 extension:activate records_list_examples
+    ./vendor/bin/typo3 extension:setup -e records_list_examples
+    ./vendor/bin/typo3 cache:flush
 
 .. _installation-requirements:
 

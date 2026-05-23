@@ -47,19 +47,27 @@ The extension depends explicitly on TYPO3 Core, Backend, and Fluid packages beca
 
 ## Installation
 
+The examples package is installed from GitHub when it is not available via
+Packagist. Add both VCS repositories in your TYPO3 project's root
+`composer.json`; Composer does not inherit repository definitions from
+dependencies.
+
 ```bash
-composer require webconsulting/records-list-examples
+composer config repositories.records-list-types vcs https://github.com/dirnbauer/typo3-records-list-types.git
+composer config repositories.records-list-examples vcs https://github.com/dirnbauer/typo3-records-list-examples.git
+composer require webconsulting/records-list-examples:dev-main
 ```
 
 This automatically installs `webconsulting/records-list-types` if not already present.
 
-Activate the extension:
+Set up the extension and clear TYPO3 caches:
 
 ```bash
-./vendor/bin/typo3 extension:activate records_list_examples
+./vendor/bin/typo3 extension:setup -e records_list_examples
+./vendor/bin/typo3 cache:flush
 ```
 
-After activation, the 6 new custom view types appear in the view switcher in **Content > Records**.
+After setup, the 6 new custom view types appear in the view switcher in **Content > Records**.
 
 ## Localization
 
