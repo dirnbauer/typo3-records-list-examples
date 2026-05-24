@@ -31,6 +31,7 @@ case "${SUITE}" in
     ci)
         composer validate --strict --no-check-publish
         php Build/Scripts/validate-xlf.php
+        composer audit --abandoned=report
         vendor/bin/phpstan analyse --no-progress --memory-limit=512M
         ;;
     *)

@@ -11,10 +11,13 @@ Records List Examples
     webconsulting/records-list-examples
 
 :Version:
-    14.0.0
+    1.0.0
 
 :TYPO3:
     14.3 or later
+
+:PHP:
+    8.3 through 8.5
 
 This extension adds example view types for the TYPO3 backend Records module
 provided by EXT:records_list_types. It is TYPO3 v14 only and intentionally
@@ -27,7 +30,6 @@ contains no PHP runtime classes.
     Introduction/Index
     Installation/Index
     Configuration/Index
-    Reports/Index
 
 .. _scope:
 

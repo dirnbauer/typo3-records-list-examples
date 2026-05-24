@@ -71,5 +71,5 @@ Run the local checks with:
 
     composer ci
 
-The CI command validates Composer metadata, validates XLIFF files, and runs
-PHPStan at level ``max``.
+The CI command validates Composer metadata, validates XLIFF files, runs
+Composer audit, and runs PHPStan at level ``max``.

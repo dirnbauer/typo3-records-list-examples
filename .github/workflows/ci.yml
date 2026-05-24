@@ -8,15 +8,19 @@ on:
 
 jobs:
   composer:
-    name: Composer validation and audit
+    name: Composer validation and audit (PHP ${{ matrix.php-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.3', '8.4', '8.5']
     steps:
       - uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: ${{ matrix.php-version }}
           extensions: intl, simplexml
           coverage: none
 
@@ -30,15 +34,19 @@ jobs:
         run: composer audit --locked --abandoned=report
 
   phpstan:
-    name: PHPStan level max
+    name: PHPStan level max (PHP ${{ matrix.php-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.3', '8.4', '8.5']
     steps:
       - uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: ${{ matrix.php-version }}
           extensions: intl, simplexml
           coverage: none
 
@@ -49,15 +57,19 @@ jobs:
         run: vendor/bin/phpstan analyse --no-progress --memory-limit=512M
 
   xml:
-    name: XLIFF validation
+    name: XLIFF validation (PHP ${{ matrix.php-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.3', '8.4', '8.5']
     steps:
       - uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: ${{ matrix.php-version }}
           extensions: simplexml
           coverage: none
 

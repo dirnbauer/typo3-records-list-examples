@@ -6,15 +6,22 @@
     "authors": [
         {
             "name": "Webconsulting",
-            "email": "office@webconsulting.at"
+            "email": "office@webconsulting.at",
+            "role": "Developer"
         }
     ],
+    "homepage": "https://github.com/dirnbauer/typo3-records-list-examples",
+    "support": {
+        "issues": "https://github.com/dirnbauer/typo3-records-list-examples/issues",
+        "source": "https://github.com/dirnbauer/typo3-records-list-examples"
+    },
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "typo3/cms-backend": "^14.3",
         "typo3/cms-core": "^14.3",
         "typo3/cms-fluid": "^14.3",
-        "webconsulting/records-list-types": "dev-main as 14.0.0"
+        "typo3/cms-recordlist": "^14.3",
+        "webconsulting/records-list-types": "^1.0"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
@@ -24,7 +31,10 @@
     "extra": {
         "typo3/cms": {
             "extension-key": "records_list_examples",
-            "version": "14.0.0"
+            "version": "1.0.0",
+            "Package": {
+                "providesPackages": {}
+            }
         }
     },
     "repositories": [
@@ -36,8 +46,10 @@
     "scripts": {
         "ci": [
             "@check",
+            "@security:audit",
             "@phpstan"
         ],
+        "security:audit": "composer audit --abandoned=report",
         "check": [
             "composer validate --strict --no-check-publish",
             "@check:xlf"

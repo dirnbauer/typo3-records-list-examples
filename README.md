@@ -1,8 +1,8 @@
-# Records List Examples for TYPO3 v14
+# Records List Examples for TYPO3
 
 Example view types for the [Records List Types](https://github.com/dirnbauer/typo3-records-list-types) extension. Install this extension to get 6 additional custom view types in the TYPO3 backend Records module -- ready to use, no extra PHP needed.
 
-This package is **TYPO3 v14 only**. Version 14.0.0 targets TYPO3 14.3 LTS and later, uses Records List Types v14, and intentionally drops TYPO3 v13 support.
+This package is **TYPO3 v14 only**. Version 1.0.0 targets TYPO3 14.3 LTS and later, uses Records List Types 1.0 or later, and intentionally drops TYPO3 v13 support.
 
 ## View Types
 
@@ -33,29 +33,30 @@ That means the custom templates keep TYPO3 backend behavior that editors already
 - visibility / delete / info / history / copy / cut actions only when the current backend user is allowed to use them
 - TYPO3's native contextual edit sheet instead of legacy edit links
 - shared sorting, pagination input handling, scroll-shadow checks, and action binding from `GridViewActions.js`
-- translated labels for view types and template UI via XLIFF (`en` + `de`)
+- translated labels for view types and template UI via XLIFF 2.0 (`en` + `de`)
 
 All views follow TYPO3 Core pagination behavior: multi-table mode shows a preview with "Expand table" button, single-table mode shows full pagination.
 
 ## Requirements
 
 - TYPO3 v14.3+
-- PHP 8.2 through 8.5
-- [webconsulting/records-list-types](https://github.com/dirnbauer/typo3-records-list-types) v14
+- PHP 8.3 through 8.5
+- [webconsulting/records-list-types](https://github.com/dirnbauer/typo3-records-list-types) 1.0+
 
-The extension depends explicitly on TYPO3 Core, Backend, and Fluid packages because its templates use TYPO3 backend components and Fluid ViewHelpers directly.
+The extension depends explicitly on TYPO3 Core, Backend, Record List, and Fluid packages because its templates use TYPO3 backend components, the Records module, and Fluid ViewHelpers directly.
 
 ## Installation
 
 The examples package is installed from GitHub when it is not available via
 Packagist. Add both VCS repositories in your TYPO3 project's root
 `composer.json`; Composer does not inherit repository definitions from
-dependencies.
+dependencies. For GitHub VCS installations, Composer must be able to see stable
+release tags for both this package and `webconsulting/records-list-types`.
 
 ```bash
 composer config repositories.records-list-types vcs https://github.com/dirnbauer/typo3-records-list-types.git
 composer config repositories.records-list-examples vcs https://github.com/dirnbauer/typo3-records-list-examples.git
-composer require webconsulting/records-list-examples:dev-main
+composer require webconsulting/records-list-examples:^1.0
 ```
 
 This automatically installs `webconsulting/records-list-types` if not already present.
@@ -71,7 +72,7 @@ After setup, the 6 new custom view types appear in the view switcher in **Conten
 
 ## Localization
 
-All view-type labels (Timeline, Catalog, Address Book, Event List, Gallery, Dashboard) and descriptions are translatable via XLIFF and shipped in:
+All view-type labels (Timeline, Catalog, Address Book, Event List, Gallery, Dashboard) and descriptions are translatable via XLIFF 2.0 and shipped in:
 
 - `Resources/Private/Language/locallang.xlf` (English, default)
 - `Resources/Private/Language/de.locallang.xlf` (German)
@@ -143,7 +144,7 @@ records_list_examples/
 │   └── Scripts/
 │       ├── runTests.sh                     # Local suite runner
 │       └── validate-xlf.php                # XLIFF validation
-├── Documentation/                          # TYPO3 documentation and reports
+├── Documentation/                          # TYPO3 documentation
 ├── Resources/
 │   ├── Private/
 │   │   ├── Backend/
@@ -157,7 +158,6 @@ records_list_examples/
 │       ├── timeline.css                    # Timeline styles (dark mode support)
 │       └── catalog.css                     # Catalog styles (dark mode support)
 ├── composer.json
-├── ext_emconf.php
 ├── phpstan.neon
 └── README.md
 ```
@@ -169,7 +169,7 @@ This extension contains **zero PHP classes**. It registers custom view types pur
 - **TSconfig** (`setup.tsconfig`) -- registers 6 view types with translated labels (`LLL:` references), icons, templates, CSS, and column configuration
 - **Templates** (`TimelineView.html`, `CatalogView.html`) -- custom Fluid templates for Timeline and Catalog using the current `records_list_types` heading/sanitizer/permissions/popover systematic
 - **CSS** (`timeline.css`, `catalog.css`) -- view-specific styles using TYPO3 CSS variables for dark mode
-- **XLIFF** (`locallang.xlf`, `de.locallang.xlf`) -- translatable labels for view types, descriptions, action buttons, and template strings
+- **XLIFF 2.0** (`locallang.xlf`, `de.locallang.xlf`) -- translatable labels for view types, descriptions, action buttons, and template strings
 
 The other 4 views (Address Book, Event List, Gallery, Dashboard) reuse the built-in templates (`CompactView`, `TeaserView`, `GridView`) from `records_list_types` -- they only need TSconfig configuration.
 
@@ -195,13 +195,17 @@ composer install
 composer ci
 ```
 
-This validates Composer metadata, validates both XLIFF files, and runs PHPStan at level `max`.
+This validates Composer metadata, validates both XLIFF files, runs Composer
+audit, and runs PHPStan at level `max`.
 
 The same checks run in GitHub Actions:
 
 - Composer validation and `composer audit`
 - XLIFF validation
 - PHPStan level `max`
+- PHP 8.3, 8.4, and 8.5 matrix coverage
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes and [Documentation/](Documentation/) for the TYPO3 manual.
 
 ## License
 
