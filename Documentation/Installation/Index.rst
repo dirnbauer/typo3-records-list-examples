@@ -18,8 +18,8 @@ inherit repository definitions from dependencies.
 .. code-block:: bash
     :caption: Composer installation
 
-    composer config repositories.records-list-types vcs https://github.com/dirnbauer/typo3-records-list-types.git
-    composer config repositories.records-list-examples vcs https://github.com/dirnbauer/typo3-records-list-examples.git
+    composer config repositories.records-list-types vcs https://github.com/webconsulting-at/typo3-records-list-types.git
+    composer config repositories.records-list-examples vcs https://github.com/webconsulting-at/typo3-records-list-examples.git
     composer require webconsulting/records-list-examples:^1.0
 
 Set up the extension and clear caches:

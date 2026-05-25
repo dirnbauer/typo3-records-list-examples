@@ -1,6 +1,6 @@
 # Records List Examples for TYPO3
 
-Example view types for the [Records List Types](https://github.com/dirnbauer/typo3-records-list-types) extension. Install this extension to get 6 additional custom view types in the TYPO3 backend Records module -- ready to use, no extra PHP needed.
+Example view types for the [Records List Types](https://github.com/webconsulting-at/typo3-records-list-types) extension. Install this extension to get 6 additional custom view types in the TYPO3 backend Records module -- ready to use, no extra PHP needed.
 
 This package is **TYPO3 v14 only**. Version 1.0.0 targets TYPO3 14.3 LTS and later, uses Records List Types 1.0 or later, and intentionally drops TYPO3 v13 support.
 
@@ -41,7 +41,7 @@ All views follow TYPO3 Core pagination behavior: multi-table mode shows a previe
 
 - TYPO3 v14.3+
 - PHP 8.3 through 8.5
-- [webconsulting/records-list-types](https://github.com/dirnbauer/typo3-records-list-types) 1.0+
+- [webconsulting/records-list-types](https://github.com/webconsulting-at/typo3-records-list-types) 1.0+
 
 The extension depends explicitly on TYPO3 Core, Backend, Record List, and Fluid packages because its templates use TYPO3 backend components, the Records module, and Fluid ViewHelpers directly.
 
@@ -54,8 +54,8 @@ dependencies. For GitHub VCS installations, Composer must be able to see stable
 release tags for both this package and `webconsulting/records-list-types`.
 
 ```bash
-composer config repositories.records-list-types vcs https://github.com/dirnbauer/typo3-records-list-types.git
-composer config repositories.records-list-examples vcs https://github.com/dirnbauer/typo3-records-list-examples.git
+composer config repositories.records-list-types vcs https://github.com/webconsulting-at/typo3-records-list-types.git
+composer config repositories.records-list-examples vcs https://github.com/webconsulting-at/typo3-records-list-examples.git
 composer require webconsulting/records-list-examples:^1.0
 ```
 
@@ -184,7 +184,7 @@ This is the pattern for creating your own custom view types: TSconfig + optional
 
 These templates are backend Records module examples. They intentionally do not render frontend page content areas and should not use Visual Editor page ViewHelpers such as `f:render.contentArea` or `f:mark.contentArea`. Bootstrap, shadcn/ui, and other frontend theme presets belong in a sitepackage such as Desiderio, not in this backend examples package.
 
-See the [Custom View Types documentation](https://github.com/dirnbauer/typo3-records-list-types/blob/main/Documentation/CustomViewTypes.md) for full details.
+See the [Custom View Types documentation](https://github.com/webconsulting-at/typo3-records-list-types/blob/main/Documentation/CustomViewTypes.md) for full details.
 
 ## Validation
 

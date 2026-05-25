@@ -10,10 +10,10 @@
             "role": "Developer"
         }
     ],
-    "homepage": "https://github.com/dirnbauer/typo3-records-list-examples",
+    "homepage": "https://github.com/webconsulting-at/typo3-records-list-examples",
     "support": {
-        "issues": "https://github.com/dirnbauer/typo3-records-list-examples/issues",
-        "source": "https://github.com/dirnbauer/typo3-records-list-examples"
+        "issues": "https://github.com/webconsulting-at/typo3-records-list-examples/issues",
+        "source": "https://github.com/webconsulting-at/typo3-records-list-examples"
     },
     "require": {
         "php": "^8.3",
@@ -30,8 +30,8 @@
     },
     "extra": {
         "typo3/cms": {
-            "extension-key": "records_list_examples",
-            "version": "1.0.0",
+                    "extension-key": "records_list_examples",
+                    "version": "1.0.1",
             "Package": {
                 "providesPackages": {}
             }
@@ -40,7 +40,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/dirnbauer/typo3-records-list-types.git"
+            "url": "https://github.com/webconsulting-at/typo3-records-list-types.git"
         }
     ],
     "scripts": {
