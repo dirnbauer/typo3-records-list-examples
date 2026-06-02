@@ -1,0 +1,109 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    Permission-aware record actions + more-actions popover.
+    Arguments: record, tableConfig, viewSlug (catalog|timeline — popover id prefix)
+</f:comment>
+
+<div class="rle-record-card__actions">
+    <f:if condition="{record.permissions.canEdit}">
+        <typo3-backend-contextual-record-edit-trigger
+            class="rle-record-card__action"
+            title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.edit', default: 'Edit')}"
+            edit-url="{record.editUrl}"
+            url="{record.contextualEditUrl}">
+            <core:icon identifier="actions-open" size="small" />
+        </typo3-backend-contextual-record-edit-trigger>
+    </f:if>
+
+    <f:if condition="{record.permissions.canToggleVisibility}">
+        <f:if condition="{record.hidden}">
+            <f:then>
+                <button type="button" class="rle-record-card__action"
+                        data-gridview-action="show"
+                        data-table="{record.tableName}" data-uid="{record.uid}"
+                        data-hidden-field="{tableConfig.hiddenField}"
+                        title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.show', default: 'Show')}">
+                    <core:icon identifier="actions-edit-unhide" size="small" />
+                </button>
+            </f:then>
+            <f:else>
+                <button type="button" class="rle-record-card__action"
+                        data-gridview-action="hide"
+                        data-table="{record.tableName}" data-uid="{record.uid}"
+                        data-hidden-field="{tableConfig.hiddenField}"
+                        title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.hide', default: 'Hide')}">
+                    <core:icon identifier="actions-edit-hide" size="small" />
+                </button>
+            </f:else>
+        </f:if>
+    </f:if>
+
+    <f:if condition="{record.permissions.canDelete}">
+        <button type="button" class="rle-record-card__action rle-record-card__action--danger"
+                data-gridview-action="delete"
+                data-table="{record.tableName}" data-uid="{record.uid}"
+                title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.delete', default: 'Delete')}">
+            <core:icon identifier="actions-edit-delete" size="small" />
+        </button>
+    </f:if>
+
+    <f:variable name="actionsPopoverId">rle-{viewSlug}-actions-{record.tableName}-{record.uid}</f:variable>
+    <div class="dropdown">
+        <button type="button" class="rle-record-card__action dropdown-toggle dropdown-toggle-no-chevron"
+                popovertarget="{actionsPopoverId}"
+                title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.more', default: 'More actions')}"
+                aria-label="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.more', default: 'More actions')}">
+            <core:icon identifier="actions-menu-alternative" size="small" />
+        </button>
+        <ul id="{actionsPopoverId}" class="dropdown-menu dropdown-menu-end" popover>
+            <f:if condition="{record.permissions.canShowInfo}">
+                <li>
+                    <a class="dropdown-item" href="#"
+                       data-gridview-action="info"
+                       data-table="{record.tableName}"
+                       data-uid="{record.uid}">
+                        <core:icon identifier="actions-document-info" size="small" />
+                        <span><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.info" default="Info" /></span>
+                    </a>
+                </li>
+            </f:if>
+            <f:if condition="{record.permissions.canHistory}">
+                <li>
+                    <a class="dropdown-item" href="#"
+                       data-gridview-action="history"
+                       data-table="{record.tableName}"
+                       data-uid="{record.uid}">
+                        <core:icon identifier="actions-document-history-open" size="small" />
+                        <span><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.history" default="History" /></span>
+                    </a>
+                </li>
+            </f:if>
+            <f:if condition="{record.permissions.canCopy}">
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item" href="#"
+                       data-gridview-action="copy"
+                       data-table="{record.tableName}"
+                       data-uid="{record.uid}">
+                        <core:icon identifier="actions-edit-copy" size="small" />
+                        <span><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.copy" default="Copy" /></span>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="#"
+                       data-gridview-action="cut"
+                       data-table="{record.tableName}"
+                       data-uid="{record.uid}">
+                        <core:icon identifier="actions-edit-cut" size="small" />
+                        <span><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.cut" default="Cut" /></span>
+                    </a>
+                </li>
+            </f:if>
+        </ul>
+    </div>
+</div>
+
+</html>

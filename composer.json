@@ -30,8 +30,8 @@
     },
     "extra": {
         "typo3/cms": {
-                    "extension-key": "records_list_examples",
-                    "version": "1.0.2",
+            "extension-key": "records_list_examples",
+            "version": "1.0.2",
             "Package": {
                 "providesPackages": {}
             }

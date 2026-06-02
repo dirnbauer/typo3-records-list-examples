@@ -28,7 +28,7 @@ AGENTS.md
 vendor/
 var/
 typo3temp/
-public/
+/public/
 .Build/
 Documentation-GENERATED-temp/
 
