@@ -17,8 +17,14 @@ This package is **TYPO3 v14 only**. Version 1.0.0 targets TYPO3 14.3 LTS and lat
 
 **Timeline** and **Catalog** have custom templates and CSS with full dark mode support. The other 4 reuse built-in templates with different configurations -- demonstrating that many custom view types need only TSconfig and optional assets.
 
-The two custom templates follow the current `records_list_types` template systematic, so they keep working as the main extension evolves:
+**Timeline** and **Catalog** share backend chrome through Fluid partials in
+`Resources/Private/Backend/Partials/` and a common `rle-record-card` BEM block
+for actions, checkboxes, and translation strips. View-specific templates only
+contain layout that genuinely differs (image cards vs timeline date column).
 
+The custom templates follow the current `records_list_types` template systematic, so they keep working as the main extension evolves:
+
+- extension-local partials (`TableHeadingBlock`, `RecordActions`, `TranslationStrip`, …) plus parent partials from `records_list_types` (`TableHeading`, `RecordFilters`, `Pagination`)
 - shared `TableHeading` partial for the table heading (single-table mode + multi-record-selection panel)
 - TYPO3 core `f:sanitize.html(build: 'records-list-types-backend-fragments')` for TYPO3-generated backend fragments (action buttons, multi-record-selection actions)
 - TYPO3 14 native `<typo3-backend-contextual-record-edit-trigger>` for record edit links
@@ -148,32 +154,52 @@ records_list_examples/
 ├── Resources/
 │   ├── Private/
 │   │   ├── Backend/
+│   │   │   ├── Partials/                   # Shared Fluid partials (both custom views)
+│   │   │   │   ├── TableHeadingBlock.html  # Heading + multi-record-selection bar
+│   │   │   │   ├── RecordActions.html      # Edit / visibility / delete / more-actions
+│   │   │   │   ├── TranslationStrip.html   # Per-language translation slots
+│   │   │   │   ├── MultiRecordCheckbox.html
+│   │   │   │   ├── ExpandTableLink.html
+│   │   │   │   └── NoRecordsCallout.html
 │   │   │   └── Templates/
-│   │   │       ├── TimelineView.html       # Timeline: vertical timeline layout
-│   │   │       └── CatalogView.html        # Catalog: large image card grid
+│   │   │       ├── TimelineView.html       # Timeline-only layout (date column + card)
+│   │   │       └── CatalogView.html        # Catalog-only layout (image card grid)
 │   │   └── Language/
 │   │       ├── locallang.xlf               # English labels (view types + template strings)
 │   │       └── de.locallang.xlf            # German translations
 │   └── Public/Css/
-│       ├── timeline.css                    # Timeline styles (dark mode support)
-│       └── catalog.css                     # Catalog styles (dark mode support)
+│       ├── record-card-shared.css          # Shared actions, checkbox, translations
+│       ├── timeline.css                    # Timeline layout (imports shared CSS)
+│       └── catalog.css                     # Catalog layout (imports shared CSS)
 ├── composer.json
 ├── phpstan.neon
 └── README.md
 ```
+
+Custom view types set `partialRootPath` to the extension `Partials/` folder.
+`records_list_types` prepends that path and still resolves its own partials
+(`TableHeading`, `RecordFilters`, `Pagination`) from the parent extension.
 
 ## How It Works
 
 This extension contains **zero PHP classes**. It registers custom view types purely through TSconfig and Fluid templates:
 
 - **TSconfig** (`setup.tsconfig`) -- registers 6 view types with translated labels (`LLL:` references), icons, templates, CSS, and column configuration
-- **Templates** (`TimelineView.html`, `CatalogView.html`) -- custom Fluid templates for Timeline and Catalog using the current `records_list_types` heading/sanitizer/permissions/popover systematic
-- **CSS** (`timeline.css`, `catalog.css`) -- view-specific styles using TYPO3 CSS variables for dark mode
+- **Templates** (`TimelineView.html`, `CatalogView.html`) -- view-specific layout only; shared chrome lives in `Partials/`
+- **Partials** -- reusable record actions, translation strips, table heading block, and empty-state UI
+- **CSS** (`record-card-shared.css`, `timeline.css`, `catalog.css`) -- shared record-card chrome plus view-specific layout, using TYPO3 CSS variables for dark mode
 - **XLIFF 2.0** (`locallang.xlf`, `de.locallang.xlf`) -- translatable labels for view types, descriptions, action buttons, and template strings
 
 The other 4 views (Address Book, Event List, Gallery, Dashboard) reuse the built-in templates (`CompactView`, `TeaserView`, `GridView`) from `records_list_types` -- they only need TSconfig configuration.
 
-This is the pattern for creating your own custom view types: TSconfig + optional template + optional CSS. The two custom templates in this repo demonstrate the current `records_list_types` systematic for:
+### Add a third custom view
+
+1. Register the view type in `Configuration/TsConfig/Page/setup.tsconfig` with `template`, `templateRootPath`, `partialRootPath`, and `css`.
+2. Add a slim template under `Resources/Private/Backend/Templates/` for layout that differs from existing views.
+3. Reuse the existing partials for table heading, record actions, translations, and empty states.
+4. Add view-specific CSS; `@import` `record-card-shared.css` for shared chrome.
+
+This is the pattern for creating your own custom view types: TSconfig + optional template + optional partials + optional CSS. The two custom templates in this repo demonstrate the current `records_list_types` systematic for:
 
 - shared `TableHeading` partial rendering
 - TYPO3 core `f:sanitize.html(build: 'records-list-types-backend-fragments')` for TYPO3/core-generated backend fragments
