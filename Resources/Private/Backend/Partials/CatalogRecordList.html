@@ -1,0 +1,13 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>Arguments: table, tableConfig, viewSlug</f:comment>
+
+<div class="rle-catalog-grid"
+     {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-row-selection=\"true\"')}>
+    <f:for each="{table.records}" as="record">
+        <f:render partial="CatalogRecordCard" arguments="{record: record, table: table, tableConfig: tableConfig}" />
+    </f:for>
+</div>
+
+</html>

@@ -1,0 +1,71 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>Arguments: record, table, tableConfig</f:comment>
+
+<div class="rle-catalog-card{f:if(condition: record.hidden, then: ' rle-catalog-card--hidden')}"
+     {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-element=\"true\"')}
+     data-table="{record.tableName}"
+     data-uid="{record.uid}">
+    <div class="rle-catalog-card__image">
+        <f:if condition="{record.thumbnailUrl}">
+            <f:then>
+                <f:if condition="{record.permissions.canEdit}">
+                    <f:then>
+                        <typo3-backend-contextual-record-edit-trigger
+                            edit-url="{record.editUrl}"
+                            url="{record.contextualEditUrl}">
+                            <img src="{record.thumbnailUrl}" class="rle-catalog-card__img" alt="{record.title}" loading="lazy" />
+                        </typo3-backend-contextual-record-edit-trigger>
+                    </f:then>
+                    <f:else>
+                        <img src="{record.thumbnailUrl}" class="rle-catalog-card__img" alt="{record.title}" loading="lazy" />
+                    </f:else>
+                </f:if>
+            </f:then>
+            <f:else>
+                <div class="rle-catalog-card__placeholder">
+                    <core:icon identifier="actions-image" size="default" />
+                    <span class="rle-catalog-card__placeholder-text">
+                        <f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:catalog.placeholder.noImage" default="No image" />
+                    </span>
+                </div>
+            </f:else>
+        </f:if>
+
+        <f:if condition="{record.thumbnailUrl}">
+            <div class="rle-catalog-card__image-hint">
+                <core:icon identifier="actions-info" size="small" />
+                <f:translate key="LLL:EXT:records_list_types/Resources/Private/Language/locallang.xlf:image.previewOnly" default="Preview only — may not appear on the frontend for this record type." />
+            </div>
+        </f:if>
+
+        <f:if condition="{record.hidden}">
+            <span class="rle-catalog-card__badge rle-catalog-card__badge--hidden">
+                <core:icon identifier="actions-edit-hide" size="small" />
+                <f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:catalog.badge.hidden" default="Hidden" />
+            </span>
+        </f:if>
+    </div>
+
+    <div class="rle-catalog-card__body">
+        <f:render partial="RecordTitleRow" arguments="{
+            record: record,
+            table: table,
+            wrapperClass: 'rle-catalog-card__title-row',
+            titleClass: 'rle-catalog-card__title',
+            uidClass: 'rle-catalog-card__uid'
+        }" />
+
+        <f:render partial="RecordTeaser" arguments="{record: record, teaserClass: 'rle-catalog-card__teaser', maxCharacters: 120}" />
+
+        <f:render partial="RecordActions" arguments="{record: record, tableConfig: tableConfig, viewSlug: 'catalog'}" />
+
+        <f:if condition="{record.translations}">
+            <f:render partial="TranslationStrip" arguments="{record: record}" />
+        </f:if>
+    </div>
+</div>
+
+</html>

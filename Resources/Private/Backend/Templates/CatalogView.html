@@ -1,133 +1,20 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:comment>
     Catalog View - Large image cards with overlay title.
-    Shared chrome: Partials/ (TableHeadingBlock, RecordActions, TranslationStrip, …).
+    Layout-only template; shared chrome lives in Partials/.
 </f:comment>
 
 <records-list-types-actions>
 <div class="rle-catalog-container">
-
-    <f:if condition="{tableData}">
-        <f:then>
-            <f:for each="{tableData}" as="table">
-                <f:render partial="RecordFilters" arguments="{filters: table.filters}" />
-                <div class="recordlist" id="t3-table-{table.tableName}"
-                     {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-identifier=\"t3-table-{table.tableName}\"')}>
-                    <form action="{table.formActionUrl}#t3-table-{table.tableName}" method="post" name="list-table-form-{table.tableName}">
-                    <input type="hidden" name="cmd_table" value="{table.tableName}" />
-                    <input type="hidden" name="cmd" />
-                    <f:render partial="TableHeadingBlock" arguments="{table: table, showDownloadButton: 1}" />
-
-                    <div class="collapse show" data-state="expanded" id="recordlist-{table.tableName}">
-                        <f:if condition="{currentTable}">
-                            <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'top'}" />
-                        </f:if>
-
-                        <div class="rle-catalog-grid"
-                             {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-row-selection=\"true\"')}>
-                            <f:for each="{table.records}" as="record">
-                                <div class="rle-catalog-card{f:if(condition: record.hidden, then: ' rle-catalog-card--hidden')}"
-                                     {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-element=\"true\"')}
-                                     data-table="{record.tableName}"
-                                     data-uid="{record.uid}">
-                                    <div class="rle-catalog-card__image">
-                                        <f:if condition="{record.thumbnailUrl}">
-                                            <f:then>
-                                                <f:if condition="{record.permissions.canEdit}">
-                                                    <f:then>
-                                                        <typo3-backend-contextual-record-edit-trigger
-                                                            edit-url="{record.editUrl}"
-                                                            url="{record.contextualEditUrl}">
-                                                            <img src="{record.thumbnailUrl}" class="rle-catalog-card__img" alt="{record.title}" loading="lazy" />
-                                                        </typo3-backend-contextual-record-edit-trigger>
-                                                    </f:then>
-                                                    <f:else>
-                                                        <img src="{record.thumbnailUrl}" class="rle-catalog-card__img" alt="{record.title}" loading="lazy" />
-                                                    </f:else>
-                                                </f:if>
-                                            </f:then>
-                                            <f:else>
-                                                <div class="rle-catalog-card__placeholder">
-                                                    <core:icon identifier="actions-image" size="default" />
-                                                    <span class="rle-catalog-card__placeholder-text">
-                                                        <f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:catalog.placeholder.noImage" default="No image" />
-                                                    </span>
-                                                </div>
-                                            </f:else>
-                                        </f:if>
-
-                                        <f:if condition="{record.thumbnailUrl}">
-                                            <div class="rle-catalog-card__image-hint">
-                                                <core:icon identifier="actions-info" size="small" />
-                                                <f:translate key="LLL:EXT:records_list_types/Resources/Private/Language/locallang.xlf:image.previewOnly" default="Preview only — may not appear on the frontend for this record type." />
-                                            </div>
-                                        </f:if>
-
-                                        <f:if condition="{record.hidden}">
-                                            <span class="rle-catalog-card__badge rle-catalog-card__badge--hidden">
-                                                <core:icon identifier="actions-edit-hide" size="small" />
-                                                <f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:catalog.badge.hidden" default="Hidden" />
-                                            </span>
-                                        </f:if>
-                                    </div>
-
-                                    <div class="rle-catalog-card__body">
-                                        <div class="rle-catalog-card__title-row">
-                                            <f:if condition="{table.multiSelectEnabled}">
-                                                <f:render partial="MultiRecordCheckbox" arguments="{record: record}" />
-                                            </f:if>
-                                            <f:if condition="{record.permissions.canEdit}">
-                                                <f:then>
-                                                    <typo3-backend-contextual-record-edit-trigger
-                                                        class="rle-catalog-card__title"
-                                                        edit-url="{record.editUrl}"
-                                                        url="{record.contextualEditUrl}">
-                                                        {record.title}
-                                                    </typo3-backend-contextual-record-edit-trigger>
-                                                </f:then>
-                                                <f:else>
-                                                    <span class="rle-catalog-card__title">{record.title}</span>
-                                                </f:else>
-                                            </f:if>
-                                            <span class="rle-catalog-card__uid">#{record.uid}</span>
-                                        </div>
-
-                                        <f:for each="{record.displayValues}" as="field">
-                                            <f:if condition="{field.type} == 'text' && !{field.isLabelField} && !{field.isEmpty}">
-                                                <p class="rle-catalog-card__teaser">{field.formatted -> f:format.crop(maxCharacters: 120, append: '…')}</p>
-                                            </f:if>
-                                        </f:for>
-
-                                        <f:render partial="RecordActions" arguments="{record: record, tableConfig: tableConfig, viewSlug: 'catalog'}" />
-
-                                        <f:if condition="{record.translations}">
-                                            <f:render partial="TranslationStrip" arguments="{record: record}" />
-                                        </f:if>
-                                    </div>
-                                </div>
-                            </f:for>
-                        </div>
-
-                        <f:if condition="!{currentTable} && {table.hasMore}">
-                            <f:render partial="ExpandTableLink" arguments="{table: table}" />
-                        </f:if>
-
-                        <f:if condition="{currentTable}">
-                            <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'bottom'}" />
-                        </f:if>
-                    </div>
-                    </form>
-                </div>
-            </f:for>
-        </f:then>
-        <f:else>
-            <f:render partial="NoRecordsCallout" />
-        </f:else>
-    </f:if>
-
+    <f:render partial="RecordListTables" arguments="{
+        tableData: tableData,
+        currentTable: currentTable,
+        tableConfig: tableConfig,
+        recordListPartial: 'CatalogRecordList',
+        viewSlug: 'catalog'
+    }" />
 </div>
 </records-list-types-actions>
 

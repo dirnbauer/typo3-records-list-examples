@@ -1,117 +1,20 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:comment>
     Timeline View - Vertical timeline with date markers.
-    Shared chrome: Partials/ (TableHeadingBlock, RecordActions, TranslationStrip, …).
+    Layout-only template; shared chrome lives in Partials/.
 </f:comment>
 
 <records-list-types-actions>
 <div class="rle-timeline-container">
-
-    <f:if condition="{tableData}">
-        <f:then>
-            <f:for each="{tableData}" as="table">
-                <f:render partial="RecordFilters" arguments="{filters: table.filters}" />
-                <div class="recordlist" id="t3-table-{table.tableName}"
-                     {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-identifier=\"t3-table-{table.tableName}\"')}>
-                    <form action="{table.formActionUrl}#t3-table-{table.tableName}" method="post" name="list-table-form-{table.tableName}">
-                    <input type="hidden" name="cmd_table" value="{table.tableName}" />
-                    <input type="hidden" name="cmd" />
-                    <f:render partial="TableHeadingBlock" arguments="{table: table}" />
-
-                    <div class="collapse show" data-state="expanded" id="recordlist-{table.tableName}">
-                        <f:if condition="{currentTable}">
-                            <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'top'}" />
-                        </f:if>
-
-                        <div class="rle-timeline"
-                             {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-row-selection=\"true\"')}>
-                            <f:for each="{table.records}" as="record">
-                                <div class="rle-timeline__item{f:if(condition: record.hidden, then: ' rle-timeline__item--hidden')}"
-                                     {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-element=\"true\"')}
-                                     data-table="{record.tableName}"
-                                     data-uid="{record.uid}">
-
-                                    <div class="rle-timeline__date-col">
-                                        <div class="rle-timeline__date-circle">
-                                            <f:variable name="hasDate" value="0" />
-                                            <f:for each="{record.displayValues}" as="field">
-                                                <f:if condition="{field.type} == 'datetime' && !{field.isEmpty}">
-                                                    <f:if condition="{hasDate} == 0">
-                                                        <span class="rle-timeline__date-value">{field.formatted}</span>
-                                                        <f:variable name="hasDate" value="1" />
-                                                    </f:if>
-                                                </f:if>
-                                            </f:for>
-                                            <f:if condition="{hasDate} == 0">
-                                                <span class="rle-timeline__date-value">#{record.uid}</span>
-                                            </f:if>
-                                        </div>
-                                        <div class="rle-timeline__line-segment"></div>
-                                    </div>
-
-                                    <div class="rle-timeline__content">
-                                        <div class="rle-timeline__card">
-                                            <div class="rle-timeline__header">
-                                                <f:if condition="{table.multiSelectEnabled}">
-                                                    <f:render partial="MultiRecordCheckbox" arguments="{record: record}" />
-                                                </f:if>
-                                                <span class="rle-timeline__icon">
-                                                    <core:icon identifier="{record.iconIdentifier}" size="small" />
-                                                </span>
-                                                <f:if condition="{record.permissions.canEdit}">
-                                                    <f:then>
-                                                        <typo3-backend-contextual-record-edit-trigger
-                                                            class="rle-timeline__title"
-                                                            edit-url="{record.editUrl}"
-                                                            url="{record.contextualEditUrl}">
-                                                            {record.title}
-                                                        </typo3-backend-contextual-record-edit-trigger>
-                                                    </f:then>
-                                                    <f:else>
-                                                        <span class="rle-timeline__title">{record.title}</span>
-                                                    </f:else>
-                                                </f:if>
-                                                <span class="rle-timeline__uid">#{record.uid}</span>
-                                            </div>
-
-                                            <f:for each="{record.displayValues}" as="field">
-                                                <f:if condition="{field.type} == 'text' && !{field.isLabelField} && !{field.isEmpty}">
-                                                    <p class="rle-timeline__teaser">{field.formatted -> f:format.crop(maxCharacters: 200, append: '…')}</p>
-                                                </f:if>
-                                            </f:for>
-
-                                            <f:render partial="RecordActions" arguments="{record: record, tableConfig: tableConfig, viewSlug: 'timeline'}" />
-
-                                            <f:if condition="{record.translations}">
-                                                <f:render partial="TranslationStrip" arguments="{record: record}" />
-                                            </f:if>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </f:for>
-                        </div>
-
-                        <f:if condition="!{currentTable} && {table.hasMore}">
-                            <f:render partial="ExpandTableLink" arguments="{table: table}" />
-                        </f:if>
-
-                        <f:if condition="{currentTable}">
-                            <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'bottom'}" />
-                        </f:if>
-                    </div>
-                    </form>
-                </div>
-            </f:for>
-        </f:then>
-        <f:else>
-            <f:render partial="NoRecordsCallout" />
-        </f:else>
-    </f:if>
-
+    <f:render partial="RecordListTables" arguments="{
+        tableData: tableData,
+        currentTable: currentTable,
+        tableConfig: tableConfig,
+        recordListPartial: 'TimelineRecordList',
+        viewSlug: 'timeline'
+    }" />
 </div>
 </records-list-types-actions>
 

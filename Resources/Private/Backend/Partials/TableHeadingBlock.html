@@ -3,7 +3,7 @@
 
 <f:comment>
     Table heading + optional multi-record selection bar.
-    Arguments: table, showDownloadButton (optional, default 0)
+    Arguments: table
 </f:comment>
 
 <div class="recordlist-heading{f:if(condition: table.multiSelectEnabled, then: ' multi-record-selection-panel')}">
@@ -15,7 +15,7 @@
             <f:if condition="{table.actionButtons.newRecordButton}">
                 <f:sanitize.html build="records-list-types-backend-fragments">{table.actionButtons.newRecordButton}</f:sanitize.html>
             </f:if>
-            <f:if condition="{showDownloadButton} && {table.actionButtons.downloadButton}">
+            <f:if condition="{table.actionButtons.downloadButton}">
                 <f:sanitize.html build="records-list-types-backend-fragments">{table.actionButtons.downloadButton}</f:sanitize.html>
             </f:if>
             <f:if condition="{table.actionButtons.collapseButton}">

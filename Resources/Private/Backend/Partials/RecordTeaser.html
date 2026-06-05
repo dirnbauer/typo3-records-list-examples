@@ -1,0 +1,15 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    First non-empty text display value as cropped teaser.
+    Arguments: record, teaserClass, maxCharacters
+</f:comment>
+
+<f:for each="{record.displayValues}" as="field">
+    <f:if condition="{field.type} == 'text' && !{field.isLabelField} && !{field.isEmpty}">
+        <p class="{teaserClass}">{field.formatted -> f:format.crop(maxCharacters: maxCharacters, append: '…')}</p>
+    </f:if>
+</f:for>
+
+</html>
