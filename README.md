@@ -2,7 +2,7 @@
 
 Example view types for the [Records List Types](https://github.com/dirnbauer/typo3-records-list-types) extension. Install this extension to get 6 additional custom view types in the TYPO3 backend Records module -- ready to use, no extra PHP needed.
 
-This package is **TYPO3 v14 only**. Version 1.0.0 targets TYPO3 14.3 LTS and later, uses Records List Types 1.0 or later, and intentionally drops TYPO3 v13 support.
+This package is **TYPO3 v14 only**. Version 1.1.0 targets TYPO3 14.3 LTS and later, uses Records List Types 1.0 or later, and intentionally drops TYPO3 v13 support.
 
 ## View Types
 
@@ -155,15 +155,22 @@ records_list_examples/
 │   ├── Private/
 │   │   ├── Backend/
 │   │   │   ├── Partials/                   # Shared Fluid partials (both custom views)
+│   │   │   │   ├── RecordListTables.html   # Table shell: filters, form, pagination
+│   │   │   │   ├── CatalogRecordList.html  # Catalog grid wrapper
+│   │   │   │   ├── CatalogRecordCard.html  # Single catalog card
+│   │   │   │   ├── TimelineRecordList.html # Timeline list wrapper
+│   │   │   │   ├── TimelineRecordItem.html # Single timeline item
 │   │   │   │   ├── TableHeadingBlock.html  # Heading + multi-record-selection bar
+│   │   │   │   ├── RecordTitleRow.html     # Title, UID, optional icon
+│   │   │   │   ├── RecordTeaser.html       # Cropped text teaser
 │   │   │   │   ├── RecordActions.html      # Edit / visibility / delete / more-actions
 │   │   │   │   ├── TranslationStrip.html   # Per-language translation slots
 │   │   │   │   ├── MultiRecordCheckbox.html
 │   │   │   │   ├── ExpandTableLink.html
 │   │   │   │   └── NoRecordsCallout.html
 │   │   │   └── Templates/
-│   │   │       ├── TimelineView.html       # Timeline-only layout (date column + card)
-│   │   │       └── CatalogView.html        # Catalog-only layout (image card grid)
+│   │   │       ├── TimelineView.html       # Layout-only entry (renders RecordListTables)
+│   │   │       └── CatalogView.html        # Layout-only entry (renders RecordListTables)
 │   │   └── Language/
 │   │       ├── locallang.xlf               # English labels (view types + template strings)
 │   │       └── de.locallang.xlf            # German translations
@@ -195,9 +202,10 @@ The other 4 views (Address Book, Event List, Gallery, Dashboard) reuse the built
 ### Add a third custom view
 
 1. Register the view type in `Configuration/TsConfig/Page/setup.tsconfig` with `template`, `templateRootPath`, `partialRootPath`, and `css`.
-2. Add a slim template under `Resources/Private/Backend/Templates/` for layout that differs from existing views.
-3. Reuse the existing partials for table heading, record actions, translations, and empty states.
-4. Add view-specific CSS; `@import` `record-card-shared.css` for shared chrome.
+2. Add a record-list partial (for example `KanbanRecordList.html`) with the view-specific record layout.
+3. Add a layout-only template that renders `RecordListTables` with your `recordListPartial` name.
+4. Reuse `RecordTitleRow`, `RecordTeaser`, `RecordActions`, `TranslationStrip`, and the other shared partials where applicable.
+5. Add view-specific CSS; `@import` `record-card-shared.css` for shared chrome.
 
 This is the pattern for creating your own custom view types: TSconfig + optional template + optional partials + optional CSS. The two custom templates in this repo demonstrate the current `records_list_types` systematic for:
 

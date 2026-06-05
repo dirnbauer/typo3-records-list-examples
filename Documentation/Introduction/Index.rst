@@ -37,7 +37,11 @@ Timeline and Catalog use custom Fluid templates, but shared backend chrome is
 extracted into extension-local partials under
 :file:`Resources/Private/Backend/Partials/`:
 
+* :file:`RecordListTables.html` -- shared table shell with filters, form, and pagination
+* :file:`CatalogRecordList.html` / :file:`CatalogRecordCard.html` -- catalog record layout
+* :file:`TimelineRecordList.html` / :file:`TimelineRecordItem.html` -- timeline record layout
 * :file:`TableHeadingBlock.html` -- table heading and multi-record-selection bar
+* :file:`RecordTitleRow.html` / :file:`RecordTeaser.html` -- shared record header chrome
 * :file:`RecordActions.html` -- edit, visibility, delete, and more-actions menu
 * :file:`TranslationStrip.html` -- per-language translation slots
 * :file:`MultiRecordCheckbox.html`, :file:`ExpandTableLink.html`,
@@ -47,11 +51,12 @@ Both custom views set ``partialRootPath`` in Page TSconfig. EXT:records_list_typ
 prepends that path and still resolves parent partials such as
 ``TableHeading``, ``RecordFilters``, and ``Pagination`` from the main extension.
 
-View templates under :file:`Resources/Private/Backend/Templates/` contain only
-layout that differs between views:
+View templates under :file:`Resources/Private/Backend/Templates/` are layout-only
+entry points. Each renders :file:`RecordListTables.html` with a view-specific
+record-list partial:
 
-* Catalog -- image card grid with placeholders and preview hints
-* Timeline -- vertical date column, connecting line, and content cards
+* Catalog -- :file:`CatalogRecordList.html` with image cards, placeholders, and preview hints
+* Timeline -- :file:`TimelineRecordList.html` with date column, connecting line, and content cards
 
 Shared markup for actions, checkboxes, and translations uses the
 ``rle-record-card`` BEM block. Matching styles live in

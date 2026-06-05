@@ -3,6 +3,16 @@
 All notable changes to `webconsulting/records-list-examples` are documented in
 this file.
 
+## 1.1.0 - 2026-06-02
+
+### Changed
+
+- Decompose custom view templates into layout-only entry points plus shared
+  `RecordListTables`, record-list, record-card, title-row, and teaser partials.
+- Render download buttons whenever the backend provides them; remove the
+  catalog-only `showDownloadButton` flag from `TableHeadingBlock`.
+- Align catalog hidden-badge text color with shared warning tokens.
+
 ## 1.0.2 - 2026-06-02
 
 ### Changed

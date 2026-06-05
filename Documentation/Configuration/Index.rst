@@ -59,8 +59,9 @@ Timeline and Catalog register custom template and partial roots in
         css = EXT:records_list_examples/Resources/Public/Css/timeline.css
     }
 
-When adding another custom view, reuse the existing partials for table heading,
-record actions, translations, and empty states. Add only a new slim template and
+When adding another custom view, reuse :file:`RecordListTables.html` and the
+existing record chrome partials. Add a new record-list partial for the view-specific
+layout, a layout-only template that renders :file:`RecordListTables.html`, and
 view-specific CSS. Import :file:`record-card-shared.css` from the new stylesheet
 to inherit the shared record-card chrome.
 
