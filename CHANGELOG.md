@@ -3,6 +3,20 @@
 All notable changes to `webconsulting/records-list-examples` are documented in
 this file.
 
+## 1.0.2 - 2026-06-02
+
+### Changed
+
+- Extract shared Timeline and Catalog Fluid markup into
+  `Resources/Private/Backend/Partials/` (`TableHeadingBlock`, `RecordActions`,
+  `TranslationStrip`, and smaller UI fragments).
+- Introduce `rle-record-card` BEM classes and `record-card-shared.css` for
+  shared actions, checkboxes, and translation strips; view CSS files import it.
+- Scope `.gitignore` `public/` to the TYPO3 web root so `Resources/Public/`
+  extension assets remain tracked.
+- Update README and TYPO3 documentation for the partial-based template
+  architecture and custom-view extension workflow.
+
 ## 1.0.0 - 2026-05-24
 
 ### Added
