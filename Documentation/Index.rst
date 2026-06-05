@@ -11,7 +11,7 @@ Records List Examples
     webconsulting/records-list-examples
 
 :Version:
-    1.0.0
+    1.0.2
 
 :TYPO3:
     14.3 or later
@@ -46,5 +46,5 @@ TSconfig, Fluid templates, CSS, and XLIFF labels:
 * Gallery
 * Dashboard
 
-Timeline and Catalog ship custom Fluid templates. The other views reuse the
-templates from EXT:records_list_types.
+Timeline and Catalog ship custom Fluid templates with shared partials and CSS.
+The other views reuse the templates from EXT:records_list_types.

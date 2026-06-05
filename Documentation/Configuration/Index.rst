@@ -41,6 +41,29 @@ Restrict the available views per page with TYPO3 Page TSconfig conditions:
         mod.web_list.viewMode.default = timeline
     [end]
 
+.. _configuration-custom-views:
+
+Custom view paths
+=================
+
+Timeline and Catalog register custom template and partial roots in
+:file:`Configuration/TsConfig/Page/setup.tsconfig`:
+
+.. code-block:: typoscript
+    :caption: Custom view type paths
+
+    types.timeline {
+        template = TimelineView
+        templateRootPath = EXT:records_list_examples/Resources/Private/Backend/Templates/
+        partialRootPath = EXT:records_list_examples/Resources/Private/Backend/Partials/
+        css = EXT:records_list_examples/Resources/Public/Css/timeline.css
+    }
+
+When adding another custom view, reuse the existing partials for table heading,
+record actions, translations, and empty states. Add only a new slim template and
+view-specific CSS. Import :file:`record-card-shared.css` from the new stylesheet
+to inherit the shared record-card chrome.
+
 .. _configuration-images:
 
 Image fields
