@@ -1,0 +1,22 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    Render the first non-empty display value of a given type.
+    Arguments: record, type, valueClass, fallback (optional)
+</f:comment>
+
+<f:variable name="hasValue" value="0" />
+<f:for each="{record.displayValues}" as="field">
+    <f:if condition="{field.type} == {type} && !{field.isEmpty}">
+        <f:if condition="{hasValue} == 0">
+            <span class="{valueClass}">{field.formatted}</span>
+            <f:variable name="hasValue" value="1" />
+        </f:if>
+    </f:if>
+</f:for>
+<f:if condition="{hasValue} == 0 && {fallback}">
+    <span class="{valueClass}">{fallback}</span>
+</f:if>
+
+</html>

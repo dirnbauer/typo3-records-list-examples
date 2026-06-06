@@ -6,9 +6,13 @@
     Arguments: record, teaserClass, maxCharacters
 </f:comment>
 
+<f:variable name="hasTeaser" value="0" />
 <f:for each="{record.displayValues}" as="field">
     <f:if condition="{field.type} == 'text' && !{field.isLabelField} && !{field.isEmpty}">
-        <p class="{teaserClass}">{field.formatted -> f:format.crop(maxCharacters: maxCharacters, append: '…')}</p>
+        <f:if condition="{hasTeaser} == 0">
+            <p class="{teaserClass}">{field.formatted -> f:format.crop(maxCharacters: maxCharacters, append: '…')}</p>
+            <f:variable name="hasTeaser" value="1" />
+        </f:if>
     </f:if>
 </f:for>
 

@@ -160,9 +160,9 @@
 }
 
 .rle-catalog-card__badge--hidden {
-    background: var(--cat-warning-bg);
-    color: var(--rle-warning, #92400e);
-    border: 1px solid var(--cat-warning);
+    background: var(--rle-warning-bg);
+    color: var(--rle-warning);
+    border: 1px solid var(--rle-warning);
 }
 
 /* Body */

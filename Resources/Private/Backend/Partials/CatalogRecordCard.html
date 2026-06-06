@@ -16,13 +16,17 @@
                         <typo3-backend-contextual-record-edit-trigger
                             edit-url="{record.editUrl}"
                             url="{record.contextualEditUrl}">
-                            <img src="{record.thumbnailUrl}" class="rle-catalog-card__img" alt="{record.title}" loading="lazy" />
+                            <f:render section="CatalogThumbnailImg" />
                         </typo3-backend-contextual-record-edit-trigger>
                     </f:then>
                     <f:else>
-                        <img src="{record.thumbnailUrl}" class="rle-catalog-card__img" alt="{record.title}" loading="lazy" />
+                        <f:render section="CatalogThumbnailImg" />
                     </f:else>
                 </f:if>
+                <div class="rle-catalog-card__image-hint">
+                    <core:icon identifier="actions-info" size="small" />
+                    <f:translate key="LLL:EXT:records_list_types/Resources/Private/Language/locallang.xlf:image.previewOnly" default="Preview only — may not appear on the frontend for this record type." />
+                </div>
             </f:then>
             <f:else>
                 <div class="rle-catalog-card__placeholder">
@@ -32,13 +36,6 @@
                     </span>
                 </div>
             </f:else>
-        </f:if>
-
-        <f:if condition="{record.thumbnailUrl}">
-            <div class="rle-catalog-card__image-hint">
-                <core:icon identifier="actions-info" size="small" />
-                <f:translate key="LLL:EXT:records_list_types/Resources/Private/Language/locallang.xlf:image.previewOnly" default="Preview only — may not appear on the frontend for this record type." />
-            </div>
         </f:if>
 
         <f:if condition="{record.hidden}">
@@ -67,5 +64,9 @@
         </f:if>
     </div>
 </div>
+
+<f:section name="CatalogThumbnailImg">
+    <img src="{record.thumbnailUrl}" class="rle-catalog-card__img" alt="{record.title}" loading="lazy" />
+</f:section>
 
 </html>

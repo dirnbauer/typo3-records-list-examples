@@ -25,12 +25,14 @@
     --rle-success-border-dark: rgba(34, 197, 94, 0.35);
 }
 
+[data-color-scheme="dark"] .rle-catalog-container,
 [data-color-scheme="dark"] .rle-timeline-container {
     --rle-warning-bg: rgba(180, 83, 9, 0.15);
     --rle-danger-bg: rgba(239, 68, 68, 0.15);
 }
 
 @media (prefers-color-scheme: dark) {
+    html:not([data-color-scheme="light"]) .rle-catalog-container,
     html:not([data-color-scheme="light"]) .rle-timeline-container {
         --rle-warning-bg: rgba(180, 83, 9, 0.15);
         --rle-danger-bg: rgba(239, 68, 68, 0.15);

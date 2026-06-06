@@ -88,7 +88,7 @@ mod.web_list.viewMode {
     # -------------------------------------------------------------------------
     # Photo Gallery
     # Image-heavy grid with minimal text. Reuses built-in GridView.
-    # Best for: images, media files, artwork, screenshots
+    # Best for: images, media files, artwork
     # -------------------------------------------------------------------------
     types.gallery {
         label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.gallery
