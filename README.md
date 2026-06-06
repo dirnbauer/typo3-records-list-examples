@@ -2,7 +2,7 @@
 
 Example view types for the [Records List Types](https://github.com/dirnbauer/typo3-records-list-types) extension. Install this extension to get 6 additional custom view types in the TYPO3 backend Records module -- ready to use, no extra PHP needed.
 
-This package is **TYPO3 v14 only**. Version 1.1.0 targets TYPO3 14.3 LTS and later, uses Records List Types 1.0 or later, and intentionally drops TYPO3 v13 support.
+This package is **TYPO3 v14 only**. Version 1.2.0 targets TYPO3 14.3 LTS and later, uses Records List Types 1.0 or later, and intentionally drops TYPO3 v13 support.
 
 ## View Types
 
@@ -21,6 +21,8 @@ This package is **TYPO3 v14 only**. Version 1.1.0 targets TYPO3 14.3 LTS and lat
 `Resources/Private/Backend/Partials/` and a common `rle-record-card` BEM block
 for actions, checkboxes, and translation strips. View-specific templates only
 contain layout that genuinely differs (image cards vs timeline date column).
+`RecordTeaser` and `FirstDisplayValue` render only the first matching
+`displayValues` entry so cards stay single-purpose.
 
 The custom templates follow the current `records_list_types` template systematic, so they keep working as the main extension evolves:
 
@@ -83,7 +85,7 @@ All view-type labels (Timeline, Catalog, Address Book, Event List, Gallery, Dash
 - `Resources/Private/Language/locallang.xlf` (English, default)
 - `Resources/Private/Language/de.locallang.xlf` (German)
 
-The custom Timeline and Catalog templates also use translated labels for action buttons and template strings (`No image`, `Hidden`, `Edit`, `Show`, `Hide`, `Delete`, `More actions`, `Info`, `History`, `Copy`, `Cut`). The image preview hint reuses the existing `image.previewOnly` translation from the main `records_list_types` extension.
+The custom Timeline and Catalog templates also use translated labels for action buttons and template strings (`No image`, `Hidden`, `Edit`, `Show`, `Hide`, `Delete`, `More actions`, `Info`, `History`, `Copy`, `Cut`). The catalog image preview hint reuses the `image.previewOnly` label from `records_list_types`; both extensions must be installed.
 
 To override or extend the translations, drop your own `locallang.xlf` overrides into your sitepackage and TYPO3 will pick them up via the standard XLIFF override mechanism.
 
@@ -162,7 +164,8 @@ records_list_examples/
 │   │   │   │   ├── TimelineRecordItem.html # Single timeline item
 │   │   │   │   ├── TableHeadingBlock.html  # Heading + multi-record-selection bar
 │   │   │   │   ├── RecordTitleRow.html     # Title, UID, optional icon
-│   │   │   │   ├── RecordTeaser.html       # Cropped text teaser
+│   │   │   │   ├── RecordTeaser.html       # First text display value as teaser
+│   │   │   │   ├── FirstDisplayValue.html  # First typed display value (timeline dates)
 │   │   │   │   ├── RecordActions.html      # Edit / visibility / delete / more-actions
 │   │   │   │   ├── TranslationStrip.html   # Per-language translation slots
 │   │   │   │   ├── MultiRecordCheckbox.html
@@ -204,7 +207,7 @@ The other 4 views (Address Book, Event List, Gallery, Dashboard) reuse the built
 1. Register the view type in `Configuration/TsConfig/Page/setup.tsconfig` with `template`, `templateRootPath`, `partialRootPath`, and `css`.
 2. Add a record-list partial (for example `KanbanRecordList.html`) with the view-specific record layout.
 3. Add a layout-only template that renders `RecordListTables` with your `recordListPartial` name.
-4. Reuse `RecordTitleRow`, `RecordTeaser`, `RecordActions`, `TranslationStrip`, and the other shared partials where applicable.
+4. Reuse `RecordTitleRow`, `RecordTeaser`, `FirstDisplayValue`, `RecordActions`, `TranslationStrip`, and the other shared partials where applicable.
 5. Add view-specific CSS; `@import` `record-card-shared.css` for shared chrome.
 
 This is the pattern for creating your own custom view types: TSconfig + optional template + optional partials + optional CSS. The two custom templates in this repo demonstrate the current `records_list_types` systematic for:

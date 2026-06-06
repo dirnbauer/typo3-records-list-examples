@@ -3,6 +3,17 @@
 All notable changes to `webconsulting/records-list-examples` are documented in
 this file.
 
+## 1.2.0 - 2026-06-02
+
+### Changed
+
+- Render only the first matching `displayValues` entry in `RecordTeaser` and the
+  new `FirstDisplayValue` partial (timeline date circles).
+- Deduplicate catalog thumbnail markup with a Fluid section; move the preview
+  hint into the thumbnail branch.
+- Apply shared `--rle-*` dark-mode warning and danger backgrounds to catalog
+  and timeline containers; align catalog hidden badges with shared tokens.
+
 ## 1.1.0 - 2026-06-02
 
 ### Changed

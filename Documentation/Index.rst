@@ -11,7 +11,7 @@ Records List Examples
     webconsulting/records-list-examples
 
 :Version:
-    1.1.0
+    1.2.0
 
 :TYPO3:
     14.3 or later

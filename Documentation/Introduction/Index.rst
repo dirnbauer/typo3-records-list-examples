@@ -41,7 +41,7 @@ extracted into extension-local partials under
 * :file:`CatalogRecordList.html` / :file:`CatalogRecordCard.html` -- catalog record layout
 * :file:`TimelineRecordList.html` / :file:`TimelineRecordItem.html` -- timeline record layout
 * :file:`TableHeadingBlock.html` -- table heading and multi-record-selection bar
-* :file:`RecordTitleRow.html` / :file:`RecordTeaser.html` -- shared record header chrome
+* :file:`RecordTitleRow.html` / :file:`RecordTeaser.html` / :file:`FirstDisplayValue.html` -- shared record header and display-value helpers
 * :file:`RecordActions.html` -- edit, visibility, delete, and more-actions menu
 * :file:`TranslationStrip.html` -- per-language translation slots
 * :file:`MultiRecordCheckbox.html`, :file:`ExpandTableLink.html`,
@@ -61,7 +61,12 @@ record-list partial:
 Shared markup for actions, checkboxes, and translations uses the
 ``rle-record-card`` BEM block. Matching styles live in
 :file:`Resources/Public/Css/record-card-shared.css`, which both view stylesheets
-import.
+import. Dark-mode overrides for shared warning and danger tokens apply to both
+catalog and timeline containers.
+
+:file:`RecordTeaser.html` and :file:`FirstDisplayValue.html` render only the
+first matching ``displayValues`` entry. This keeps catalog teasers and timeline
+date circles single-purpose without scanning logic duplicated in each view.
 
 The other four example views reuse built-in templates from EXT:records_list_types
 and need only TSconfig configuration.
