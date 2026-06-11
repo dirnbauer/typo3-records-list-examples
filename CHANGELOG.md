@@ -3,6 +3,32 @@
 All notable changes to `webconsulting/records-list-examples` are documented in
 this file.
 
+## 1.2.1 - 2026-06-11
+
+### Fixed
+
+- Catalog thumbnails rendered with an empty `src`: the thumbnail Fluid section
+  was called without arguments and therefore had no `record` in scope. Every
+  card showed a broken image instead of its preview.
+- The `record-card-shared.css` `@import` now carries a version query as cache
+  buster; TYPO3 only busts the parent file URL, so browsers kept serving the
+  stale shared stylesheet after updates.
+
+### Changed
+
+- The "no image" placeholder is a solid muted surface with a readable pill
+  label ("No image available" / "Kein Bild verfügbar") instead of an
+  opacity-faded ghost on the checkerboard.
+- Hidden timeline and catalog cards use the amber tint plus 3px warning bar
+  shared with the records_list_types built-in views instead of an opacity
+  fade; warning text switches to amber-400 in dark mode for WCAG 2.2 AA.
+- Translation chips drop dashed borders for solid hairlines; the "add
+  translation" chip renders as a recessed muted slot.
+
+> Requires records_list_types >= 1.0.4 for the translation strip to render
+> with this extension's own partial (older versions resolve the built-in
+> `TranslationStrip` partial instead).
+
 ## 1.2.0 - 2026-06-02
 
 ### Changed
