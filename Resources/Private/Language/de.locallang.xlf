@@ -77,8 +77,8 @@
     <!-- Catalog view template strings -->
     <unit id="catalog.placeholder.noImage">
       <segment>
-        <source>No image</source>
-        <target>Kein Bild</target>
+        <source>No image available</source>
+        <target>Kein Bild verfügbar</target>
       </segment>
     </unit>
     <unit id="catalog.badge.hidden">

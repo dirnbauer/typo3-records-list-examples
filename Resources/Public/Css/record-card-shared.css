@@ -27,6 +27,8 @@
 
 [data-color-scheme="dark"] .rle-catalog-container,
 [data-color-scheme="dark"] .rle-timeline-container {
+    /* amber-400 text — amber-700 fails 4.5:1 on dark surfaces */
+    --rle-warning: #fbbf24;
     --rle-warning-bg: rgba(180, 83, 9, 0.15);
     --rle-danger-bg: rgba(239, 68, 68, 0.15);
 }
@@ -34,6 +36,7 @@
 @media (prefers-color-scheme: dark) {
     html:not([data-color-scheme="light"]) .rle-catalog-container,
     html:not([data-color-scheme="light"]) .rle-timeline-container {
+        --rle-warning: #fbbf24;
         --rle-warning-bg: rgba(180, 83, 9, 0.15);
         --rle-danger-bg: rgba(239, 68, 68, 0.15);
     }
@@ -142,7 +145,7 @@
 .rle-record-card__translations {
     margin-top: 0.5rem;
     padding: 0.625rem 0 0.75rem;
-    border-top: 1px dashed var(--rle-border);
+    border-top: 1px solid var(--rle-border);
 }
 
 .rle-catalog-card__body .rle-record-card__translations {
@@ -256,8 +259,11 @@
     background: var(--rle-accent-bg);
 }
 
+/* "Add translation" chip: recessed muted slot — quieter than a dashed
+   outline; the accent "+" icon carries the affordance. */
 .rle-record-card__translation-link--create {
-    border-style: dashed;
+    background: var(--rle-bg-muted);
+    border-color: color-mix(in srgb, var(--rle-text-muted) 30%, transparent);
     color: var(--rle-text-muted);
 }
 

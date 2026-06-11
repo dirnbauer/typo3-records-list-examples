@@ -65,7 +65,7 @@
     <!-- Catalog view template strings -->
     <unit id="catalog.placeholder.noImage">
       <segment>
-        <source>No image</source>
+        <source>No image available</source>
       </segment>
     </unit>
     <unit id="catalog.badge.hidden">

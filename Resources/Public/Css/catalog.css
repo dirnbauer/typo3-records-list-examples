@@ -5,7 +5,9 @@
  * Uses TYPO3 CSS variables for automatic dark mode support.
  */
 
-@import "./record-card-shared.css";
+/* Version query = cache buster: TYPO3 only busts the parent file's URL
+   (?filemtime), so the import needs its own. Bump on shared-css changes. */
+@import "./record-card-shared.css?v=1.2.1";
 
 /* Container */
 .rle-catalog-container {
@@ -25,7 +27,7 @@
     --cat-danger: #ef4444;
     --cat-danger-bg: #fef2f2;
     --cat-warning: #f59e0b;
-    --cat-warning-bg: #fffbeb;
+    --cat-warning-bg: light-dark(#fffbeb, rgba(180, 83, 9, 0.15));
     --cat-radius: var(--typo3-component-border-radius, 0.5rem);
     --cat-shadow: var(--typo3-shadow-1, 0 1px 3px 0 rgb(0 0 0 / 0.1));
     --cat-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -59,12 +61,10 @@
     border-color: var(--cat-accent);
 }
 
-/* Hidden state */
-.rle-catalog-card--hidden {
-    opacity: 0.7;
-}
-
+/* Hidden state - amber tint instead of an opacity fade so text keeps
+   WCAG contrast. The image badge + warning bar carry the state. */
 .rle-catalog-card--hidden .rle-catalog-card__body {
+    background: var(--cat-warning-bg);
     border-left: 3px solid var(--cat-warning);
 }
 
@@ -95,7 +95,9 @@
     transform: scale(1.03);
 }
 
-/* Placeholder - subtle "no preview" state */
+/* Placeholder - "no image available" state. Solid muted surface (no
+   checkerboard bleed-through) with a readable label: the icon stays
+   decorative-faint, the text keeps WCAG-readable contrast. */
 .rle-catalog-card__placeholder {
     display: flex;
     flex-direction: column;
@@ -104,13 +106,14 @@
     gap: 0.5rem;
     width: 100%;
     height: 100%;
-    color: var(--cat-text-subtle);
-    opacity: 0.4;
+    background: var(--cat-bg-muted);
+    color: var(--cat-text-muted);
 }
 
 .rle-catalog-card__placeholder .icon {
     width: 2rem;
     height: 2rem;
+    opacity: 0.5;
 }
 
 .rle-catalog-card__placeholder-text {
@@ -118,6 +121,10 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    padding: 0.125rem 0.625rem;
+    border: 1px solid var(--cat-border);
+    border-radius: 9999px;
+    background: var(--cat-bg);
 }
 
 /* Image preview hint */

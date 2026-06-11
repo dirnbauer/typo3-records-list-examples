@@ -6,7 +6,9 @@
  * Uses TYPO3 CSS variables for automatic dark mode support.
  */
 
-@import "./record-card-shared.css";
+/* Version query = cache buster: TYPO3 only busts the parent file's URL
+   (?filemtime), so the import needs its own. Bump on shared-css changes. */
+@import "./record-card-shared.css?v=1.2.1";
 
 .rle-timeline-container {
     /* Accent - used for links/hovers, NOT for circles */
@@ -49,6 +51,8 @@
     --tl-circle-border: #3f3f46;
     --tl-circle-text: #a1a1aa;
     --tl-line: #3f3f46;
+    /* amber-400 — amber-700 fails 4.5:1 on dark surfaces */
+    --tl-warning: #fbbf24;
     --tl-warning-bg: rgba(180, 83, 9, 0.15);
     --tl-warning-circle-bg: rgba(217, 119, 6, 0.15);
     --tl-warning-circle-border: #92400e;
@@ -61,6 +65,7 @@
         --tl-circle-border: #3f3f46;
         --tl-circle-text: #a1a1aa;
         --tl-line: #3f3f46;
+        --tl-warning: #fbbf24;
         --tl-warning-bg: rgba(180, 83, 9, 0.15);
         --tl-warning-circle-bg: rgba(217, 119, 6, 0.15);
         --tl-warning-circle-border: #92400e;
@@ -193,9 +198,10 @@
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
-/* Hidden state - keep the chevron, add warning accent */
+/* Hidden state - keep the chevron, add warning accent. Amber tint
+   instead of an opacity fade so text keeps WCAG contrast. */
 .rle-timeline__item--hidden .rle-timeline__card {
-    opacity: 0.7;
+    background: var(--tl-warning-bg);
     border-left: 3px solid var(--tl-warning);
 }
 
