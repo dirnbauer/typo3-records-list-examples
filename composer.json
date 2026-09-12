@@ -27,14 +27,26 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpstan/phpstan-strict-rules": "^2.0",
-        "saschaegerer/phpstan-typo3": "^3.0"
+        "phpunit/phpunit": "^11.2.5 || ^12.1.2 || ^13.0.2",
+        "saschaegerer/phpstan-typo3": "^3.0",
+        "typo3/testing-framework": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webconsulting\\RecordsListExamples\\": "Classes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webconsulting\\RecordsListExamples\\Tests\\": "Tests/"
+        }
     },
     "extra": {
         "typo3/cms": {
             "extension-key": "records_list_examples",
             "version": "1.2.1",
             "Package": {
-                "providesPackages": {}
+                "providesPackages": []
             }
         }
     },
@@ -44,20 +56,6 @@
             "url": "https://github.com/dirnbauer/typo3-records-list-types.git"
         }
     ],
-    "scripts": {
-        "ci": [
-            "@check",
-            "@security:audit",
-            "@phpstan"
-        ],
-        "security:audit": "composer audit --abandoned=report",
-        "check": [
-            "composer validate --strict --no-check-publish",
-            "@check:xlf"
-        ],
-        "phpstan": "phpstan analyse --no-progress --memory-limit=512M",
-        "check:xlf": "php Build/Scripts/validate-xlf.php"
-    },
     "config": {
         "sort-packages": true,
         "allow-plugins": {

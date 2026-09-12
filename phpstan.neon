@@ -8,5 +8,5 @@ parameters:
     level: 8
     phpVersion: 80400
     paths:
-        - Build/Scripts
+        - Tests
     treatPhpDocTypesAsCertain: false

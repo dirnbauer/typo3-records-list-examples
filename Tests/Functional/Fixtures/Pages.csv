@@ -1,0 +1,3 @@
+"pages"
+,"uid","pid","title","slug","TSconfig","deleted","hidden"
+,1,0,"Root page","/","mod.web_list.viewMode.allowed = list,grid,compact,teaser,timeline,catalog,addressbook,eventlist,gallery,dashboard",0,0
