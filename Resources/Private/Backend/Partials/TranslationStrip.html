@@ -9,23 +9,25 @@
 
 <div class="rle-record-card__translations"
      role="group"
-     aria-label="{f:translate(key: 'LLL:EXT:records_list_types/Resources/Private/Language/locallang.xlf:translation.sectionLabel', default: 'Translations')}">
+     aria-label="{f:translate(key: 'records_list_types.messages:translation.sectionLabel')}">
     <div class="rle-record-card__translations-head">
         <core:icon identifier="flags-multiple" size="small" />
         <span class="rle-record-card__translations-title">
-            <f:translate key="LLL:EXT:records_list_types/Resources/Private/Language/locallang.xlf:translation.sectionLabel" default="Translations" />
+            <f:translate key="records_list_types.messages:translation.sectionLabel" />
         </span>
         <span class="rle-record-card__translations-summary">
             <f:if condition="{record.untranslatedCount} == 0">
                 <f:then>
                     <span class="rle-record-card__translations-badge rle-record-card__translations-badge--complete">
                         <core:icon identifier="actions-check" size="small" />
-                        <f:translate key="LLL:EXT:records_list_types/Resources/Private/Language/locallang.xlf:translation.allTranslated" default="All translations complete" />
+                        <f:translate key="records_list_types.messages:translation.allTranslated" />
                     </span>
                 </f:then>
                 <f:else>
+                    <f:variable name="translationTotal" value="{f:count(subject: record.translations)}" />
                     <span class="rle-record-card__translations-badge">
-                        {record.translatedCount} / <f:count subject="{record.translations}" />
+                        <f:translate key="records_list_types.messages:translation.progress"
+                                     arguments="{translated: record.translatedCount, total: translationTotal}" />
                     </span>
                 </f:else>
             </f:if>
@@ -43,7 +45,7 @@
                                     class="rle-record-card__translation-link"
                                     url="{translation.contextualEditUrl}"
                                     edit-url="{translation.editUrl}"
-                                    title="{translation.languageTitle}">
+                                    title="{f:translate(key: 'records_list_types.messages:translation.edit', arguments: {language: translation.languageTitle})}">
                                     <span class="rle-record-card__translation-flag">
                                         <core:icon identifier="{translation.languageFlagIdentifier}" size="small" />
                                     </span>
@@ -51,12 +53,12 @@
                                         <f:if condition="{translation.title}">
                                             <f:then>{translation.title -> f:format.crop(maxCharacters: 60, append: '…')}</f:then>
                                             <f:else>
-                                                <em><f:translate key="LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:notAvailableAbbreviation" default="N/A" /></em>
+                                                <em><f:translate key="core.core:labels.no_title" /></em>
                                             </f:else>
                                         </f:if>
                                     </span>
                                     <f:if condition="{translation.hidden}">
-                                        <span class="rle-record-card__translation-state" title="{f:translate(key: 'LLL:EXT:core/Resources/Private/Language/locallang_mod_web_list.xlf:hidden', default: 'Hidden')}">
+                                        <span class="rle-record-card__translation-state" title="{f:translate(key: 'records_list_types.messages:state.hidden')}">
                                             <core:icon identifier="actions-toggle-off" size="small" />
                                         </span>
                                     </f:if>
@@ -71,10 +73,15 @@
                                         <f:if condition="{translation.title}">
                                             <f:then>{translation.title -> f:format.crop(maxCharacters: 60, append: '…')}</f:then>
                                             <f:else>
-                                                <em><f:translate key="LLL:EXT:core/Resources/Private/Language/locallang_common.xlf:notAvailableAbbreviation" default="N/A" /></em>
+                                                <em><f:translate key="core.core:labels.no_title" /></em>
                                             </f:else>
                                         </f:if>
                                     </span>
+                                    <f:if condition="{translation.hidden}">
+                                        <span class="rle-record-card__translation-state" title="{f:translate(key: 'records_list_types.messages:state.hidden')}">
+                                            <core:icon identifier="actions-toggle-off" size="small" />
+                                        </span>
+                                    </f:if>
                                 </span>
                             </f:else>
                         </f:if>
@@ -87,7 +94,7 @@
                                     record-type="{translation.parentTable}"
                                     record-uid="{translation.parentUid}"
                                     target-language="{translation.languageId}"
-                                    title="{f:translate(key: 'LLL:EXT:records_list_types/Resources/Private/Language/locallang.xlf:translation.translateTo', default: 'Translate to %s', arguments: '{0: translation.languageTitle}')}">
+                                    title="{f:translate(key: 'records_list_types.messages:translation.translateTo', arguments: {language: translation.languageTitle})}">
                                     <span class="rle-record-card__translation-flag rle-record-card__translation-flag--muted">
                                         <core:icon identifier="{translation.languageFlagIdentifier}" size="small" />
                                     </span>

@@ -1,128 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en">
-  <file id="messages" original="messages">
-    <!-- View type labels -->
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en">
+  <file id="messages">
     <unit id="viewMode.timeline">
+      <notes>
+        <note>Name of the Timeline example view in the view switcher.</note>
+      </notes>
       <segment>
         <source>Timeline</source>
       </segment>
     </unit>
     <unit id="viewMode.timeline.description">
+      <notes>
+        <note>Short description of the Timeline example view, shown next to its name in the view switcher.</note>
+      </notes>
       <segment>
         <source>Chronological timeline with date markers</source>
       </segment>
     </unit>
     <unit id="viewMode.catalog">
+      <notes>
+        <note>Name of the Catalog example view in the view switcher.</note>
+      </notes>
       <segment>
         <source>Catalog</source>
       </segment>
     </unit>
     <unit id="viewMode.catalog.description">
+      <notes>
+        <note>Short description of the Catalog example view, shown next to its name in the view switcher.</note>
+      </notes>
       <segment>
         <source>Visual catalog with large image cards</source>
       </segment>
     </unit>
     <unit id="viewMode.addressbook">
+      <notes>
+        <note>Name of the Address book example view in the view switcher.</note>
+      </notes>
       <segment>
-        <source>Address Book</source>
+        <source>Address book</source>
       </segment>
     </unit>
     <unit id="viewMode.addressbook.description">
+      <notes>
+        <note>Short description of the Address book example view, shown next to its name in the view switcher.</note>
+      </notes>
       <segment>
         <source>Dense contact list with key fields</source>
       </segment>
     </unit>
     <unit id="viewMode.eventlist">
+      <notes>
+        <note>Name of the Event list example view in the view switcher.</note>
+      </notes>
       <segment>
-        <source>Event List</source>
+        <source>Event list</source>
       </segment>
     </unit>
     <unit id="viewMode.eventlist.description">
+      <notes>
+        <note>Short description of the Event list example view, shown next to its name in the view switcher.</note>
+      </notes>
       <segment>
         <source>Date-focused event cards</source>
       </segment>
     </unit>
     <unit id="viewMode.gallery">
+      <notes>
+        <note>Name of the Gallery example view in the view switcher.</note>
+      </notes>
       <segment>
         <source>Gallery</source>
       </segment>
     </unit>
     <unit id="viewMode.gallery.description">
+      <notes>
+        <note>Short description of the Gallery example view, shown next to its name in the view switcher.</note>
+      </notes>
       <segment>
         <source>Photo gallery with large thumbnails</source>
       </segment>
     </unit>
     <unit id="viewMode.dashboard">
+      <notes>
+        <note>Name of the Dashboard example view in the view switcher.</note>
+      </notes>
       <segment>
         <source>Dashboard</source>
       </segment>
     </unit>
     <unit id="viewMode.dashboard.description">
+      <notes>
+        <note>Short description of the Dashboard example view, shown next to its name in the view switcher.</note>
+      </notes>
       <segment>
         <source>Overview cards with editor-selected columns</source>
       </segment>
     </unit>
-    <!-- Catalog view template strings -->
     <unit id="catalog.placeholder.noImage">
+      <notes>
+        <note>Placeholder text of a Catalog card whose record has no image.</note>
+      </notes>
       <segment>
         <source>No image available</source>
-      </segment>
-    </unit>
-    <unit id="catalog.badge.hidden">
-      <segment>
-        <source>Hidden</source>
-      </segment>
-    </unit>
-    <!-- Shared action labels -->
-    <unit id="action.edit">
-      <segment>
-        <source>Edit</source>
-      </segment>
-    </unit>
-    <unit id="action.show">
-      <segment>
-        <source>Show</source>
-      </segment>
-    </unit>
-    <unit id="action.hide">
-      <segment>
-        <source>Hide</source>
-      </segment>
-    </unit>
-    <unit id="action.delete">
-      <segment>
-        <source>Delete</source>
-      </segment>
-    </unit>
-    <unit id="action.more">
-      <segment>
-        <source>More actions</source>
-      </segment>
-    </unit>
-    <unit id="action.info">
-      <segment>
-        <source>Info</source>
-      </segment>
-    </unit>
-    <unit id="action.history">
-      <segment>
-        <source>History</source>
-      </segment>
-    </unit>
-    <unit id="action.copy">
-      <segment>
-        <source>Copy</source>
-      </segment>
-    </unit>
-    <unit id="action.cut">
-      <segment>
-        <source>Cut</source>
-      </segment>
-    </unit>
-    <!-- Misc -->
-    <unit id="noRecords">
-      <segment>
-        <source>No records found on this page.</source>
       </segment>
     </unit>
   </file>

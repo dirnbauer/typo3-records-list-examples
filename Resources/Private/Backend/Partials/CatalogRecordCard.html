@@ -25,14 +25,14 @@
                 </f:if>
                 <div class="rle-catalog-card__image-hint">
                     <core:icon identifier="actions-info" size="small" />
-                    <f:translate key="LLL:EXT:records_list_types/Resources/Private/Language/locallang.xlf:image.previewOnly" default="Preview only — may not appear on the frontend for this record type." />
+                    <f:translate key="records_list_types.messages:image.previewOnly" />
                 </div>
             </f:then>
             <f:else>
                 <div class="rle-catalog-card__placeholder">
                     <core:icon identifier="actions-image" size="default" />
                     <span class="rle-catalog-card__placeholder-text">
-                        <f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:catalog.placeholder.noImage" default="No image available" />
+                        <f:translate key="records_list_examples.messages:catalog.placeholder.noImage" />
                     </span>
                 </div>
             </f:else>
@@ -41,7 +41,7 @@
         <f:if condition="{record.hidden}">
             <span class="rle-catalog-card__badge rle-catalog-card__badge--hidden">
                 <core:icon identifier="actions-edit-hide" size="small" />
-                <f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:catalog.badge.hidden" default="Hidden" />
+                <f:translate key="records_list_types.messages:state.hidden" />
             </span>
         </f:if>
     </div>

@@ -22,9 +22,9 @@ mod.web_list.viewMode {
     # Best for: events, changelog, history, milestones
     # -------------------------------------------------------------------------
     types.timeline {
-        label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.timeline
+        label = records_list_examples.messages:viewMode.timeline
         icon = actions-calendar
-        description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.timeline.description
+        description = records_list_examples.messages:viewMode.timeline.description
         template = TimelineView
         templateRootPath = EXT:records_list_examples/Resources/Private/Backend/Templates/
         partialRootPath = EXT:records_list_examples/Resources/Private/Backend/Partials/
@@ -41,9 +41,9 @@ mod.web_list.viewMode {
     # Best for: products, portfolio, team members, media assets
     # -------------------------------------------------------------------------
     types.catalog {
-        label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.catalog
+        label = records_list_examples.messages:viewMode.catalog
         icon = actions-viewmode-tiles
-        description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.catalog.description
+        description = records_list_examples.messages:viewMode.catalog.description
         template = CatalogView
         templateRootPath = EXT:records_list_examples/Resources/Private/Backend/Templates/
         partialRootPath = EXT:records_list_examples/Resources/Private/Backend/Partials/
@@ -59,9 +59,9 @@ mod.web_list.viewMode {
     # Best for: contacts, members, employees, organizations
     # -------------------------------------------------------------------------
     types.addressbook {
-        label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.addressbook
+        label = records_list_examples.messages:viewMode.addressbook
         icon = actions-user
-        description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.addressbook.description
+        description = records_list_examples.messages:viewMode.addressbook.description
         template = CompactView
         css = EXT:records_list_types/Resources/Public/Css/compact-view.css
         displayColumns = label,teaser
@@ -75,9 +75,9 @@ mod.web_list.viewMode {
     # Best for: events, conferences, meetups, deadlines
     # -------------------------------------------------------------------------
     types.eventlist {
-        label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.eventlist
+        label = records_list_examples.messages:viewMode.eventlist
         icon = actions-clock
-        description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.eventlist.description
+        description = records_list_examples.messages:viewMode.eventlist.description
         template = TeaserView
         css = EXT:records_list_types/Resources/Public/Css/teaser-view.css
         displayColumns = label,datetime,teaser
@@ -91,9 +91,9 @@ mod.web_list.viewMode {
     # Best for: images, media files, artwork
     # -------------------------------------------------------------------------
     types.gallery {
-        label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.gallery
+        label = records_list_examples.messages:viewMode.gallery
         icon = actions-image
-        description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.gallery.description
+        description = records_list_examples.messages:viewMode.gallery.description
         template = GridView
         css = EXT:records_list_types/Resources/Public/Css/grid-view.css
         displayColumns = label
@@ -107,9 +107,9 @@ mod.web_list.viewMode {
     # Best for: editorial overview, content dashboard, record management
     # -------------------------------------------------------------------------
     types.dashboard {
-        label = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.dashboard
+        label = records_list_examples.messages:viewMode.dashboard
         icon = content-widget-list
-        description = LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:viewMode.dashboard.description
+        description = records_list_examples.messages:viewMode.dashboard.description
         template = GridView
         css = EXT:records_list_types/Resources/Public/Css/grid-view.css
         columnsFromTCA = 1

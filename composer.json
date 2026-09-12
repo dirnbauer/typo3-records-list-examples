@@ -17,11 +17,11 @@
     },
     "require": {
         "php": "^8.3",
-        "typo3/cms-backend": "^14.3",
-        "typo3/cms-core": "^14.3",
-        "typo3/cms-fluid": "^14.3",
-        "typo3/cms-recordlist": "^14.3",
-        "webconsulting/records-list-types": "^1.0"
+        "typo3/cms-backend": "^14.3.6",
+        "typo3/cms-core": "^14.3.6",
+        "typo3/cms-fluid": "^14.3.6",
+        "typo3/cms-recordlist": "^14.3.6",
+        "webconsulting/records-list-types": "^1.1"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",

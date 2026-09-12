@@ -4,6 +4,8 @@
 
 <f:comment>
     Permission-aware record actions + more-actions popover.
+    Labels come from the records_list_types catalog so both extensions use
+    one term per concept (Edit record, Hide record, Unhide record, ...).
     Arguments: record, tableConfig, viewSlug (catalog|timeline — popover id prefix)
 </f:comment>
 
@@ -11,7 +13,8 @@
     <f:if condition="{record.permissions.canEdit}">
         <typo3-backend-contextual-record-edit-trigger
             class="rle-record-card__action"
-            title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.edit', default: 'Edit')}"
+            title="{f:translate(key: 'records_list_types.messages:action.edit')}"
+            aria-label="{f:translate(key: 'records_list_types.messages:action.edit')}"
             edit-url="{record.editUrl}"
             url="{record.contextualEditUrl}">
             <core:icon identifier="actions-open" size="small" />
@@ -25,7 +28,8 @@
                         data-gridview-action="show"
                         data-table="{record.tableName}" data-uid="{record.uid}"
                         data-hidden-field="{tableConfig.hiddenField}"
-                        title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.show', default: 'Show')}">
+                        title="{f:translate(key: 'records_list_types.messages:action.unhide')}"
+                        aria-label="{f:translate(key: 'records_list_types.messages:action.unhide')}">
                     <core:icon identifier="actions-edit-unhide" size="small" />
                 </button>
             </f:then>
@@ -34,7 +38,8 @@
                         data-gridview-action="hide"
                         data-table="{record.tableName}" data-uid="{record.uid}"
                         data-hidden-field="{tableConfig.hiddenField}"
-                        title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.hide', default: 'Hide')}">
+                        title="{f:translate(key: 'records_list_types.messages:action.hide')}"
+                        aria-label="{f:translate(key: 'records_list_types.messages:action.hide')}">
                     <core:icon identifier="actions-edit-hide" size="small" />
                 </button>
             </f:else>
@@ -45,7 +50,8 @@
         <button type="button" class="rle-record-card__action rle-record-card__action--danger"
                 data-gridview-action="delete"
                 data-table="{record.tableName}" data-uid="{record.uid}"
-                title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.delete', default: 'Delete')}">
+                title="{f:translate(key: 'records_list_types.messages:action.delete')}"
+                aria-label="{f:translate(key: 'records_list_types.messages:action.delete')}">
             <core:icon identifier="actions-edit-delete" size="small" />
         </button>
     </f:if>
@@ -54,8 +60,8 @@
     <div class="dropdown">
         <button type="button" class="rle-record-card__action dropdown-toggle dropdown-toggle-no-chevron"
                 popovertarget="{actionsPopoverId}"
-                title="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.more', default: 'More actions')}"
-                aria-label="{f:translate(key: 'LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.more', default: 'More actions')}">
+                title="{f:translate(key: 'records_list_types.messages:action.moreActions')}"
+                aria-label="{f:translate(key: 'records_list_types.messages:action.moreActions')}">
             <core:icon identifier="actions-menu-alternative" size="small" />
         </button>
         <ul id="{actionsPopoverId}" class="dropdown-menu dropdown-menu-end" popover>
@@ -66,7 +72,7 @@
                        data-table="{record.tableName}"
                        data-uid="{record.uid}">
                         <core:icon identifier="actions-document-info" size="small" />
-                        <span><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.info" default="Info" /></span>
+                        <span><f:translate key="records_list_types.messages:action.info" /></span>
                     </a>
                 </li>
             </f:if>
@@ -77,7 +83,7 @@
                        data-table="{record.tableName}"
                        data-uid="{record.uid}">
                         <core:icon identifier="actions-document-history-open" size="small" />
-                        <span><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.history" default="History" /></span>
+                        <span><f:translate key="records_list_types.messages:action.history" /></span>
                     </a>
                 </li>
             </f:if>
@@ -89,7 +95,7 @@
                        data-table="{record.tableName}"
                        data-uid="{record.uid}">
                         <core:icon identifier="actions-edit-copy" size="small" />
-                        <span><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.copy" default="Copy" /></span>
+                        <span><f:translate key="records_list_types.messages:action.copy" /></span>
                     </a>
                 </li>
                 <li>
@@ -98,7 +104,7 @@
                        data-table="{record.tableName}"
                        data-uid="{record.uid}">
                         <core:icon identifier="actions-edit-cut" size="small" />
-                        <span><f:translate key="LLL:EXT:records_list_examples/Resources/Private/Language/locallang.xlf:action.cut" default="Cut" /></span>
+                        <span><f:translate key="records_list_types.messages:action.cut" /></span>
                     </a>
                 </li>
             </f:if>

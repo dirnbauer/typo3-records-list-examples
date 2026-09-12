@@ -1,152 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="de">
-  <file id="messages" original="messages">
-    <!-- View type labels -->
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="de">
+  <file id="messages">
     <unit id="viewMode.timeline">
-      <segment>
+      <notes>
+        <note>Name of the Timeline example view in the view switcher.</note>
+      </notes>
+      <segment state="final">
         <source>Timeline</source>
         <target>Zeitleiste</target>
       </segment>
     </unit>
     <unit id="viewMode.timeline.description">
-      <segment>
+      <notes>
+        <note>Short description of the Timeline example view, shown next to its name in the view switcher.</note>
+      </notes>
+      <segment state="final">
         <source>Chronological timeline with date markers</source>
         <target>Chronologische Zeitleiste mit Datumsmarkierungen</target>
       </segment>
     </unit>
     <unit id="viewMode.catalog">
-      <segment>
+      <notes>
+        <note>Name of the Catalog example view in the view switcher.</note>
+      </notes>
+      <segment state="final">
         <source>Catalog</source>
         <target>Katalog</target>
       </segment>
     </unit>
     <unit id="viewMode.catalog.description">
-      <segment>
+      <notes>
+        <note>Short description of the Catalog example view, shown next to its name in the view switcher.</note>
+      </notes>
+      <segment state="final">
         <source>Visual catalog with large image cards</source>
         <target>Visueller Katalog mit großen Bildkacheln</target>
       </segment>
     </unit>
     <unit id="viewMode.addressbook">
-      <segment>
-        <source>Address Book</source>
+      <notes>
+        <note>Name of the Address book example view in the view switcher.</note>
+      </notes>
+      <segment state="final">
+        <source>Address book</source>
         <target>Adressbuch</target>
       </segment>
     </unit>
     <unit id="viewMode.addressbook.description">
-      <segment>
+      <notes>
+        <note>Short description of the Address book example view, shown next to its name in the view switcher.</note>
+      </notes>
+      <segment state="final">
         <source>Dense contact list with key fields</source>
         <target>Dichte Kontaktliste mit den wichtigsten Feldern</target>
       </segment>
     </unit>
     <unit id="viewMode.eventlist">
-      <segment>
-        <source>Event List</source>
+      <notes>
+        <note>Name of the Event list example view in the view switcher.</note>
+      </notes>
+      <segment state="final">
+        <source>Event list</source>
         <target>Veranstaltungsliste</target>
       </segment>
     </unit>
     <unit id="viewMode.eventlist.description">
-      <segment>
+      <notes>
+        <note>Short description of the Event list example view, shown next to its name in the view switcher.</note>
+      </notes>
+      <segment state="final">
         <source>Date-focused event cards</source>
         <target>Datumsorientierte Veranstaltungskacheln</target>
       </segment>
     </unit>
     <unit id="viewMode.gallery">
-      <segment>
+      <notes>
+        <note>Name of the Gallery example view in the view switcher.</note>
+      </notes>
+      <segment state="final">
         <source>Gallery</source>
         <target>Galerie</target>
       </segment>
     </unit>
     <unit id="viewMode.gallery.description">
-      <segment>
+      <notes>
+        <note>Short description of the Gallery example view, shown next to its name in the view switcher.</note>
+      </notes>
+      <segment state="final">
         <source>Photo gallery with large thumbnails</source>
         <target>Fotogalerie mit großen Vorschaubildern</target>
       </segment>
     </unit>
     <unit id="viewMode.dashboard">
-      <segment>
+      <notes>
+        <note>Name of the Dashboard example view in the view switcher.</note>
+      </notes>
+      <segment state="final">
         <source>Dashboard</source>
         <target>Dashboard</target>
       </segment>
     </unit>
     <unit id="viewMode.dashboard.description">
-      <segment>
+      <notes>
+        <note>Short description of the Dashboard example view, shown next to its name in the view switcher.</note>
+      </notes>
+      <segment state="final">
         <source>Overview cards with editor-selected columns</source>
         <target>Überblickskacheln mit redaktionell gewählten Spalten</target>
       </segment>
     </unit>
-    <!-- Catalog view template strings -->
     <unit id="catalog.placeholder.noImage">
-      <segment>
+      <notes>
+        <note>Placeholder text of a Catalog card whose record has no image.</note>
+      </notes>
+      <segment state="final">
         <source>No image available</source>
         <target>Kein Bild verfügbar</target>
-      </segment>
-    </unit>
-    <unit id="catalog.badge.hidden">
-      <segment>
-        <source>Hidden</source>
-        <target>Ausgeblendet</target>
-      </segment>
-    </unit>
-    <!-- Shared action labels -->
-    <unit id="action.edit">
-      <segment>
-        <source>Edit</source>
-        <target>Bearbeiten</target>
-      </segment>
-    </unit>
-    <unit id="action.show">
-      <segment>
-        <source>Show</source>
-        <target>Anzeigen</target>
-      </segment>
-    </unit>
-    <unit id="action.hide">
-      <segment>
-        <source>Hide</source>
-        <target>Ausblenden</target>
-      </segment>
-    </unit>
-    <unit id="action.delete">
-      <segment>
-        <source>Delete</source>
-        <target>Löschen</target>
-      </segment>
-    </unit>
-    <unit id="action.more">
-      <segment>
-        <source>More actions</source>
-        <target>Weitere Aktionen</target>
-      </segment>
-    </unit>
-    <unit id="action.info">
-      <segment>
-        <source>Info</source>
-        <target>Info</target>
-      </segment>
-    </unit>
-    <unit id="action.history">
-      <segment>
-        <source>History</source>
-        <target>Verlauf</target>
-      </segment>
-    </unit>
-    <unit id="action.copy">
-      <segment>
-        <source>Copy</source>
-        <target>Kopieren</target>
-      </segment>
-    </unit>
-    <unit id="action.cut">
-      <segment>
-        <source>Cut</source>
-        <target>Ausschneiden</target>
-      </segment>
-    </unit>
-    <!-- Misc -->
-    <unit id="noRecords">
-      <segment>
-        <source>No records found on this page.</source>
-        <target>Keine Datensätze auf dieser Seite gefunden.</target>
       </segment>
     </unit>
   </file>
