@@ -1,11 +1,12 @@
 includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
     - vendor/saschaegerer/phpstan-typo3/extension.neon
 
 parameters:
-    level: max
+    level: 8
+    phpVersion: 80400
     paths:
-        - Build/Scripts/validate-xlf.php
+        - Build/Scripts
     treatPhpDocTypesAsCertain: false
-    featureToggles:
-        rawMessageInBaseline: true
