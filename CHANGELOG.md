@@ -3,6 +3,80 @@
 All notable changes to `webconsulting/records-list-examples` are documented in
 this file.
 
+## 1.3.0 - 2026-09-12
+
+Alignment with the records_list_types 1.1.0 label catalog and a quality
+baseline: static analysis, coding standards and a test suite that renders every
+example view.
+
+### Added
+
+- Unit tests for the Page TSconfig presets (every view registers with
+  translated labels, an existing template, existing assets and sane paging),
+  the label catalog (own, parent and Core keys resolve, the German file mirrors
+  the source, templates carry no hard-coded English) and the backend template
+  contract (layout-only entry points, existing partials, sanitized backend
+  fragments, state-aware accessible names).
+- Functional tests that boot EXT:records_list_types together with this
+  extension and render all six example views through the Records module
+  controller, including hidden-record state for Timeline and Catalog.
+- `Build/phpunit/UnitTests.xml` and `Build/phpunit/FunctionalTests.xml` with
+  typo3/testing-framework; SQLite locally, MariaDB 10.11 in CI.
+- `phpstan.neon` at level 8 with strict rules, phpstan-typo3 and phpstan-phpunit
+  and no baseline, plus `.php-cs-fixer.dist.php` with the TYPO3 coding
+  standards.
+- `Documentation/ExampleViews/Index.rst` with the per-view catalogue and
+  `Documentation/Developer/Index.rst` with the template contract, the steps for
+  adding a view and the local development commands.
+
+### Changed
+
+- Require `webconsulting/records-list-types` ^1.1, TYPO3 14.3.6+ and PHP 8.4+.
+- TSconfig and Fluid address labels through TYPO3 14 translation domains
+  (`records_list_examples.messages`, `records_list_types.messages`,
+  `core.core`) instead of `LLL:` paths with duplicated `default` texts.
+- Action labels come from the parent catalog, so both extensions use one term
+  per concept: *Edit record*, *Hide record*, *Unhide record*, *Delete record*,
+  *More actions*. Visibility toggles carry state-aware `aria-label`s.
+- The translation strip uses ICU placeholders (`translation.translateTo`,
+  `translation.edit`, `translation.progress`) and the Core label *No title*
+  instead of the sprintf `%s` form and "N/A".
+- The own label catalog keeps the six view names, their descriptions and the
+  catalog image placeholder; every unit carries a translator note and the
+  German targets are marked `final`.
+- `Build/Scripts/runTests.sh` offers lint, unit, functional, phpstan, cgl,
+  composer, audit and ci suites; a single `.github/workflows/ci.yml` runs them.
+- README restructured to What it is, Requirements, Install, Configure, Use,
+  Develop, Docs, License; the per-view catalogue moved into the RST manual.
+- `composer.json` declares the PSR-4 namespace. Without an `autoload` section
+  TYPO3 falls back to scanning the complete extension directory in classic
+  mode.
+
+### Removed
+
+- `Build/Scripts/validate-xlf.php`: the unit suite checks the catalogs, and
+  `runTests.sh -s lint` checks XLIFF well-formedness.
+- The label ids `catalog.badge.hidden`, `noRecords` and the `action.*` set from
+  the own catalog; they now resolve from EXT:records_list_types, which also
+  ends the use of its deprecated `action.show` alias.
+- The `typo3/cms-recordlist` requirement. The package does not exist for v14;
+  the Records module lives in `typo3/cms-backend`.
+
+### Security
+
+- No known security issues in this release. TYPO3 Core advisories cannot be
+  fixed from this package; CI reports them through `composer audit` without
+  blocking the pipeline.
+
+### Known limitations
+
+- TYPO3 14.3.7 added an eleventh constructor argument
+  (`RecordIdentityRenderer`) to `TYPO3\CMS\Backend\Controller\RecordListController`.
+  EXT:records_list_types 1.1.0 passes ten, so the Records module raises an
+  `ArgumentCountError` on 14.3.7 regardless of the selected view. All six
+  example views are verified against 14.3.6; using them on 14.3.7 needs a fixed
+  EXT:records_list_types release.
+
 ## 1.2.1 - 2026-06-11
 
 ### Fixed

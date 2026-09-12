@@ -11,16 +11,17 @@ Records List Examples
     webconsulting/records-list-examples
 
 :Version:
-    1.2.1
+    1.3.0
 
 :TYPO3:
     14.3 or later
 
 :PHP:
-    8.3 through 8.5
+    8.4 or 8.5
 
-This extension adds example view types for the TYPO3 backend Records module
-provided by EXT:records_list_types. It is TYPO3 v14 only and intentionally
+This extension adds six ready-to-use view types for the TYPO3 backend Records
+module provided by EXT:records_list_types: Timeline, Catalog, Address book,
+Event list, Gallery and Dashboard. It is TYPO3 v14 only and intentionally
 contains no PHP runtime classes.
 
 ..  toctree::
@@ -29,22 +30,19 @@ contains no PHP runtime classes.
 
     Introduction/Index
     Installation/Index
+    ExampleViews/Index
     Configuration/Index
+    Developer/Index
 
 .. _scope:
 
 Scope
 =====
 
-The package demonstrates Records List Types configuration through TYPO3 Page
-TSconfig, Fluid templates, CSS, and XLIFF labels:
+The package demonstrates EXT:records_list_types configuration through TYPO3
+Page TSconfig, Fluid templates, CSS and XLIFF labels. Timeline and Catalog ship
+custom Fluid templates with shared partials and CSS; the other four views reuse
+the templates of EXT:records_list_types and need only TSconfig.
 
-* Timeline
-* Catalog
-* Address Book
-* Event List
-* Gallery
-* Dashboard
-
-Timeline and Catalog ship custom Fluid templates with shared partials and CSS.
-The other views reuse the templates from EXT:records_list_types.
+Use it as it is to give editors more ways to look at records, or as a starting
+point for view types of your own.
