@@ -146,21 +146,26 @@
 
 .rle-catalog-card__title-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem;
     margin-bottom: 0.25rem;
 }
 
+/* Two lines of title: a card is too narrow to cut every headline after a
+   few words, which a single ellipsis line does at this column width. */
 .rle-catalog-card__title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     flex: 1;
     min-width: 0;
     overflow: hidden;
     color: var(--rle-text);
     font-size: 0.875rem;
     font-weight: 600;
+    line-height: 1.35;
     text-decoration: none;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
 }
 
 .rle-catalog-card__title:hover {

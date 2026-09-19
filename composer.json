@@ -32,6 +32,11 @@
         "typo3/coding-standards": "^0.9",
         "typo3/testing-framework": "^9.5"
     },
+    "autoload": {
+        "psr-4": {
+            "Webconsulting\\RecordsListExamples\\": "Classes/"
+        }
+    },
     "autoload-dev": {
         "psr-4": {
             "Webconsulting\\RecordsListExamples\\Tests\\": "Tests/"

@@ -3,6 +3,50 @@
 All notable changes to `webconsulting/records-list-examples` are documented in
 this file.
 
+## 1.4.0 - 2026-09-19
+
+A structural cleanup of the templates, the Page TSconfig and the manual. No
+public option changed; every view renders as before.
+
+### Fixed
+
+- The example views are appended to `mod.web_list.viewMode.allowed` with
+  `:=addToList()` instead of assigning the whole list. Assigning it dropped
+  every built-in view that EXT:records_list_types adds after this release.
+- `RecordActions.html` and `TranslationStrip.html` of this extension carried
+  the names of two EXT:records_list_types partials. Because `partialRootPath`
+  is appended after the parent paths, they replaced the parent versions for
+  every view, including the built-in ones. They are now
+  `RecordCardActions.html` and `RecordCardTranslations.html`, and a unit test
+  fails on any future name collision.
+- Catalog card titles wrap onto a second line instead of being cut after a few
+  words by a single ellipsis line.
+
+### Changed
+
+- Each custom view is one template plus one card partial. Deleted:
+  `CatalogRecordCard`, `CatalogRecordList`, `ExpandTableLink`,
+  `FirstDisplayValue`, `MultiRecordCheckbox`, `NoRecordsCallout`,
+  `RecordListTables`, `RecordTeaser`, `RecordTitleRow`, `TimelineRecordItem`,
+  `TimelineRecordList`.
+- `Configuration/TsConfig/Page/setup.tsconfig` is gone; the six registrations
+  live in `Configuration/page.tsconfig` directly.
+- Stylesheets define their colours as `--rle-*` tokens on `.rle-view`, built
+  from TYPO3 backend tokens and `light-dark()` instead of duplicated
+  colour-scheme blocks.
+- `composer.json` relaxes the patch-level pins on `typo3/cms-*`, php-cs-fixer
+  and PHPUnit.
+- One `.editorconfig` in the repository root instead of one per directory.
+
+### Added
+
+- Unit tests for the stylesheet contract (cache-buster version, token usage,
+  styled and rendered classes match), for the manual (README length and
+  section order, RST only, release version, no reference to a file that no
+  longer exists) and for `composer.json` (extension key, parent constraint,
+  and the PSR-4 entry that keeps TYPO3 out of its legacy class scan).
+- The view catalogue is back in the README as a table.
+
 ## 1.3.0 - 2026-09-12
 
 Alignment with the records_list_types 1.1.0 label catalog and a quality
