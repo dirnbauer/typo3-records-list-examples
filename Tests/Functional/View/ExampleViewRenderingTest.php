@@ -20,13 +20,14 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
+use Webconsulting\RecordsListExamples\Tests\Support\ExtensionPaths;
 use Webconsulting\RecordsListTypes\Controller\RecordListController;
 use Webconsulting\RecordsListTypes\Service\ViewTypeRegistry;
 
 /**
  * Boots records_list_types together with this extension and renders every
- * example view through the Records module controller: the TSconfig presets
- * register, the templates resolve and the labels translate.
+ * example view through the Records module controller: the TSconfig registers,
+ * the templates resolve, the labels translate and the markup is complete.
  */
 final class ExampleViewRenderingTest extends FunctionalTestCase
 {
@@ -45,6 +46,25 @@ final class ExampleViewRenderingTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/BackendUsers.csv');
         $this->setUpBackendUser(1);
         $GLOBALS['LANG'] = $this->get(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
+        $this->applyShippedTsconfigToThePage();
+    }
+
+    /**
+     * Repeats Configuration/page.tsconfig as page TSconfig.
+     *
+     * TYPO3 reads the file automatically, but a classic-mode test instance
+     * orders packages alphabetically: it drops the Composer requirement that
+     * puts records_list_types first in a real installation. Without this,
+     * records_list_examples would be read *before* its parent, whose
+     * "allowed" assignment then wins and hides the example views.
+     */
+    private function applyShippedTsconfigToThePage(): void
+    {
+        $this->get(ConnectionPool::class)->getConnectionForTable('pages')->update(
+            'pages',
+            ['TSconfig' => ExtensionPaths::read('Configuration/page.tsconfig')],
+            ['uid' => self::PAGE_ID],
+        );
     }
 
     /**
@@ -61,54 +81,66 @@ final class ExampleViewRenderingTest extends FunctionalTestCase
     }
 
     /**
-     * @return iterable<string, array{string, string}> view id, marker of a hidden record
+     * @return iterable<string, array{string, string, string}> view id, marker of a hidden record, view-specific marker
      */
-    public static function customViewProvider(): iterable
+    public static function ownTemplateViewProvider(): iterable
     {
-        yield 'timeline' => ['timeline', 'rle-timeline__item--hidden'];
-        yield 'catalog' => ['catalog', 'rle-catalog-card--hidden'];
+        // tt_content has no non-empty date field, so the date circle falls back to the uid.
+        yield 'timeline' => ['timeline', 'rle-timeline__item--hidden', '<div class="rle-timeline__date">#'];
+        // tt_content records without an image show the translated placeholder.
+        yield 'catalog' => ['catalog', 'rle-catalog-card--hidden', 'No image available'];
+    }
+
+    /**
+     * @return list<string>
+     */
+    private static function exampleViewIds(): array
+    {
+        return array_values(array_map(static fn(array $set): string => $set[0], iterator_to_array(self::exampleViewProvider())));
     }
 
     /**
      * @return iterable<string, array{string}> view id
      */
-    public static function customViewIdProvider(): iterable
+    public static function ownTemplateViewIdProvider(): iterable
     {
-        foreach (self::customViewProvider() as $name => [$viewId]) {
+        foreach (self::ownTemplateViewProvider() as $name => [$viewId]) {
             yield $name => [$viewId];
         }
     }
 
     #[Test]
-    public function pageTsconfigRegistersEveryExampleViewNextToTheBuiltinViews(): void
+    public function tsconfigRegistersEveryExampleViewNextToTheBuiltinViews(): void
     {
         $registry = $this->get(ViewTypeRegistry::class);
         $types = $registry->getViewTypes(self::PAGE_ID);
 
-        $exampleViews = [];
         foreach (self::exampleViewProvider() as [$viewId, $template]) {
-            $exampleViews[] = $viewId;
             self::assertSame($template, $registry->getTemplatePaths($viewId, self::PAGE_ID)['template'], $viewId);
             self::assertSame('records_list_examples.messages:viewMode.' . $viewId, $types[$viewId]['label'] ?? null, $viewId);
             self::assertSame('records_list_examples.messages:viewMode.' . $viewId . '.description', $types[$viewId]['description'] ?? null, $viewId);
         }
-        self::assertSame(array_merge(self::BUILTIN_VIEWS, $exampleViews), array_keys($types));
+
+        $expected = array_merge(self::BUILTIN_VIEWS, self::exampleViewIds());
+        self::assertSame($expected, array_keys($types));
+        self::assertSame($expected, array_keys($registry->getAllowedViewTypes(self::PAGE_ID)), 'addToList() must keep the built-in views next to the example views.');
     }
 
     #[Test]
-    public function exampleViewsAreSelectableWhereThePageTsconfigAllowsThem(): void
+    public function theShippedFileIsLoadedWithoutAnySiteConfiguration(): void
     {
-        // The fixture page carries the documented snippet from Documentation/Configuration:
-        // mod.web_list.viewMode.allowed = list,grid,compact,teaser,timeline,...
-        $allowed = $this->get(ViewTypeRegistry::class)->getAllowedViewTypes(self::PAGE_ID);
+        $this->get(ConnectionPool::class)->getConnectionForTable('pages')->update('pages', ['TSconfig' => ''], ['uid' => self::PAGE_ID]);
 
-        $exampleViews = array_map(static fn(array $set): string => $set[0], iterator_to_array(self::exampleViewProvider()));
-        self::assertSame(array_merge(self::BUILTIN_VIEWS, array_values($exampleViews)), array_keys($allowed));
+        self::assertSame(
+            array_merge(self::BUILTIN_VIEWS, self::exampleViewIds()),
+            array_keys($this->get(ViewTypeRegistry::class)->getViewTypes(self::PAGE_ID)),
+            'Configuration/page.tsconfig must register the example views on its own.',
+        );
     }
 
     #[Test]
-    #[DataProvider('customViewIdProvider')]
-    public function customViewsResolveTheirOwnTemplateAndPartialRootsAfterTheParentOnes(string $viewId): void
+    #[DataProvider('ownTemplateViewIdProvider')]
+    public function ownTemplateViewsResolveTheirTemplateAndPartialRootsAfterTheParentOnes(string $viewId): void
     {
         $registry = $this->get(ViewTypeRegistry::class);
         $paths = $registry->getTemplatePaths($viewId, self::PAGE_ID);
@@ -139,8 +171,8 @@ final class ExampleViewRenderingTest extends FunctionalTestCase
     }
 
     #[Test]
-    #[DataProvider('customViewProvider')]
-    public function customViewsRenderStateAwareActionsForHiddenRecords(string $viewId, string $hiddenMarker): void
+    #[DataProvider('ownTemplateViewProvider')]
+    public function ownTemplateViewsRenderHiddenStateActionsAndTheParentDropdown(string $viewId, string $hiddenMarker, string $viewMarker): void
     {
         $this->insertContentElement('Hidden example record', true);
 
@@ -148,8 +180,22 @@ final class ExampleViewRenderingTest extends FunctionalTestCase
 
         self::assertStringContainsString('Hidden example record', $html);
         self::assertStringContainsString($hiddenMarker, $html);
+        self::assertStringContainsString($viewMarker, $html);
         self::assertStringContainsString('aria-label="Unhide record"', $html);
-        self::assertStringContainsString('title="Unhide record"', $html);
+        self::assertStringContainsString('data-gridview-action="delete"', $html);
+        self::assertStringContainsString('popovertarget="rlt-actions-tt_content-', $html, 'The "More actions" dropdown of records_list_types must render.');
+        self::assertStringContainsString('name="CBC[tt_content|', $html, 'The multi-record selection checkbox must render.');
+    }
+
+    #[Test]
+    #[DataProvider('ownTemplateViewIdProvider')]
+    public function ownTemplateViewsShowTheParentEmptyNoticeWithoutRecords(string $viewId): void
+    {
+        $html = (string)$this->get(RecordListController::class)->mainAction($this->createBackendRequest($viewId))->getBody();
+
+        self::assertStringContainsString('callout-info', $html, $viewId . ' must render the EmptyRecordsNotice of records_list_types.');
+        self::assertStringNotContainsString('rle-timeline__item', $html);
+        self::assertStringNotContainsString('rle-catalog-card', $html);
     }
 
     private function insertContentElement(string $header, bool $hidden = false): void

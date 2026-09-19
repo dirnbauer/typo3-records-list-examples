@@ -7,8 +7,9 @@ namespace Webconsulting\RecordsListExamples\Tests\Support;
 use Composer\InstalledVersions;
 
 /**
- * Resolves extension directories for tests that read templates, labels and
- * TSconfig from disk, including files of the parent extension in vendor/.
+ * Resolves files of this extension, of EXT:records_list_types in vendor/ and
+ * of TYPO3 Core for tests that read templates, labels, TSconfig and
+ * stylesheets from disk.
  */
 final class ExtensionPaths
 {
@@ -72,5 +73,33 @@ final class ExtensionPaths
     public static function read(string $relativePath): string
     {
         return (string)file_get_contents(self::root() . '/' . $relativePath);
+    }
+
+    /**
+     * The release version declared in composer.json (extra.typo3/cms.version).
+     */
+    public static function composerVersion(): string
+    {
+        $composer = json_decode(self::read('composer.json'), true, 512, JSON_THROW_ON_ERROR);
+        $extra = is_array($composer) ? ($composer['extra'] ?? null) : null;
+        $typo3 = is_array($extra) ? ($extra['typo3/cms'] ?? null) : null;
+        $version = is_array($typo3) ? ($typo3['version'] ?? null) : null;
+        if (!is_string($version) || $version === '') {
+            throw new \RuntimeException('composer.json declares no extra.typo3/cms.version.', 1758200001);
+        }
+
+        return $version;
+    }
+
+    /**
+     * @return list<string> icon identifiers TYPO3 Core registers from its icons.json
+     */
+    public static function coreIconIdentifiers(): array
+    {
+        $file = self::package(self::CORE_PACKAGE) . '/Resources/Public/Icons/T3Icons/icons.json';
+        $registry = json_decode((string)file_get_contents($file), true, 512, JSON_THROW_ON_ERROR);
+        $icons = is_array($registry) ? ($registry['icons'] ?? null) : null;
+
+        return is_array($icons) ? array_map(strval(...), array_keys($icons)) : [];
     }
 }

@@ -15,76 +15,77 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Webconsulting\RecordsListExamples\Tests\Support\ExtensionPaths;
 
 /**
- * Guards the Page TSconfig presets: every example view is registered with
- * translated labels, an existing template, existing assets and sane paging.
+ * Guards Configuration/page.tsconfig: every example view is registered with
+ * translated labels, a Core icon, an existing template and stylesheet and
+ * a deliberate column configuration.
  */
-final class ViewTypePresetsTest extends TestCase
+final class PageTsconfigTest extends TestCase
 {
-    private const string ENTRY_FILE = 'Configuration/page.tsconfig';
-    private const string PRESET_FILE = 'Configuration/TsConfig/Page/setup.tsconfig';
+    private const string TSCONFIG_FILE = 'Configuration/page.tsconfig';
     private const string OWN_DOMAIN = 'records_list_examples.messages';
     private const array BUILTIN_VIEWS = ['list', 'grid', 'compact', 'teaser'];
-    private const array CUSTOM_VIEWS = ['timeline', 'catalog'];
+    private const array OWN_TEMPLATE_VIEWS = ['timeline', 'catalog'];
 
     /**
-     * @return iterable<string, array{string, string, int}> view id, template, items per page
+     * @return iterable<string, array{string, string, string, int}> view id, icon, template, records per page
      */
     public static function exampleViewProvider(): iterable
     {
-        yield 'timeline' => ['timeline', 'TimelineView', 50];
-        yield 'catalog' => ['catalog', 'CatalogView', 24];
-        yield 'addressbook' => ['addressbook', 'CompactView', 500];
-        yield 'eventlist' => ['eventlist', 'TeaserView', 30];
-        yield 'gallery' => ['gallery', 'GridView', 48];
-        yield 'dashboard' => ['dashboard', 'GridView', 20];
+        yield 'timeline' => ['timeline', 'content-timeline', 'TimelineView', 50];
+        yield 'catalog' => ['catalog', 'actions-viewmode-photos', 'CatalogView', 24];
+        yield 'addressbook' => ['addressbook', 'actions-users', 'CompactView', 500];
+        yield 'eventlist' => ['eventlist', 'actions-calendar', 'TeaserView', 30];
+        yield 'gallery' => ['gallery', 'content-gallery', 'GridView', 48];
+        yield 'dashboard' => ['dashboard', 'content-dashboard', 'GridView', 20];
     }
 
     #[Test]
-    public function pageTsconfigEntryPointImportsThePresets(): void
+    public function exampleViewsAreAppendedToTheAllowedViewsOfRecordsListTypes(): void
     {
+        $allowed = GeneralUtility::trimExplode(',', $this->string($this->viewModeConfig()['allowed'] ?? null), true);
+
+        self::assertSame(self::exampleViewIds(), $allowed, 'addToList() must contribute the example views only.');
         self::assertStringContainsString(
-            "@import 'EXT:" . ExtensionPaths::EXTENSION_KEY . '/' . self::PRESET_FILE . "'",
-            ExtensionPaths::read(self::ENTRY_FILE),
+            'allowed := addToList(' . implode(',', self::exampleViewIds()) . ')',
+            ExtensionPaths::read(self::TSCONFIG_FILE),
+            'Assigning the list would drop built-in views that records_list_types adds later.',
         );
     }
 
     #[Test]
-    public function presetsUseTheSupportedAllowedViewsOptionOnly(): void
+    public function allowedViewsAppendedOnTopOfTheParentListYieldEveryView(): void
     {
-        $tsconfig = ExtensionPaths::read(self::PRESET_FILE);
+        $parentAllowed = 'mod.web_list.viewMode.allowed = ' . implode(',', self::BUILTIN_VIEWS) . "\n";
+        $allowed = $this->viewModeConfig($parentAllowed)['allowed'] ?? null;
 
-        self::assertStringNotContainsString('allowedViews', $tsconfig, 'mod.web_list.allowedViews is deprecated since records_list_types 1.1.0.');
-        self::assertStringNotContainsString('LLL:', $tsconfig, 'Labels must use the translation domain syntax.');
+        self::assertSame(implode(',', array_merge(self::BUILTIN_VIEWS, self::exampleViewIds())), $allowed);
     }
 
     #[Test]
-    public function allowedViewsListTheBuiltinAndAllExampleViews(): void
-    {
-        $allowed = GeneralUtility::trimExplode(',', $this->string($this->viewModeConfig()['allowed'] ?? null), true);
-
-        self::assertSame(array_merge(self::BUILTIN_VIEWS, self::exampleViewIds()), $allowed);
-    }
-
-    #[Test]
-    public function presetsRegisterExactlyTheDocumentedExampleViews(): void
+    public function registersExactlyTheSixExampleViews(): void
     {
         self::assertSame(self::exampleViewIds(), array_keys($this->types()));
     }
 
     #[Test]
     #[DataProvider('exampleViewProvider')]
-    public function exampleViewIsRegisteredWithLabelsTemplateAndAssets(string $viewId, string $template, int $itemsPerPage): void
+    public function exampleViewIsRegisteredWithLabelsIconTemplateAndPaging(string $viewId, string $icon, string $template, int $itemsPerPage): void
     {
         $config = $this->types()[$viewId];
 
         self::assertSame(self::OWN_DOMAIN . ':viewMode.' . $viewId, $config['label'] ?? null);
         self::assertSame(self::OWN_DOMAIN . ':viewMode.' . $viewId . '.description', $config['description'] ?? null);
-        self::assertNotSame('', $this->string($config['icon'] ?? null), $viewId . ' needs an icon identifier.');
+        self::assertSame($icon, $config['icon'] ?? null);
+        self::assertContains($icon, ExtensionPaths::coreIconIdentifiers(), $viewId . ': "' . $icon . '" is not a TYPO3 Core icon.');
         self::assertSame($template, $config['template'] ?? null);
         self::assertSame((string)$itemsPerPage, $config['itemsPerPage'] ?? null);
-        self::assertContains($config['columnsFromTCA'] ?? null, ['0', '1'], $viewId . ' must decide between TCA columns and displayColumns.');
-        if (($config['columnsFromTCA'] ?? null) === '0') {
+
+        $columnsFromTca = $config['columnsFromTCA'] ?? null;
+        self::assertContains($columnsFromTca, ['0', '1'], $viewId . ' must decide between TCA columns and displayColumns.');
+        if ($columnsFromTca === '0') {
             self::assertNotSame('', $this->string($config['displayColumns'] ?? null), $viewId . ' must list displayColumns when columnsFromTCA is off.');
+        } else {
+            self::assertArrayNotHasKey('displayColumns', $config, $viewId . ': displayColumns is ignored while columnsFromTCA is on.');
         }
 
         self::assertFileExists(ExtensionPaths::resolve($this->string($config['css'] ?? null)), $viewId . ': stylesheet missing.');
@@ -94,17 +95,12 @@ final class ViewTypePresetsTest extends TestCase
             ? ExtensionPaths::package(ExtensionPaths::PARENT_PACKAGE) . '/Resources/Private/Templates/'
             : ExtensionPaths::resolve($templateRootPath);
         self::assertFileExists($templateDirectory . $template . '.html', $viewId . ': template missing.');
-
-        $partialRootPath = $this->string($config['partialRootPath'] ?? null);
-        if ($partialRootPath !== '') {
-            self::assertDirectoryExists(ExtensionPaths::resolve($partialRootPath), $viewId . ': partial root missing.');
-        }
     }
 
     #[Test]
-    public function customViewsShipTheirOwnTemplateAndPartialRoots(): void
+    public function viewsWithOwnTemplatePointToOwnTemplatePartialAndStylesheetPaths(): void
     {
-        foreach (self::CUSTOM_VIEWS as $viewId) {
+        foreach (self::OWN_TEMPLATE_VIEWS as $viewId) {
             $config = $this->types()[$viewId];
 
             self::assertSame('EXT:records_list_examples/Resources/Private/Backend/Templates/', $config['templateRootPath'] ?? null, $viewId);
@@ -114,22 +110,25 @@ final class ViewTypePresetsTest extends TestCase
     }
 
     #[Test]
-    public function reusedBuiltinViewsLoadTheParentStylesheets(): void
+    public function viewsReusingBuiltinTemplatesOnlyNameTheMatchingParentStylesheet(): void
     {
-        $expected = [
-            'addressbook' => 'compact-view.css',
-            'eventlist' => 'teaser-view.css',
-            'gallery' => 'grid-view.css',
-            'dashboard' => 'grid-view.css',
-        ];
-
-        foreach ($expected as $viewId => $stylesheet) {
+        foreach (array_diff(self::exampleViewIds(), self::OWN_TEMPLATE_VIEWS) as $viewId) {
             $config = $this->types()[$viewId];
+            $stylesheet = strtolower((string)preg_replace('/View$/', '-view', $this->string($config['template'] ?? null))) . '.css';
 
             self::assertArrayNotHasKey('templateRootPath', $config, $viewId . ' reuses a built-in template and must not override the template root.');
             self::assertArrayNotHasKey('partialRootPath', $config, $viewId . ' reuses built-in partials and must not override the partial root.');
             self::assertSame('EXT:records_list_types/Resources/Public/Css/' . $stylesheet, $config['css'] ?? null, $viewId);
         }
+    }
+
+    #[Test]
+    public function usesTranslationDomainsAndTheCurrentAllowedOption(): void
+    {
+        $tsconfig = ExtensionPaths::read(self::TSCONFIG_FILE);
+
+        self::assertStringNotContainsString('allowedViews', $tsconfig, 'mod.web_list.allowedViews is deprecated since records_list_types 1.1.0.');
+        self::assertStringNotContainsString('LLL:', $tsconfig, 'Labels must use the translation domain syntax.');
     }
 
     /**
@@ -164,15 +163,20 @@ final class ViewTypePresetsTest extends TestCase
     }
 
     /**
+     * Parses the shipped TSconfig, optionally on top of TSconfig that
+     * records_list_types contributes before it.
+     *
      * @return array<mixed> the parsed mod.web_list.viewMode branch
      */
-    private function viewModeConfig(): array
+    private function viewModeConfig(string $parentTsConfig = ''): array
     {
-        $lineStream = (new LossyTokenizer())->tokenize(ExtensionPaths::read(self::PRESET_FILE));
-        $ast = (new AstBuilder(new NoopEventDispatcher()))->build($lineStream, new RootNode());
+        $tokenizer = new LossyTokenizer();
+        $builder = new AstBuilder(new NoopEventDispatcher());
+        $ast = $builder->build($tokenizer->tokenize($parentTsConfig), new RootNode());
+        $ast = $builder->build($tokenizer->tokenize(ExtensionPaths::read(self::TSCONFIG_FILE)), $ast);
 
         $tsConfig = $ast->toArray();
-        self::assertIsArray($tsConfig, 'The preset file must parse into a TSconfig tree.');
+        self::assertIsArray($tsConfig, 'The TSconfig file must parse into a tree.');
         $mod = $tsConfig['mod.'] ?? null;
         self::assertIsArray($mod);
         $webList = $mod['web_list.'] ?? null;
