@@ -1,68 +1,46 @@
 #!/usr/bin/env bash
 #
-# runTests.sh — unified entry point for local and CI test runs.
+# runTests.sh: one entry point for local and CI checks. It only needs the
+# composer-installed binaries in vendor/bin, so it runs the same everywhere.
 #
-# The script only depends on composer-installed binaries in vendor/bin/, so it
-# works in any environment (DDEV, bare host, CI).
+#   Build/Scripts/runTests.sh -s <suite>
 #
-# Usage:
-#   Build/Scripts/runTests.sh -s <suite> [-p <php>]
-#
-#   Suites: lint | unit | functional | phpstan | cgl | composer | audit | ci
-
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 
-cd "${PROJECT_ROOT}"
-
-SUITE=""
-PHP_VERSION=""
 PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT:-1G}"
 
 usage() {
     cat <<'USAGE'
-Usage: Build/Scripts/runTests.sh -s <suite> [-p <php>]
+Usage: Build/Scripts/runTests.sh -s <suite>
 
 Suites:
-  lint        PHP syntax check and XLIFF well-formedness.
-  unit        Unit test suite (TSconfig presets, label catalog, template contract).
-  functional  Functional test suite; renders every example view. SQLite by
-              default, or export the typo3Database* variables for MariaDB.
-  phpstan     Static analysis at PHPStan level 8 with strict rules.
+  lint        PHP syntax and XLIFF well-formedness.
   cgl         PHP-CS-Fixer dry run with the TYPO3 coding standards.
+  cglfix      PHP-CS-Fixer, applies the fixes.
+  phpstan     PHPStan level 8 with strict rules.
+  unit        Unit tests: TSconfig, labels, templates, stylesheets.
+  functional  Functional tests: every example view renders through the Records
+              module. SQLite by default; export typo3Database* for MariaDB.
   composer    composer validate --strict (no lock file is committed).
-  audit       composer audit; advisories are reported, CI does not block on them.
+  audit       composer audit; CI reports advisories without blocking.
   ci          composer, lint, cgl, phpstan and unit (functional needs a database).
 
-Options:
-  -p <php>    Informational only: PHP version the suite is expected to run on
-              (e.g. 8.4, 8.5). The script uses whatever `php` resolves to in PATH.
-  -h          Show this help.
-
 Environment:
-  PHP_MEMORY_LIMIT  Memory limit for PHPUnit runs (default: 1G).
+  PHP_MEMORY_LIMIT  Memory limit for PHPUnit (default: 1G).
 USAGE
 }
 
-while getopts "s:p:h" opt; do
+SUITE=""
+while getopts "s:h" opt; do
     case "${opt}" in
         s) SUITE="${OPTARG}" ;;
-        p) PHP_VERSION="${OPTARG}" ;;
         h) usage; exit 0 ;;
         *) usage; exit 64 ;;
     esac
 done
-
-if [[ -z "${SUITE}" ]]; then
-    usage
-    exit 64
-fi
-
-if [[ -n "${PHP_VERSION}" ]]; then
-    echo "# Target PHP version: ${PHP_VERSION} (informational)"
-fi
+[[ -n "${SUITE}" ]] || { usage; exit 64; }
 
 run_lint() {
     local failed=0 output
@@ -72,15 +50,12 @@ run_lint() {
             failed=1
         fi
     done < <(find Tests -name '*.php' -print0; find . -maxdepth 1 -name '.php-cs-fixer.dist.php' -print0)
-    # XLIFF well-formedness. GitHub runners no longer ship xmllint, and PHP's
-    # DOM extension is always present here, so validate with PHP and keep the
-    # check identical locally and in CI.
-    if ! php -r '
+    # XLIFF well-formedness with PHP's DOM extension: GitHub runners ship no xmllint.
+    php -r '
         $failed = 0;
+        libxml_use_internal_errors(true);
         foreach (glob("Resources/Private/Language/*.xlf") as $file) {
-            libxml_use_internal_errors(true);
-            $dom = new DOMDocument();
-            if (!$dom->load($file)) {
+            if (!(new DOMDocument())->load($file)) {
                 foreach (libxml_get_errors() as $error) {
                     fwrite(STDERR, sprintf("%s:%d %s", $file, $error->line, $error->message));
                 }
@@ -89,50 +64,29 @@ run_lint() {
             }
         }
         exit($failed);
-    '; then
-        failed=1
-    fi
+    ' || failed=1
     [[ "${failed}" -eq 0 ]]
 }
 
-run_unit() {
-    php -d memory_limit="${PHP_MEMORY_LIMIT}" vendor/bin/phpunit -c Build/phpunit/UnitTests.xml
-}
-
-run_functional() {
-    php -d memory_limit="${PHP_MEMORY_LIMIT}" vendor/bin/phpunit -c Build/phpunit/FunctionalTests.xml
-}
-
-run_phpstan() {
-    vendor/bin/phpstan analyse --no-progress --memory-limit=512M
-}
-
-run_cgl() {
-    vendor/bin/php-cs-fixer fix --dry-run --diff
-}
-
-run_composer() {
-    composer validate --strict --no-check-lock
-}
-
-run_audit() {
-    composer audit --abandoned=report
+run_phpunit() {
+    php -d memory_limit="${PHP_MEMORY_LIMIT}" vendor/bin/phpunit -c "Build/phpunit/$1.xml"
 }
 
 case "${SUITE}" in
     lint)       run_lint ;;
-    unit)       run_unit ;;
-    functional) run_functional ;;
-    phpstan)    run_phpstan ;;
-    cgl)        run_cgl ;;
-    composer)   run_composer ;;
-    audit)      run_audit ;;
+    cgl)        vendor/bin/php-cs-fixer fix --dry-run --diff ;;
+    cglfix)     vendor/bin/php-cs-fixer fix ;;
+    phpstan)    vendor/bin/phpstan analyse --no-progress --memory-limit=512M ;;
+    unit)       run_phpunit UnitTests ;;
+    functional) run_phpunit FunctionalTests ;;
+    composer)   composer validate --strict --no-check-lock ;;
+    audit)      composer audit --abandoned=report ;;
     ci)
-        run_composer
+        composer validate --strict --no-check-lock
         run_lint
-        run_cgl
-        run_phpstan
-        run_unit
+        vendor/bin/php-cs-fixer fix --dry-run --diff
+        vendor/bin/phpstan analyse --no-progress --memory-limit=512M
+        run_phpunit UnitTests
         ;;
     *)
         echo "Unknown suite: ${SUITE}" >&2
