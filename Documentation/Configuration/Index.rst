@@ -4,23 +4,30 @@
 Configuration
 =============
 
-The extension loads its default Page TSconfig from
-:file:`Configuration/page.tsconfig`, which imports
-:file:`Configuration/TsConfig/Page/setup.tsconfig`. That file registers the six
-view types and adds them to the allowed views.
+TYPO3 loads :file:`Configuration/page.tsconfig` of this extension on every
+page. That single file registers the six view types and adds them to the
+allowed views. No import, no :php:`ExtensionManagementUtility` call.
 
 .. _configuration-view-types:
 
 Allowed views
 =============
 
-By default all example views are available on every page, next to the built-in
-list, grid, compact and teaser views:
+The example views are *appended* to whatever EXT:records_list_types already
+allows, instead of replacing the list:
 
 .. code-block:: typoscript
-    :caption: Enabled backend Records module views
+    :caption: Configuration/page.tsconfig
 
-    mod.web_list.viewMode.allowed = list,grid,compact,teaser,timeline,catalog,addressbook,eventlist,gallery,dashboard
+    mod.web_list.viewMode.allowed := addToList(timeline,catalog,addressbook,eventlist,gallery,dashboard)
+
+Assigning the list would work as well, but it would silently drop a built-in
+view as soon as EXT:records_list_types adds one. The result on a default
+installation is:
+
+.. code-block:: text
+
+    list, grid, compact, teaser, timeline, catalog, addressbook, eventlist, gallery, dashboard
 
 .. note::
 
@@ -51,14 +58,14 @@ Timeline registration shows all options this extension uses:
 
     mod.web_list.viewMode.types.timeline {
         label = records_list_examples.messages:viewMode.timeline
-        icon = actions-calendar
         description = records_list_examples.messages:viewMode.timeline.description
+        icon = content-timeline
         template = TimelineView
         templateRootPath = EXT:records_list_examples/Resources/Private/Backend/Templates/
         partialRootPath = EXT:records_list_examples/Resources/Private/Backend/Partials/
         css = EXT:records_list_examples/Resources/Public/Css/timeline.css
-        displayColumns = label,datetime,teaser
         columnsFromTCA = 0
+        displayColumns = label,datetime,teaser
         itemsPerPage = 50
     }
 
@@ -66,7 +73,8 @@ Timeline registration shows all options this extension uses:
 that reuse a built-in template set neither ``templateRootPath`` nor
 ``partialRootPath``; they point ``template`` at ``CompactView``, ``TeaserView``
 or ``GridView`` and ``css`` at the matching stylesheet of
-EXT:records_list_types.
+EXT:records_list_types, because a new type id does not inherit the stylesheet
+of the template it reuses.
 
 Override single options in your site's Page TSconfig, for example the page
 size:
@@ -102,8 +110,9 @@ Custom template paths
 =====================
 
 EXT:records_list_types appends ``templateRootPath`` and ``partialRootPath``
-after its own paths. A partial of the same name therefore wins here, while
-parent partials such as ``TableHeading``, ``RecordFilters`` and ``Pagination``
-still resolve from EXT:records_list_types.
+after its own paths, and Fluid resolves paths in reverse order. Parent
+partials such as ``TableHeading``, ``RecordFilters`` and ``Pagination`` stay
+available, while an own partial with a parent name would replace it for every
+view. See :ref:`developer-partial-names`.
 
 When adding another view of your own, see :ref:`developer-add-view`.

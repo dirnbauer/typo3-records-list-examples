@@ -21,7 +21,7 @@ dependencies.
 
     composer config repositories.records-list-types vcs https://github.com/dirnbauer/typo3-records-list-types.git
     composer config repositories.records-list-examples vcs https://github.com/dirnbauer/typo3-records-list-examples.git
-    composer require webconsulting/records-list-examples:^1.3
+    composer require webconsulting/records-list-examples:^1.4
 
 Set up the extension and clear caches:
 
@@ -41,7 +41,7 @@ Requirements
 
 This release supports TYPO3 v14 only:
 
-* TYPO3 CMS 14.3.6 or later within the v14 series
+* TYPO3 CMS 14.3 or later within the v14 series
 * PHP 8.4 or 8.5
 * EXT:records_list_types 1.1 or later
 

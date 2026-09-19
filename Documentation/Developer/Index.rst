@@ -15,44 +15,49 @@ Repository layout
 ..  code-block:: text
     :caption: What lives where
 
-    Configuration/page.tsconfig                     Auto-loaded entry point
-    Configuration/TsConfig/Page/setup.tsconfig      All six view registrations
-    Resources/Private/Backend/Templates/            Layout-only view templates
-    Resources/Private/Backend/Partials/             Shared record chrome
-    Resources/Private/Language/                     XLIFF 2.0 labels (en, de)
-    Resources/Public/Css/                           Shared and per-view styles
-    Tests/Unit/                                     TSconfig, labels, templates
-    Tests/Functional/                               Rendering of all six views
+    Configuration/page.tsconfig             All six view registrations
+    Resources/Private/Backend/Templates/    TimelineView, CatalogView
+    Resources/Private/Backend/Partials/     Card partials and shared chrome
+    Resources/Private/Language/             XLIFF 2.0 labels (en, de)
+    Resources/Public/Css/                   Shared and per-view styles
+    Tests/Unit/                             TSconfig, labels, templates, CSS
+    Tests/Functional/                       Rendering of all six views
 
 .. _developer-templates:
 
 Template architecture
 =====================
 
-The two view templates under :file:`Resources/Private/Backend/Templates/` are
-layout-only entry points. Each renders :file:`RecordListTables.html` with a
-view-specific record-list partial:
+Each custom view is one template plus one card partial:
 
-*   Catalog renders :file:`CatalogRecordList.html` and
-    :file:`CatalogRecordCard.html`
-*   Timeline renders :file:`TimelineRecordList.html` and
-    :file:`TimelineRecordItem.html`
+*   :file:`TimelineView.html` renders :file:`TimelineItem.html` per record
+*   :file:`CatalogView.html` renders :file:`CatalogCard.html` per record
 
-Everything shared lives in :file:`Resources/Private/Backend/Partials/`:
-:file:`RecordListTables.html` (filters, form, pagination),
-:file:`TableHeadingBlock.html`, :file:`RecordTitleRow.html`,
-:file:`RecordTeaser.html`, :file:`FirstDisplayValue.html`,
-:file:`RecordActions.html`, :file:`TranslationStrip.html`,
-:file:`MultiRecordCheckbox.html`, :file:`ExpandTableLink.html` and
-:file:`NoRecordsCallout.html`.
+Everything a view template contains besides its record loop is the Records
+module shell that EXT:records_list_types expects: the ``RecordFilters``
+partial, the bulk-action form, :file:`TableHeadingBlock.html`, ``Pagination``
+above and below the records, ``EmptyRecordsNotice`` and the *Expand table*
+link in multi-table mode. The two templates keep that shell verbatim on
+purpose, so each one reads as a complete, copyable example.
 
-Both custom views set ``partialRootPath``. EXT:records_list_types appends that
-path after its own, so a partial of the same name wins here while parent
-partials such as ``TableHeading``, ``RecordFilters`` and ``Pagination`` still
-resolve from EXT:records_list_types.
+Both card partials share :file:`RecordCardActions.html` (edit, hide/unhide,
+delete plus the parent ``RecordActionDropdown``) and
+:file:`RecordCardTranslations.html` (one chip per site language). Their markup
+uses the ``rle-record-card`` BEM block, styled in
+:file:`record-card-shared.css`, which both view stylesheets import.
 
-Shared markup uses the ``rle-record-card`` BEM block; the matching styles live
-in :file:`record-card-shared.css`, which both view stylesheets import.
+.. _developer-partial-names:
+
+Partial names
+=============
+
+EXT:records_list_types appends ``templateRootPath`` and ``partialRootPath``
+*after* its own paths, and Fluid resolves paths in reverse order. An own
+partial named like a parent partial therefore replaces it everywhere. That is
+why the partials here are called ``RecordCardActions`` and
+``RecordCardTranslations`` rather than ``RecordActions`` and
+``TranslationStrip``: the parent versions stay available and the built-in
+views keep working. A unit test fails if a name collides.
 
 .. _developer-contract:
 
@@ -62,36 +67,39 @@ Template contract
 Custom templates keep working across EXT:records_list_types releases as long as
 they follow its systematic. The unit suite enforces these rules:
 
+*   the markup is wrapped in ``<records-list-types-actions>`` so the shared
+    JavaScript initializes
 *   TYPO3-generated fragments (action buttons, multi-record-selection actions)
-    go through ``f:sanitize.html(build: 'records-list-types-backend-fragments')``
-    instead of ``f:format.raw``
+    are passed through
+    ``f:sanitize.html(build: 'records-list-types-backend-fragments')`` and
+    never printed unescaped
 *   record editing uses ``typo3-backend-contextual-record-edit-trigger``
 *   labels use translation domains, never ``LLL:`` paths or ``default``
     attributes that duplicate the text
 *   visibility toggles carry state-aware accessible names
     (``action.hide`` / ``action.unhide``), and icon-only actions have an
     ``aria-label``
-*   backend templates never use frontend page ViewHelpers such as
-    ``f:render.contentArea``
+*   stylesheets use the ``--rle-*`` tokens defined on ``.rle-view`` and
+    ``light-dark()``; no literal colours, no ``prefers-color-scheme`` blocks
 
 .. _developer-add-view:
 
 Adding another view
 ===================
 
-#.  Register the view type in
-    :file:`Configuration/TsConfig/Page/setup.tsconfig` with ``template``,
-    ``templateRootPath``, ``partialRootPath`` and ``css``.
-#.  Add a record-list partial, for example :file:`KanbanRecordList.html`, with
-    the layout that genuinely differs.
-#.  Add a layout-only template that renders :file:`RecordListTables.html` with
-    your ``recordListPartial``.
-#.  Reuse :file:`RecordTitleRow.html`, :file:`RecordTeaser.html`,
-    :file:`RecordActions.html` and :file:`TranslationStrip.html`.
-#.  Add view-specific CSS and ``@import`` :file:`record-card-shared.css`.
+#.  Register the view type in :file:`Configuration/page.tsconfig` with
+    ``template``, ``templateRootPath``, ``partialRootPath``, ``css`` and a
+    column configuration, and append its id with
+    ``mod.web_list.viewMode.allowed := addToList(...)``.
+#.  Copy :file:`CatalogView.html` and replace the grid container and the card
+    partial; keep the surrounding shell as it is.
+#.  Add your card partial and render :file:`RecordCardActions.html` and
+    :file:`RecordCardTranslations.html` inside it.
+#.  Add view-specific CSS that imports :file:`record-card-shared.css` with the
+    release version as cache-buster query.
 #.  Add the view to the data providers in
-    :file:`Tests/Functional/View/ExampleViewRenderingTest.php` and
-    :file:`Tests/Unit/Configuration/ViewTypePresetsTest.php`.
+    :file:`Tests/Unit/Configuration/PageTsconfigTest.php` and
+    :file:`Tests/Functional/View/ExampleViewRenderingTest.php`.
 
 The reference for the payload a template receives is the
 `custom view types manual
@@ -131,5 +139,5 @@ The functional suite boots EXT:records_list_types together with this extension
 and renders all six views. Export the ``typo3Database*`` variables to run it
 against MariaDB instead of SQLite, as the CI workflow does.
 
-PHPStan runs at level 8 with strict rules, and PHP-CS-Fixer uses the TYPO3
-coding standards.
+PHPStan runs at level 8 with strict rules and no baseline, and PHP-CS-Fixer
+uses the TYPO3 coding standards.
