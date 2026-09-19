@@ -1,88 +1,69 @@
 /**
- * Shared record-card chrome for Catalog and Timeline views.
- * Loaded via @import from catalog.css and timeline.css.
+ * Shared chrome of the Timeline and Catalog cards: design tokens, the
+ * multi-select checkbox, the action toolbar and the translation strip.
+ *
+ * timeline.css and catalog.css import this file. TYPO3 appends its
+ * ?filemtime cache buster only to the stylesheet it includes, so the
+ * importing rule carries the release version as query string; a unit test
+ * keeps it equal to the version in composer.json.
  */
 
-.rle-catalog-container,
-.rle-timeline-container {
+.rle-view {
+    /* TYPO3 backend tokens already follow the colour scheme. */
     --rle-accent: var(--typo3-state-default-primary-color, #3b82f6);
     --rle-accent-bg: var(--typo3-state-default-primary-bg, #eff6ff);
     --rle-bg: var(--typo3-component-bg, #ffffff);
     --rle-bg-muted: var(--typo3-surface-container-low, #fafafa);
+    --rle-bg-subtle: var(--typo3-surface-container-default, #f4f4f5);
     --rle-border: var(--typo3-component-border-color, #e4e4e7);
     --rle-text: var(--typo3-text-color-base, #18181b);
     --rle-text-muted: var(--typo3-text-color-variant, #71717a);
-    --rle-text-subtle: var(--typo3-text-color-variant, #a1a1aa);
+    --rle-radius: var(--typo3-component-border-radius, 0.5rem);
+    --rle-shadow: var(--typo3-shadow-1, 0 1px 3px 0 rgb(0 0 0 / 0.1));
+
+    /* Status colours have no backend token. light-dark() follows the
+       color-scheme TYPO3 sets on <html>; amber-400 keeps 4.5:1 on dark. */
     --rle-danger: #ef4444;
-    --rle-danger-bg: #fef2f2;
-    --rle-warning: #b45309;
-    --rle-warning-bg: #fffbeb;
-    --rle-success-text: #166534;
-    --rle-success-bg: #f0fdf4;
-    --rle-success-border: #bbf7d0;
-    --rle-success-text-dark: #86efac;
-    --rle-success-bg-dark: rgba(22, 101, 52, 0.2);
-    --rle-success-border-dark: rgba(34, 197, 94, 0.35);
+    --rle-danger-bg: light-dark(#fef2f2, rgb(239 68 68 / 0.15));
+    --rle-warning: light-dark(#b45309, #fbbf24);
+    --rle-warning-bg: light-dark(#fffbeb, rgb(180 83 9 / 0.15));
+    --rle-success: light-dark(#166534, #86efac);
+    --rle-success-bg: light-dark(#f0fdf4, rgb(22 101 52 / 0.2));
+    --rle-success-border: light-dark(#bbf7d0, rgb(34 197 94 / 0.35));
 }
 
-[data-color-scheme="dark"] .rle-catalog-container,
-[data-color-scheme="dark"] .rle-timeline-container {
-    /* amber-400 text — amber-700 fails 4.5:1 on dark surfaces */
-    --rle-warning: #fbbf24;
-    --rle-warning-bg: rgba(180, 83, 9, 0.15);
-    --rle-danger-bg: rgba(239, 68, 68, 0.15);
-}
-
-@media (prefers-color-scheme: dark) {
-    html:not([data-color-scheme="light"]) .rle-catalog-container,
-    html:not([data-color-scheme="light"]) .rle-timeline-container {
-        --rle-warning: #fbbf24;
-        --rle-warning-bg: rgba(180, 83, 9, 0.15);
-        --rle-danger-bg: rgba(239, 68, 68, 0.15);
-    }
-}
-
-/* Clipboard checkbox */
+/* Multi-record selection checkbox */
 .rle-record-card__checkbox {
     display: inline-flex;
     align-items: center;
     flex-shrink: 0;
-    cursor: pointer;
     margin: 0;
+    cursor: pointer;
 }
 
 .rle-record-card__checkbox .form-check-input {
     width: 13px;
     height: 13px;
     margin: 0;
-    cursor: pointer;
-    border: 1.5px solid var(--rle-text-subtle, #a1a1aa);
+    border: 1.5px solid var(--rle-text-muted);
     border-radius: 2px;
     background-color: transparent;
     appearance: none;
-    -webkit-appearance: none;
+    cursor: pointer;
 }
 
 .rle-record-card__checkbox .form-check-input:checked {
-    background-color: var(--rle-accent, #3b82f6);
-    border-color: var(--rle-accent, #3b82f6);
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
-    background-size: 10px;
-    background-position: center;
-    background-repeat: no-repeat;
+    background: var(--rle-accent) url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") center / 10px no-repeat;
+    border-color: var(--rle-accent);
 }
 
-/* Actions */
+/* Action toolbar */
 .rle-record-card__actions {
     display: flex;
     gap: 0.25rem;
+    margin-top: auto;
     padding-top: 0.5rem;
     border-top: 1px solid var(--rle-border);
-    margin-top: auto;
-}
-
-.rle-timeline__card .rle-record-card__actions {
-    margin-top: 0.5rem;
 }
 
 .rle-record-card__action {
@@ -93,39 +74,39 @@
     height: 1.75rem;
     padding: 0;
     border: 1px solid var(--rle-border);
+    border-radius: 0.25rem;
     background: var(--rle-bg);
     color: var(--rle-text-muted);
-    border-radius: 0.25rem;
+    text-decoration: none;
     cursor: pointer;
     transition: all 100ms ease;
-    text-decoration: none;
 }
 
 .rle-record-card__action:hover {
-    background: var(--rle-accent-bg);
     border-color: var(--rle-accent);
+    background: var(--rle-accent-bg);
     color: var(--rle-accent);
 }
 
 .rle-record-card__action--danger:hover {
-    background: var(--rle-danger-bg);
     border-color: var(--rle-danger);
+    background: var(--rle-danger-bg);
     color: var(--rle-danger);
 }
 
 .rle-record-card__action .icon {
-    width: 14px;
-    height: 14px;
+    --icon-size: 14px;
 }
 
+/* "More actions" dropdown rendered by the parent RecordActionDropdown partial */
 .rle-record-card__actions .dropdown {
     display: inline-flex;
 }
 
 .rle-record-card__actions .dropdown-menu {
     z-index: 10;
-    font-size: 0.8125rem;
     min-width: 10rem;
+    font-size: 0.8125rem;
 }
 
 .rle-record-card__actions .dropdown-item {
@@ -136,27 +117,15 @@
 }
 
 .rle-record-card__actions .dropdown-item .icon {
-    width: 14px;
-    height: 14px;
+    --icon-size: 14px;
     flex-shrink: 0;
 }
 
-/* Translations strip */
+/* Translation strip */
 .rle-record-card__translations {
     margin-top: 0.5rem;
     padding: 0.625rem 0 0.75rem;
     border-top: 1px solid var(--rle-border);
-}
-
-.rle-catalog-card__body .rle-record-card__translations {
-    padding-left: 0;
-    padding-right: 0;
-    background: var(--rle-bg-muted);
-    margin-left: -1rem;
-    margin-right: -1rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    margin-bottom: -0.75rem;
 }
 
 .rle-record-card__translations-head {
@@ -169,8 +138,7 @@
 }
 
 .rle-record-card__translations-head .icon {
-    width: 12px;
-    height: 12px;
+    --icon-size: 12px;
 }
 
 .rle-record-card__translations-title {
@@ -179,54 +147,36 @@
     letter-spacing: 0.04em;
 }
 
-.rle-record-card__translations-summary {
-    margin-left: auto;
-}
-
 .rle-record-card__translations-badge {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
+    margin-left: auto;
     padding: 0.0625rem 0.375rem;
-    font-size: 0.625rem;
-    font-weight: 600;
-    color: var(--rle-text-muted);
-    background: var(--rle-bg);
     border: 1px solid var(--rle-border);
     border-radius: 9999px;
+    background: var(--rle-bg);
+    color: var(--rle-text-muted);
+    font-size: 0.625rem;
+    font-weight: 600;
 }
 
 .rle-record-card__translations-badge--complete {
-    color: var(--rle-success-text);
-    background: var(--rle-success-bg);
     border-color: var(--rle-success-border);
-}
-
-[data-color-scheme="dark"] .rle-record-card__translations-badge--complete {
-    color: var(--rle-success-text-dark);
-    background: var(--rle-success-bg-dark);
-    border-color: var(--rle-success-border-dark);
-}
-
-@media (prefers-color-scheme: dark) {
-    html:not([data-color-scheme="light"]) .rle-record-card__translations-badge--complete {
-        color: var(--rle-success-text-dark);
-        background: var(--rle-success-bg-dark);
-        border-color: var(--rle-success-border-dark);
-    }
+    background: var(--rle-success-bg);
+    color: var(--rle-success);
 }
 
 .rle-record-card__translations-badge .icon {
-    width: 10px;
-    height: 10px;
+    --icon-size: 10px;
 }
 
 .rle-record-card__translations-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
-    padding: 0;
     margin: 0;
+    padding: 0;
     list-style: none;
 }
 
@@ -240,43 +190,44 @@
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
+    max-width: 100%;
     padding: 0.1875rem 0.5rem;
     border: 1px solid var(--rle-border);
     border-radius: 9999px;
     background: var(--rle-bg);
     color: var(--rle-text);
-    text-decoration: none;
     font-size: 0.75rem;
     line-height: 1.2;
-    transition: all 100ms ease;
+    text-decoration: none;
     cursor: pointer;
-    max-width: 100%;
+    transition: all 100ms ease;
 }
 
 .rle-record-card__translation-link:hover {
     border-color: var(--rle-accent);
-    color: var(--rle-accent);
     background: var(--rle-accent-bg);
+    color: var(--rle-accent);
 }
 
-/* "Add translation" chip: recessed muted slot — quieter than a dashed
-   outline; the accent "+" icon carries the affordance. */
+/* "Add translation": a recessed slot, the accent plus icon is the affordance */
 .rle-record-card__translation-link--create {
-    background: var(--rle-bg-muted);
     border-color: color-mix(in srgb, var(--rle-text-muted) 30%, transparent);
-    color: var(--rle-text-muted);
-}
-
-.rle-record-card__translation-link--readonly {
-    cursor: default;
-    color: var(--rle-text-muted);
     background: var(--rle-bg-muted);
+    color: var(--rle-text-muted);
 }
 
+.rle-record-card__translation-link--readonly,
 .rle-record-card__translation-link--readonly:hover {
     border-color: var(--rle-border);
-    color: var(--rle-text-muted);
     background: var(--rle-bg-muted);
+    color: var(--rle-text-muted);
+    cursor: default;
+}
+
+.rle-record-card__translation--hidden .rle-record-card__translation-link {
+    border-color: var(--rle-warning);
+    background: var(--rle-warning-bg);
+    color: var(--rle-warning);
 }
 
 .rle-record-card__translation-flag {
@@ -285,8 +236,7 @@
 }
 
 .rle-record-card__translation-flag .icon {
-    width: 14px;
-    height: 14px;
+    --icon-size: 14px;
 }
 
 .rle-record-card__translation-flag--muted {
@@ -294,14 +244,10 @@
 }
 
 .rle-record-card__translation-title {
+    max-width: 12rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 12rem;
-}
-
-.rle-timeline__card .rle-record-card__translation-title {
-    max-width: 14rem;
 }
 
 .rle-record-card__translation-title--muted {
@@ -317,16 +263,9 @@
 }
 
 .rle-record-card__translation-state .icon {
-    width: 12px;
-    height: 12px;
+    --icon-size: 12px;
 }
 
 .rle-record-card__translation-state--add {
     color: var(--rle-accent);
-}
-
-.rle-record-card__translation--hidden .rle-record-card__translation-link {
-    border-color: var(--rle-warning);
-    background: var(--rle-warning-bg);
-    color: var(--rle-warning);
 }

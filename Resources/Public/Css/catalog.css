@@ -1,90 +1,56 @@
 /**
- * Catalog View - Large image cards with clean typography
- * Part of EXT:records_list_examples
- *
- * Uses TYPO3 CSS variables for automatic dark mode support.
+ * Catalog view: large image cards in a responsive grid. Part of
+ * EXT:records_list_examples.
  */
 
-/* Version query = cache buster: TYPO3 only busts the parent file's URL
-   (?filemtime), so the import needs its own. Bump on shared-css changes. */
-@import "./record-card-shared.css?v=1.2.1";
+@import "./record-card-shared.css?v=1.4.0";
 
-/* Container */
-.rle-catalog-container {
-    /* Container context so cqi units resolve against the records frame */
+.rle-catalog {
+    /* Container context so the card width scales with the records frame (cqi) */
     container-type: inline-size;
-    container-name: catalog;
-
-    --cat-accent: var(--typo3-state-default-primary-color, #3b82f6);
-    --cat-accent-bg: var(--typo3-state-default-primary-bg, #eff6ff);
-    --cat-bg: var(--typo3-component-bg, #ffffff);
-    --cat-bg-muted: var(--typo3-surface-container-low, #fafafa);
-    --cat-bg-subtle: var(--typo3-surface-container-default, #f4f4f5);
-    --cat-border: var(--typo3-component-border-color, #e4e4e7);
-    --cat-text: var(--typo3-text-color-base, #18181b);
-    --cat-text-muted: var(--typo3-text-color-variant, #71717a);
-    --cat-text-subtle: var(--typo3-text-color-variant, #a1a1aa);
-    --cat-danger: #ef4444;
-    --cat-danger-bg: #fef2f2;
-    --cat-warning: #f59e0b;
-    --cat-warning-bg: light-dark(#fffbeb, rgba(180, 83, 9, 0.15));
-    --cat-radius: var(--typo3-component-border-radius, 0.5rem);
-    --cat-shadow: var(--typo3-shadow-1, 0 1px 3px 0 rgb(0 0 0 / 0.1));
-    --cat-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
-/* Grid layout - card min-width scales with the actual records frame (cqi) */
-.rle-catalog-grid {
+.rle-catalog__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(clamp(280px, 22cqi, 320px), 1fr));
     gap: 1.25rem;
     padding: 1.25rem;
 }
 
-/* Card */
 .rle-catalog-card {
     display: flex;
     flex-direction: column;
-    /* Equal height cards in each grid row */
     height: 100%;
-    background: var(--cat-bg);
-    border: 1px solid var(--cat-border);
-    border-radius: var(--cat-radius);
-    box-shadow: var(--cat-shadow);
     overflow: hidden;
+    border: 1px solid var(--rle-border);
+    border-radius: var(--rle-radius);
+    background: var(--rle-bg);
+    box-shadow: var(--rle-shadow);
     transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
 }
 
 .rle-catalog-card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--cat-shadow-md);
-    border-color: var(--cat-accent);
+    border-color: var(--rle-accent);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
-/* Hidden state - amber tint instead of an opacity fade so text keeps
-   WCAG contrast. The image badge + warning bar carry the state. */
-.rle-catalog-card--hidden .rle-catalog-card__body {
-    background: var(--cat-warning-bg);
-    border-left: 3px solid var(--cat-warning);
-}
-
-/* Image area */
+/* Image area: a 4:3 box; the preview hint docks at its bottom edge */
 .rle-catalog-card__image {
     position: relative;
     aspect-ratio: 4 / 3;
     overflow: hidden;
-    background:
-        repeating-conic-gradient(var(--cat-bg-subtle) 0% 25%, var(--cat-bg) 0% 50%)
-        50% / 16px 16px;
+    background: repeating-conic-gradient(var(--rle-bg-subtle) 0% 25%, var(--rle-bg) 0% 50%) 50% / 16px 16px;
 }
 
-.rle-catalog-card__image a {
+.rle-catalog-card__image > typo3-backend-contextual-record-edit-trigger {
     display: block;
     width: 100%;
     height: 100%;
 }
 
 .rle-catalog-card__img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -95,9 +61,24 @@
     transform: scale(1.03);
 }
 
-/* Placeholder - "no image available" state. Solid muted surface (no
-   checkerboard bleed-through) with a readable label: the icon stays
-   decorative-faint, the text keeps WCAG-readable contrast. */
+.rle-catalog-card__image-hint {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.75rem;
+    background: color-mix(in srgb, var(--rle-bg) 85%, transparent);
+    color: var(--rle-text-muted);
+    font-size: 0.625rem;
+}
+
+.rle-catalog-card__image-hint .icon {
+    --icon-size: 12px;
+    flex-shrink: 0;
+}
+
+/* "No image": a solid muted surface with a readable pill label */
 .rle-catalog-card__placeholder {
     display: flex;
     flex-direction: column;
@@ -106,46 +87,27 @@
     gap: 0.5rem;
     width: 100%;
     height: 100%;
-    background: var(--cat-bg-muted);
-    color: var(--cat-text-muted);
+    background: var(--rle-bg-muted);
+    color: var(--rle-text-muted);
 }
 
 .rle-catalog-card__placeholder .icon {
-    width: 2rem;
-    height: 2rem;
+    --icon-size: 2rem;
     opacity: 0.5;
 }
 
 .rle-catalog-card__placeholder-text {
+    padding: 0.125rem 0.625rem;
+    border: 1px solid var(--rle-border);
+    border-radius: 9999px;
+    background: var(--rle-bg);
     font-size: 0.6875rem;
     font-weight: 500;
-    text-transform: uppercase;
     letter-spacing: 0.05em;
-    padding: 0.125rem 0.625rem;
-    border: 1px solid var(--cat-border);
-    border-radius: 9999px;
-    background: var(--cat-bg);
+    text-transform: uppercase;
 }
 
-/* Image preview hint */
-.rle-catalog-card__image-hint {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.125rem 0.75rem;
-    font-size: 0.625rem;
-    color: var(--cat-text-subtle);
-    background: var(--cat-bg-subtle);
-    opacity: 0.7;
-}
-
-.rle-catalog-card__image-hint .icon {
-    width: 12px;
-    height: 12px;
-    flex-shrink: 0;
-}
-
-/* Badge overlay */
+/* Hidden record: badge on the image, amber tint and warning bar on the body */
 .rle-catalog-card__badge {
     position: absolute;
     top: 0.5rem;
@@ -154,31 +116,32 @@
     align-items: center;
     gap: 0.25rem;
     padding: 0.25rem 0.5rem;
+    border: 1px solid var(--rle-warning);
+    border-radius: 9999px;
+    background: var(--rle-warning-bg);
+    color: var(--rle-warning);
     font-size: 0.6875rem;
     font-weight: 600;
-    border-radius: 9999px;
-    text-transform: uppercase;
     letter-spacing: 0.02em;
+    text-transform: uppercase;
 }
 
 .rle-catalog-card__badge .icon {
-    width: 12px;
-    height: 12px;
+    --icon-size: 12px;
 }
 
-.rle-catalog-card__badge--hidden {
+.rle-catalog-card--hidden .rle-catalog-card__body {
+    border-left: 3px solid var(--rle-warning);
     background: var(--rle-warning-bg);
-    color: var(--rle-warning);
-    border: 1px solid var(--rle-warning);
 }
 
 /* Body */
 .rle-catalog-card__body {
-    flex: 1;
     display: flex;
+    flex: 1;
     flex-direction: column;
     padding: 0.75rem 1rem;
-    border-top: 1px solid var(--cat-border);
+    border-top: 1px solid var(--rle-border);
 }
 
 .rle-catalog-card__title-row {
@@ -190,47 +153,51 @@
 
 .rle-catalog-card__title {
     flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--rle-text);
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--cat-text);
     text-decoration: none;
-    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    min-width: 0;
 }
 
 .rle-catalog-card__title:hover {
-    color: var(--cat-accent);
+    color: var(--rle-accent);
 }
 
 .rle-catalog-card__uid {
+    flex-shrink: 0;
+    color: var(--rle-text-muted);
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 0.625rem;
-    color: var(--cat-text-subtle);
-    flex-shrink: 0;
 }
 
-/* Teaser */
 .rle-catalog-card__teaser {
-    font-size: 0.8125rem;
-    line-height: 1.5;
-    color: var(--cat-text-muted);
-    margin: 0 0 0.5rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
-    overflow-wrap: anywhere;
-    word-break: break-word;
     flex: 1;
+    overflow: hidden;
+    margin: 0 0 0.5rem;
+    color: var(--rle-text-muted);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
 }
 
-/* Responsive */
+/* The translation strip fills the card width below the body padding */
+.rle-catalog-card__body .rle-record-card__translations {
+    margin: 0.5rem -1rem -0.75rem;
+    padding: 0.625rem 1rem 0.75rem;
+    background: var(--rle-bg-muted);
+}
+
 @media (max-width: 640px) {
-    .rle-catalog-grid {
+    .rle-catalog__grid {
         grid-template-columns: 1fr;
-        padding: 0.75rem;
         gap: 0.75rem;
+        padding: 0.75rem;
     }
 }

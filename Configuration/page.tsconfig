@@ -1,1 +1,105 @@
-@import 'EXT:records_list_examples/Configuration/TsConfig/Page/setup.tsconfig'
+# Records List Examples: six view types for the Records module.
+#
+# TYPO3 loads this file on every page. Override single options in your
+# site's Page TSconfig, for example:
+#
+#   mod.web_list.viewMode.types.catalog.itemsPerPage = 12
+#
+#   [page["uid"] == 42]
+#       mod.web_list.viewMode.allowed = list,timeline
+#       mod.web_list.viewMode.default = timeline
+#   [end]
+
+mod.web_list.viewMode {
+
+    # Append instead of assign: records_list_types is loaded first and lists
+    # its own view types in "allowed". Overwriting that list would drop a
+    # built-in view as soon as the parent extension adds one.
+    allowed := addToList(timeline,catalog,addressbook,eventlist,gallery,dashboard)
+
+    # ---- Views with their own Fluid template --------------------------------
+    # records_list_types appends templateRootPath and partialRootPath after its
+    # own paths, so parent partials (RecordFilters, Pagination, ...) stay
+    # available. An own partial with a parent name would shadow the parent one,
+    # so every partial below carries a name of its own.
+
+    # Timeline: date column with one content card per record.
+    types.timeline {
+        label = records_list_examples.messages:viewMode.timeline
+        description = records_list_examples.messages:viewMode.timeline.description
+        icon = content-timeline
+        template = TimelineView
+        templateRootPath = EXT:records_list_examples/Resources/Private/Backend/Templates/
+        partialRootPath = EXT:records_list_examples/Resources/Private/Backend/Partials/
+        css = EXT:records_list_examples/Resources/Public/Css/timeline.css
+        columnsFromTCA = 0
+        displayColumns = label,datetime,teaser
+        itemsPerPage = 50
+    }
+
+    # Catalog: large image cards with title and teaser.
+    types.catalog {
+        label = records_list_examples.messages:viewMode.catalog
+        description = records_list_examples.messages:viewMode.catalog.description
+        icon = actions-viewmode-photos
+        template = CatalogView
+        templateRootPath = EXT:records_list_examples/Resources/Private/Backend/Templates/
+        partialRootPath = EXT:records_list_examples/Resources/Private/Backend/Partials/
+        css = EXT:records_list_examples/Resources/Public/Css/catalog.css
+        columnsFromTCA = 0
+        displayColumns = label,teaser
+        itemsPerPage = 24
+    }
+
+    # ---- Views that only configure a built-in template ---------------------
+    # A new type id does not inherit the stylesheet of the template it reuses,
+    # so css names the matching records_list_types file explicitly.
+
+    # Address book: CompactView with fixed contact columns and a large page.
+    # Columns a table does not have (email, telephone, ...) are skipped.
+    types.addressbook {
+        label = records_list_examples.messages:viewMode.addressbook
+        description = records_list_examples.messages:viewMode.addressbook.description
+        icon = actions-users
+        template = CompactView
+        css = EXT:records_list_types/Resources/Public/Css/compact-view.css
+        columnsFromTCA = 0
+        displayColumns = label,email,telephone,company,city
+        itemsPerPage = 500
+    }
+
+    # Event list: TeaserView with title, date and teaser.
+    types.eventlist {
+        label = records_list_examples.messages:viewMode.eventlist
+        description = records_list_examples.messages:viewMode.eventlist.description
+        icon = actions-calendar
+        template = TeaserView
+        css = EXT:records_list_types/Resources/Public/Css/teaser-view.css
+        columnsFromTCA = 0
+        displayColumns = label,datetime,teaser
+        itemsPerPage = 30
+    }
+
+    # Gallery: GridView with thumbnails and the title only.
+    types.gallery {
+        label = records_list_examples.messages:viewMode.gallery
+        description = records_list_examples.messages:viewMode.gallery.description
+        icon = content-gallery
+        template = GridView
+        css = EXT:records_list_types/Resources/Public/Css/grid-view.css
+        columnsFromTCA = 0
+        displayColumns = label
+        itemsPerPage = 48
+    }
+
+    # Dashboard: GridView with the columns the editor selects via "Show columns".
+    types.dashboard {
+        label = records_list_examples.messages:viewMode.dashboard
+        description = records_list_examples.messages:viewMode.dashboard.description
+        icon = content-dashboard
+        template = GridView
+        css = EXT:records_list_types/Resources/Public/Css/grid-view.css
+        columnsFromTCA = 1
+        itemsPerPage = 20
+    }
+}

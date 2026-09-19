@@ -1,0 +1,64 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    One timeline entry: the date circle (first non-empty datetime display
+    value, otherwise the uid) and a card with title, teaser, actions and
+    translations. The view is registered with columnsFromTCA = 0 and
+    displayColumns = label,datetime,teaser, so record.displayValues holds
+    exactly those fields.
+    Arguments: record, table
+</f:comment>
+
+<f:variable name="date" value="" />
+<f:for each="{record.displayValues}" as="field">
+    <f:if condition="{field.type} == 'datetime' && !{field.isEmpty}">
+        <f:variable name="date" value="{field.formatted}" />
+    </f:if>
+</f:for>
+
+<div class="rle-timeline__item{f:if(condition: record.hidden, then: ' rle-timeline__item--hidden')}"
+     {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-element=\"true\"')}
+     data-table="{record.tableName}"
+     data-uid="{record.uid}">
+
+    <div class="rle-timeline__date-col">
+        <div class="rle-timeline__date">{f:if(condition: date, then: date, else: '#{record.uid}')}</div>
+        <div class="rle-timeline__line"></div>
+    </div>
+
+    <div class="rle-timeline__card">
+        <div class="rle-timeline__header">
+            <f:if condition="{table.multiSelectEnabled}">
+                <label class="rle-record-card__checkbox">
+                    <input class="form-check-input t3js-multi-record-selection-check" type="checkbox" name="CBC[{record.tableName}|{record.uid}]" value="1" />
+                </label>
+            </f:if>
+            <span class="rle-timeline__icon"><core:icon identifier="{record.iconIdentifier}" size="small" /></span>
+            <f:if condition="{record.permissions.canEdit}">
+                <f:then>
+                    <typo3-backend-contextual-record-edit-trigger class="rle-timeline__title" edit-url="{record.editUrl}" url="{record.contextualEditUrl}">{record.title}</typo3-backend-contextual-record-edit-trigger>
+                </f:then>
+                <f:else>
+                    <span class="rle-timeline__title">{record.title}</span>
+                </f:else>
+            </f:if>
+            <span class="rle-timeline__uid">#{record.uid}</span>
+        </div>
+
+        <f:for each="{record.displayValues}" as="field">
+            <f:if condition="{field.type} == 'text' && !{field.isLabelField} && !{field.isEmpty}">
+                <p class="rle-timeline__teaser">{field.formatted -> f:format.crop(maxCharacters: 200, append: '…')}</p>
+            </f:if>
+        </f:for>
+
+        <f:render partial="RecordCardActions" arguments="{record: record}" />
+
+        <f:if condition="{record.translations}">
+            <f:render partial="RecordCardTranslations" arguments="{record: record}" />
+        </f:if>
+    </div>
+</div>
+
+</html>
