@@ -1,62 +1,27 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:comment>
-    Timeline view: a date column next to one content card per record.
+    Timeline view: a date next to one card per record.
 
-    Everything outside the record loop is the Records module shell that
-    records_list_types expects from a custom template (filters, heading,
-    pagination, empty state, expand link); see its manual "Custom view
-    types". Only the loop and the TimelineItem partial are timeline specific.
+    Table/Section of records_list_types frames each table like the list
+    view (filters, heading, selection bar, pagination, empty state); only
+    the list and the TimelineItem partial are timeline specific.
 </f:comment>
 
-<records-list-types-actions>
-<div class="rle-view rle-timeline">
+<records-list-types-actions class="rlt-view">
     <f:for each="{tableData}" as="table">
-        <f:render partial="RecordFilters" arguments="{filters: table.filters}" />
-        <div class="recordlist" id="t3-table-{table.tableName}"
-             {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-identifier=\"t3-table-{table.tableName}\"')}>
-            <form action="{table.formActionUrl}#t3-table-{table.tableName}" method="post" name="list-table-form-{table.tableName}">
-                <input type="hidden" name="cmd_table" value="{table.tableName}" />
-                <input type="hidden" name="cmd" />
-                <f:render partial="TableHeadingBlock" arguments="{table: table}" />
-
-                <div class="collapse show" data-state="expanded" id="recordlist-{table.tableName}">
-                    <f:if condition="{currentTable}">
-                        <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'top'}" />
-                    </f:if>
-
-                    <div class="rle-timeline__list"
-                         {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-row-selection=\"true\"')}>
-                        <f:for each="{table.records}" as="record">
-                            <f:render partial="TimelineItem" arguments="{record: record, table: table}" />
-                        </f:for>
-                    </div>
-                    <f:if condition="!{table.records}">
-                        <f:render partial="EmptyRecordsNotice" arguments="{table: table, searchTerm: searchTerm}" />
-                    </f:if>
-
-                    <f:if condition="!{currentTable} && {table.hasMore}">
-                        <div class="text-center py-2 border-top">
-                            <a href="{table.singleTableUrl}" class="btn btn-sm btn-default">
-                                <core:icon identifier="actions-caret-down" size="small" />
-                                <f:translate key="core.core:labels.expandTable" />
-                            </a>
-                        </div>
-                    </f:if>
-
-                    <f:if condition="{currentTable}">
-                        <f:render partial="Pagination" arguments="{paginator: table.paginator, pagination: table.pagination, paginationUrl: table.paginationUrl, tableName: table.tableName, position: 'bottom'}" />
-                    </f:if>
-                </div>
-            </form>
-        </div>
+        <f:render partial="Table/Section" arguments="{table: table, currentTable: currentTable, sortingControls: 1}" contentAs="body">
+            <f:if condition="{table.multiSelectEnabled}">
+                <div class="rlt-toolbar"><f:render partial="Table/SelectionToggle" arguments="{id: 'examples-selection-{table.tableIdentifier}'}" /></div>
+            </f:if>
+            <ol class="rle-timeline" aria-label="{table.tableLabel}">
+                <f:for each="{table.records}" as="record">
+                    <f:render partial="TimelineItem" arguments="{record: record, table: table}" />
+                </f:for>
+            </ol>
+        </f:render>
     </f:for>
-    <f:if condition="!{tableData}">
-        <f:render partial="EmptyRecordsNotice" arguments="{searchTerm: searchTerm}" />
-    </f:if>
-</div>
 </records-list-types-actions>
 
 </html>

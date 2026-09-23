@@ -85,8 +85,8 @@ final class ExampleViewRenderingTest extends FunctionalTestCase
      */
     public static function ownTemplateViewProvider(): iterable
     {
-        // tt_content has no non-empty date field, so the date circle falls back to the uid.
-        yield 'timeline' => ['timeline', 'rle-timeline__item--hidden', '<div class="rle-timeline__date">#'];
+        // tt_content has no non-empty date field, so the date falls back to the record ID.
+        yield 'timeline' => ['timeline', 'rle-timeline__card--hidden', '<p class="rle-timeline__date">'];
         // tt_content records without an image show the translated placeholder.
         yield 'catalog' => ['catalog', 'rle-catalog-card--hidden', 'No image available'];
     }
@@ -172,7 +172,7 @@ final class ExampleViewRenderingTest extends FunctionalTestCase
 
     #[Test]
     #[DataProvider('ownTemplateViewProvider')]
-    public function ownTemplateViewsRenderHiddenStateActionsAndTheParentDropdown(string $viewId, string $hiddenMarker, string $viewMarker): void
+    public function ownTemplateViewsRenderTheRecordPartsOfTheListView(string $viewId, string $hiddenMarker, string $viewMarker): void
     {
         $this->insertContentElement('Hidden example record', true);
 
@@ -181,10 +181,12 @@ final class ExampleViewRenderingTest extends FunctionalTestCase
         self::assertStringContainsString('Hidden example record', $html);
         self::assertStringContainsString($hiddenMarker, $html);
         self::assertStringContainsString($viewMarker, $html);
-        self::assertStringContainsString('aria-label="Unhide record"', $html);
-        self::assertStringContainsString('data-gridview-action="delete"', $html);
-        self::assertStringContainsString('popovertarget="rlt-actions-tt_content-', $html, 'The "More actions" dropdown of records_list_types must render.');
+        self::assertStringContainsString('data-rlt-hidden-badge', $html, 'The hidden state must be readable as text.');
+        self::assertStringContainsString('data-datahandler-status="hidden"', $html, 'Core\'s control panel must render with the visibility button.');
+        self::assertStringContainsString('data-contextmenu-trigger="click"', $html, 'The record icon must open the context menu.');
+        self::assertMatchesRegularExpression('/popovertarget="actions_tt_content_\d+"/', $html, 'Core\'s overflow menu opens as a popover.');
         self::assertStringContainsString('name="CBC[tt_content|', $html, 'The multi-record selection checkbox must render.');
+        self::assertStringContainsString('aria-label="Select “Hidden example record”"', $html);
     }
 
     #[Test]

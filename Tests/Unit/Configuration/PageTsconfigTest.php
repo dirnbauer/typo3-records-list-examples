@@ -88,7 +88,10 @@ final class PageTsconfigTest extends TestCase
             self::assertArrayNotHasKey('displayColumns', $config, $viewId . ': displayColumns is ignored while columnsFromTCA is on.');
         }
 
-        self::assertFileExists(ExtensionPaths::resolve($this->string($config['css'] ?? null)), $viewId . ': stylesheet missing.');
+        $css = $this->string($config['css'] ?? null);
+        if ($css !== '') {
+            self::assertFileExists(ExtensionPaths::resolve($css), $viewId . ': stylesheet missing.');
+        }
 
         $templateRootPath = $this->string($config['templateRootPath'] ?? null);
         $templateDirectory = $templateRootPath === ''
@@ -110,15 +113,14 @@ final class PageTsconfigTest extends TestCase
     }
 
     #[Test]
-    public function viewsReusingBuiltinTemplatesOnlyNameTheMatchingParentStylesheet(): void
+    public function viewsReusingBuiltinTemplatesNeedNoStylesheetOfTheirOwn(): void
     {
         foreach (array_diff(self::exampleViewIds(), self::OWN_TEMPLATE_VIEWS) as $viewId) {
             $config = $this->types()[$viewId];
-            $stylesheet = strtolower((string)preg_replace('/View$/', '-view', $this->string($config['template'] ?? null))) . '.css';
 
             self::assertArrayNotHasKey('templateRootPath', $config, $viewId . ' reuses a built-in template and must not override the template root.');
             self::assertArrayNotHasKey('partialRootPath', $config, $viewId . ' reuses built-in partials and must not override the partial root.');
-            self::assertSame('EXT:records_list_types/Resources/Public/Css/' . $stylesheet, $config['css'] ?? null, $viewId);
+            self::assertArrayNotHasKey('css', $config, $viewId . ': records_list_types 1.3 loads the stylesheet of the template it renders.');
         }
     }
 

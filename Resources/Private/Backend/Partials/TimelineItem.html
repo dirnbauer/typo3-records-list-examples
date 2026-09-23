@@ -1,64 +1,58 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:comment>
-    One timeline entry: the date circle (first non-empty datetime display
-    value, otherwise the uid) and a card with title, teaser, actions and
-    translations. The view is registered with columnsFromTCA = 0 and
-    displayColumns = label,datetime,teaser, so record.displayValues holds
-    exactly those fields.
+    One timeline entry: the date (the first date among record.displayValues,
+    otherwise the record ID) and a card with Core's record icon, title,
+    state badges, teaser, controls and the translations. The view is
+    registered with displayColumns = label,datetime,teaser.
+
     Arguments: record, table
 </f:comment>
 
 <f:variable name="date" value="" />
 <f:for each="{record.displayValues}" as="field">
-    <f:if condition="{field.type} == 'datetime' && !{field.isEmpty}">
+    <f:if condition="!{date} && {field.type} == 'datetime' && {field.formatted}">
         <f:variable name="date" value="{field.formatted}" />
     </f:if>
 </f:for>
-
-<div class="rle-timeline__item{f:if(condition: record.hidden, then: ' rle-timeline__item--hidden')}"
-     {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-element=\"true\"')}
-     data-table="{record.tableName}"
-     data-uid="{record.uid}">
-
-    <div class="rle-timeline__date-col">
-        <div class="rle-timeline__date">{f:if(condition: date, then: date, else: '#{record.uid}')}</div>
-        <div class="rle-timeline__line"></div>
-    </div>
-
-    <div class="rle-timeline__card">
-        <div class="rle-timeline__header">
-            <f:if condition="{table.multiSelectEnabled}">
-                <label class="rle-record-card__checkbox">
-                    <input class="form-check-input t3js-multi-record-selection-check" type="checkbox" name="CBC[{record.tableName}|{record.uid}]" value="1" />
-                </label>
-            </f:if>
-            <span class="rle-timeline__icon"><core:icon identifier="{record.iconIdentifier}" size="small" /></span>
-            <f:if condition="{record.permissions.canEdit}">
-                <f:then>
-                    <typo3-backend-contextual-record-edit-trigger class="rle-timeline__title" edit-url="{record.editUrl}" url="{record.contextualEditUrl}">{record.title}</typo3-backend-contextual-record-edit-trigger>
-                </f:then>
-                <f:else>
-                    <span class="rle-timeline__title">{record.title}</span>
-                </f:else>
-            </f:if>
-            <span class="rle-timeline__uid">#{record.uid}</span>
-        </div>
-
-        <f:for each="{record.displayValues}" as="field">
-            <f:if condition="{field.type} == 'text' && !{field.isLabelField} && !{field.isEmpty}">
-                <p class="rle-timeline__teaser">{field.formatted -> f:format.crop(maxCharacters: 200, append: '…')}</p>
-            </f:if>
-        </f:for>
-
-        <f:render partial="RecordCardActions" arguments="{record: record}" />
-
-        <f:if condition="{record.translations}">
-            <f:render partial="RecordCardTranslations" arguments="{record: record}" />
+<f:variable name="titleId" value="examples-title-{table.tableIdentifier}-{record.uid}" />
+<li class="rle-timeline__item"
+    data-uid="{record.uid}"
+    {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-element="true"')}>
+    <p class="rle-timeline__date">
+        <f:if condition="{date}">
+            <f:then>{date}</f:then>
+            <f:else><f:translate key="records_list_types.messages:record.idLabel" /> {record.uid}</f:else>
         </f:if>
-    </div>
-</div>
+    </p>
+    <article class="card rle-timeline__card{f:if(condition: record.hidden, then: ' rle-timeline__card--hidden')}"
+             aria-labelledby="{titleId}"
+             data-table="{record.tableName}"
+             data-uid="{record.uid}"
+             data-record-title="{record.title}">
+        <div class="card-body rle-timeline__body">
+            <div class="rle-timeline__header">
+                <f:if condition="{table.multiSelectEnabled}">
+                    <f:render partial="Record/Checkbox" arguments="{record: record}" />
+                </f:if>
+                <span class="rlt-record-icon"><f:render partial="Record/Icon" arguments="{record: record}" /></span>
+                <h2 class="rle-timeline__title" id="{titleId}"><f:render partial="Record/Title" arguments="{record: record}" /></h2>
+                <span class="rlt-badges"><f:render partial="Record/States" arguments="{record: record}" /></span>
+            </div>
+            <f:variable name="teaserShown" value="0" />
+            <f:for each="{record.displayValues}" as="field">
+                <f:if condition="!{teaserShown} && {field.type} == 'text' && !{field.isLabelField} && {field.formatted}">
+                    <p class="rle-timeline__teaser">{field.formatted}</p>
+                    <f:variable name="teaserShown" value="1" />
+                </f:if>
+            </f:for>
+            <f:render partial="Record/Controls" arguments="{record: record}" />
+        </div>
+        <f:if condition="{record.translations}">
+            <f:render partial="TranslationStrip" arguments="{record: record}" />
+        </f:if>
+    </article>
+</li>
 
 </html>
