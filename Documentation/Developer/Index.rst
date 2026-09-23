@@ -17,9 +17,9 @@ Repository layout
 
     Configuration/page.tsconfig             All six view registrations
     Resources/Private/Backend/Templates/    TimelineView, CatalogView
-    Resources/Private/Backend/Partials/     Card partials and shared chrome
+    Resources/Private/Backend/Partials/     TimelineItem, CatalogCard
     Resources/Private/Language/             XLIFF 2.0 labels (en, de)
-    Resources/Public/Css/                   Shared and per-view styles
+    Resources/Public/Css/                   timeline.css, catalog.css
     Tests/Unit/                             TSconfig, labels, templates, CSS
     Tests/Functional/                       Rendering of all six views
 
@@ -33,18 +33,19 @@ Each custom view is one template plus one card partial:
 *   :file:`TimelineView.html` renders :file:`TimelineItem.html` per record
 *   :file:`CatalogView.html` renders :file:`CatalogCard.html` per record
 
-Everything a view template contains besides its record loop is the Records
-module shell that EXT:records_list_types expects: the ``RecordFilters``
-partial, the bulk-action form, :file:`TableHeadingBlock.html`, ``Pagination``
-above and below the records, ``EmptyRecordsNotice`` and the *Expand table*
-link in multi-table mode. The two templates keep that shell verbatim on
-purpose, so each one reads as a complete, copyable example.
+Each table is framed by the ``Table/Section`` partial of
+EXT:records_list_types, which renders it like a table of the List View:
+filters, heading with the table actions and the sorting mode, the selection
+bar, workspace notices, pagination above and below the records, the empty
+state and the *Expand table* link. A view template only renders its records,
+as the child content (``contentAs="body"``), plus Core's selection menu
+(``Table/SelectionToggle``).
 
-Both card partials share :file:`RecordCardActions.html` (edit, hide/unhide,
-delete plus the parent ``RecordActionDropdown``) and
-:file:`RecordCardTranslations.html` (one chip per site language). Their markup
-uses the ``rle-record-card`` BEM block, styled in
-:file:`record-card-shared.css`, which both view stylesheets import.
+The card partials build a record from the parent's ``Record/*`` partials, so
+they show what the List View shows: the selection checkbox, the record icon
+with its context menu, the title (contextual edit), the state badges, Core's
+control panel and, through ``TranslationStrip``, the translations. Only the
+arrangement and the ``rle-*`` layout classes are this extension's.
 
 .. _developer-partial-names:
 
@@ -53,11 +54,9 @@ Partial names
 
 EXT:records_list_types appends ``templateRootPath`` and ``partialRootPath``
 *after* its own paths, and Fluid resolves paths in reverse order. An own
-partial named like a parent partial therefore replaces it everywhere. That is
-why the partials here are called ``RecordCardActions`` and
-``RecordCardTranslations`` rather than ``RecordActions`` and
-``TranslationStrip``: the parent versions stay available and the built-in
-views keep working. A unit test fails if a name collides.
+partial named like a parent partial therefore replaces it everywhere, the
+built-in views included. The partials here carry names of their own
+(``TimelineItem``, ``CatalogCard``); a unit test fails if a name collides.
 
 .. _developer-contract:
 
@@ -69,18 +68,15 @@ they follow its systematic. The unit suite enforces these rules:
 
 *   the markup is wrapped in ``<records-list-types-actions>`` so the shared
     JavaScript initializes
-*   TYPO3-generated fragments (action buttons, multi-record-selection actions)
-    are passed through
-    ``f:sanitize.html(build: 'records-list-types-backend-fragments')`` and
-    never printed unescaped
-*   record editing uses ``typo3-backend-contextual-record-edit-trigger``
+*   every table is rendered through ``Table/Section`` and every card through
+    the ``Record/*`` partials; templates print nothing unescaped themselves
+*   cards are named by their title (``aria-labelledby``) and titles use
+    heading elements
 *   labels use translation domains, never ``LLL:`` paths or ``default``
     attributes that duplicate the text
-*   visibility toggles carry state-aware accessible names
-    (``action.hide`` / ``action.unhide``), and icon-only actions have an
-    ``aria-label``
-*   stylesheets use the ``--rle-*`` tokens defined on ``.rle-view`` and
-    ``light-dark()``; no literal colours, no ``prefers-color-scheme`` blocks
+*   stylesheets use TYPO3's design tokens (``--typo3-*``) only: no literal
+    colours, no ``light-dark()`` of their own, no ``prefers-color-scheme``
+    blocks, no ``@import``; every styled class is rendered and vice versa
 
 .. _developer-add-view:
 
@@ -92,11 +88,10 @@ Adding another view
     column configuration, and append its id with
     ``mod.web_list.viewMode.allowed := addToList(...)``.
 #.  Copy :file:`CatalogView.html` and replace the grid container and the card
-    partial; keep the surrounding shell as it is.
-#.  Add your card partial and render :file:`RecordCardActions.html` and
-    :file:`RecordCardTranslations.html` inside it.
-#.  Add view-specific CSS that imports :file:`record-card-shared.css` with the
-    release version as cache-buster query.
+    partial; keep the ``Table/Section`` call as it is.
+#.  Add your card partial and build it from the parent's ``Record/*``
+    partials and ``TranslationStrip``.
+#.  Add view-specific CSS with TYPO3's design tokens.
 #.  Add the view to the data providers in
     :file:`Tests/Unit/Configuration/PageTsconfigTest.php` and
     :file:`Tests/Functional/View/ExampleViewRenderingTest.php`.
@@ -115,10 +110,9 @@ shadcn/ui belong in a sitepackage instead.
 JavaScript
 ==========
 
-The extension ships no JavaScript. Record actions, visibility toggles,
-pagination input handling and multi-record selection come from
-EXT:records_list_types and TYPO3 Core, through the documented
-``data-gridview-action`` attributes and TYPO3 backend web components.
+The extension ships no JavaScript. Record actions, the context menu,
+visibility changes, pagination and multi-record selection come from TYPO3
+Core and EXT:records_list_types.
 
 A view that genuinely needs client-side state can load its own ES module with
 the view type option ``js``.

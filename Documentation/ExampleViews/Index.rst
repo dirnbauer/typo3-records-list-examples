@@ -53,9 +53,9 @@ Views with their own template
 Timeline
 --------
 
-A vertical timeline: a date column with date circles and a connecting line,
-next to a content card per record. The date circle shows the first non-empty
-``datetime`` display value and falls back to the record identifier.
+A vertical timeline: a date column with a connecting line, next to a card per
+record. The date shows the first non-empty ``datetime`` display value, in the
+backend's date format, and falls back to the record ID.
 
 Configured with ``displayColumns = label,datetime,teaser`` and
 ``columnsFromTCA = 0``, so the view is independent of the editor's
@@ -65,12 +65,11 @@ Catalog
 -------
 
 Large image cards with the title below the image. Records without a thumbnail
-show a muted placeholder with the label *No image available*; records with a
-thumbnail show the ``image.previewOnly`` hint from EXT:records_list_types,
+show a muted placeholder with the label *No image available*; tables with
+thumbnails show the ``image.previewOnly`` hint of EXT:records_list_types once,
 because a backend thumbnail does not promise frontend output.
 
-Hidden records keep the amber tint and warning bar that the built-in views use,
-plus a *Hidden* badge on the image.
+Hidden records show Core's icon overlay, a *Hidden* badge and a dimmed image.
 
 .. _example-views-builtin:
 
@@ -78,8 +77,9 @@ Views that reuse a built-in template
 ====================================
 
 These four need no template of their own. They demonstrate that a view type is
-often only a TSconfig block with a label, an icon, a template name, a
-stylesheet and a column configuration:
+often only a TSconfig block with a label, an icon, a template name and a
+column configuration; EXT:records_list_types loads the stylesheet of the
+template they render:
 
 *   **Address book** reuses :file:`CompactView` with a high
     ``itemsPerPage`` for dense contact lists.
@@ -98,19 +98,17 @@ Shared backend behavior
 All six views keep the Records module behavior editors expect, because they
 render through EXT:records_list_types:
 
-*   multi-record selection checkboxes and the bulk action bar
-*   permission-aware actions: edit, hide and unhide, delete, info, history,
-    copy and cut are rendered only where the backend user is allowed to use
-    them
-*   the TYPO3 contextual edit trigger
-    (``typo3-backend-contextual-record-edit-trigger``) instead of legacy edit
-    links
-*   translation slots per site language, including the Core localization wizard
-    for missing translations
-*   sorting, filters and pagination, plus the shared JavaScript from
-    EXT:records_list_types
-*   single-table mode paginates, multi-table mode shows a preview with an
-    *Expand table* link
+*   Core's control panel on every record: edit, hide and unhide, move up and
+    down, delete, info, history, copy and cut, and the actions of other
+    extensions, each only where the backend user may use it
+*   the record icon with its state overlays, opening the context menu
+*   the TYPO3 contextual edit trigger on the title
+*   multi-record selection with Core's selection menu and bulk action bar
+*   translation entries per selected language, including Core's localization
+    wizard for missing translations
+*   sorting, filters and pagination; single-table mode paginates, multi-table
+    mode shows a preview with an *Expand table* link
+*   light and dark mode from TYPO3's design tokens
 
 .. _example-views-localization:
 
