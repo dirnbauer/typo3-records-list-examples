@@ -21,7 +21,11 @@ final class ComposerManifestTest extends TestCase
 
         self::assertSame('typo3-cms-extension', $manifest['type'] ?? null);
         self::assertSame(ExtensionPaths::EXTENSION_KEY, $this->option($manifest, 'extra', 'typo3/cms', 'extension-key'));
-        self::assertSame('^1.3', $this->option($manifest, 'require', ExtensionPaths::PARENT_PACKAGE), 'The templates build on Table/Section and the Record/* partials of 1.3.');
+        self::assertSame(
+            $this->option($manifest, 'extra', 'typo3/cms', 'version'),
+            $this->option($manifest, 'require', ExtensionPaths::PARENT_PACKAGE),
+            'Example releases must require the exact same Records List Types version.',
+        );
     }
 
     #[Test]

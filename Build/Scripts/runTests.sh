@@ -23,7 +23,7 @@ Suites:
   unit        Unit tests: TSconfig, labels, templates, stylesheets.
   functional  Functional tests: every example view renders through the Records
               module. SQLite by default; export typo3Database* for MariaDB.
-  composer    composer validate --strict (no lock file is committed).
+  composer    composer validate (the exact paired dependency is an intentional warning).
   audit       composer audit; CI reports advisories without blocking.
   ci          composer, lint, cgl, phpstan and unit (functional needs a database).
 
@@ -79,10 +79,10 @@ case "${SUITE}" in
     phpstan)    vendor/bin/phpstan analyse --no-progress --memory-limit=512M ;;
     unit)       run_phpunit UnitTests ;;
     functional) run_phpunit FunctionalTests ;;
-    composer)   composer validate --strict --no-check-lock ;;
+    composer)   composer validate --no-check-lock ;;
     audit)      composer audit --abandoned=report ;;
     ci)
-        composer validate --strict --no-check-lock
+        composer validate --no-check-lock
         run_lint
         vendor/bin/php-cs-fixer fix --dry-run --diff
         vendor/bin/phpstan analyse --no-progress --memory-limit=512M

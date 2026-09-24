@@ -52,8 +52,8 @@ mod.web_list.viewMode {
     }
 
     # ---- Views that only configure a built-in template ---------------------
-    # A type that renders a built-in template gets that template's
-    # stylesheet from records_list_types, so no css setting is needed.
+    # A new type id does not inherit the stylesheet of the template it reuses,
+    # so css names the matching records_list_types file explicitly.
 
     # Address book: CompactView with fixed contact columns and a large page.
     # Columns a table does not have (email, telephone, ...) are skipped.
@@ -62,6 +62,7 @@ mod.web_list.viewMode {
         description = records_list_examples.messages:viewMode.addressbook.description
         icon = actions-users
         template = CompactView
+        css = EXT:records_list_types/Resources/Public/Css/compact-view.css
         columnsFromTCA = 0
         displayColumns = label,email,telephone,company,city
         itemsPerPage = 500
@@ -73,6 +74,7 @@ mod.web_list.viewMode {
         description = records_list_examples.messages:viewMode.eventlist.description
         icon = actions-calendar
         template = TeaserView
+        css = EXT:records_list_types/Resources/Public/Css/teaser-view.css
         columnsFromTCA = 0
         displayColumns = label,datetime,teaser
         itemsPerPage = 30
@@ -84,6 +86,7 @@ mod.web_list.viewMode {
         description = records_list_examples.messages:viewMode.gallery.description
         icon = content-gallery
         template = GridView
+        css = EXT:records_list_types/Resources/Public/Css/grid-view.css
         columnsFromTCA = 0
         displayColumns = label
         itemsPerPage = 48
@@ -95,6 +98,7 @@ mod.web_list.viewMode {
         description = records_list_examples.messages:viewMode.dashboard.description
         icon = content-dashboard
         template = GridView
+        css = EXT:records_list_types/Resources/Public/Css/grid-view.css
         columnsFromTCA = 1
         itemsPerPage = 20
     }

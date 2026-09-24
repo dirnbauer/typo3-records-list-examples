@@ -10,10 +10,11 @@ use PHPUnit\Framework\TestCase;
 use Webconsulting\RecordsListExamples\Tests\Support\ExtensionPaths;
 
 /**
- * Guards the contract between the Timeline and Catalog templates and
- * records_list_types: each table is framed by its Table/Section partial,
- * records show the list view's parts through its Record/* partials, and own
- * partials exist without shadowing parent ones.
+ * Guards the contract between the Timeline and Catalog templates and the
+ * records_list_types rendering pipeline: the documented Records module shell
+ * around the record loop, partials that exist and do not shadow parent
+ * partials, sanitized backend fragments and accessible names on icon-only
+ * actions.
  */
 final class TemplateContractTest extends TestCase
 {
@@ -43,17 +44,20 @@ final class TemplateContractTest extends TestCase
 
     #[Test]
     #[DataProvider('viewTemplateProvider')]
-    public function viewTemplateFramesEveryTableWithTheParentSection(string $template, string $cardPartial): void
+    public function viewTemplateRendersTheRecordsModuleShellAroundItsCardPartial(string $template, string $cardPartial): void
     {
         $html = ExtensionPaths::read(self::TEMPLATES . $template . '.html');
 
-        self::assertStringContainsString('<records-list-types-actions', $html, 'The shared JavaScript needs the action element.');
-        self::assertMatchesRegularExpression(
-            '/<f:render partial="Table\/Section" arguments="\{table: table, currentTable: currentTable[^"]*\}" contentAs="body">/',
-            $html,
-            $template . ' must let Table/Section render filters, heading, selection bar, pagination and empty state.',
-        );
-        self::assertStringContainsString('partial="Table/SelectionToggle"', $html, $template . ' must offer Core\'s selection menu.');
+        self::assertStringContainsString('<records-list-types-actions>', $html, 'The shared JavaScript needs the action element.');
+        self::assertStringContainsString('name="cmd_table"', $html, 'The Core bulk-action form must wrap the records.');
+        self::assertStringContainsString('data-multi-record-selection-identifier', $html);
+        foreach (['RecordFilters', 'TableHeadingBlock', 'EmptyRecordsNotice'] as $partial) {
+            self::assertStringContainsString('partial="' . $partial . '"', $html, $template . ' must render ' . $partial . '.');
+        }
+        self::assertSame(2, substr_count($html, 'partial="Pagination"'), $template . ' paginates above and below the records.');
+        self::assertStringContainsString("position: 'top'", $html);
+        self::assertStringContainsString("position: 'bottom'", $html);
+        self::assertStringContainsString('core.core:labels.expandTable', $html, $template . ' must link to the single-table view in multi-table mode.');
         self::assertStringContainsString(
             '<f:render partial="' . $cardPartial . '" arguments="{record: record, table: table}" />',
             $html,
@@ -62,26 +66,12 @@ final class TemplateContractTest extends TestCase
     }
 
     #[Test]
-    public function cardPartialsRenderTheRecordPartsOfTheListView(): void
-    {
-        foreach (self::CARD_PARTIALS as $partial) {
-            $html = ExtensionPaths::read(self::PARTIALS . $partial . '.html');
-
-            foreach (['Record/Checkbox', 'Record/Icon', 'Record/Title', 'Record/States', 'Record/Controls', 'TranslationStrip'] as $recordPartial) {
-                self::assertStringContainsString('partial="' . $recordPartial . '"', $html, $partial . ' must render ' . $recordPartial . '.');
-            }
-            self::assertStringContainsString('data-multi-record-selection-element', $html, $partial);
-            self::assertMatchesRegularExpression('/aria-labelledby="\{titleId\}"/', $html, $partial . ': the card is named by its title.');
-        }
-    }
-
-    #[Test]
     public function everyRenderedPartialExistsInThisExtensionOrInRecordsListTypes(): void
     {
         $parentPartials = ExtensionPaths::package(ExtensionPaths::PARENT_PACKAGE) . self::PARENT_PARTIALS;
         $missing = [];
         foreach ($this->templates() as $relativePath => $template) {
-            preg_match_all('/<f:render\b[^>]*\bpartial="([A-Za-z\/]+)"/', $template, $matches);
+            preg_match_all('/<f:render\b[^>]*\bpartial="([A-Za-z]+)"/', $template, $matches);
             foreach (array_unique($matches[1]) as $partial) {
                 $ownPath = ExtensionPaths::root() . '/' . self::PARTIALS . $partial . '.html';
                 if (!is_file($ownPath) && !is_file($parentPartials . $partial . '.html')) {
@@ -110,10 +100,66 @@ final class TemplateContractTest extends TestCase
     }
 
     #[Test]
-    public function templatesPrintNothingUnescaped(): void
+    public function cardPartialsShareActionsAndTranslationsAndKeepContextualEditing(): void
+    {
+        foreach (self::CARD_PARTIALS as $partial) {
+            $html = ExtensionPaths::read(self::PARTIALS . $partial . '.html');
+
+            self::assertStringContainsString('<f:render partial="RecordCardActions" arguments="{record: record}" />', $html, $partial);
+            self::assertStringContainsString('<f:render partial="RecordCardTranslations" arguments="{record: record}" />', $html, $partial);
+            self::assertStringContainsString('typo3-backend-contextual-record-edit-trigger', $html, $partial . ' must open records with the Core contextual edit trigger.');
+            self::assertStringContainsString('t3js-multi-record-selection-check', $html, $partial . ' must offer the multi-record selection checkbox.');
+            self::assertStringContainsString('data-multi-record-selection-element', $html, $partial);
+        }
+
+        self::assertStringContainsString(
+            '<f:render partial="RecordActionDropdown" arguments="{record: record, buttonClass: \'rle-record-card__action\'}" />',
+            ExtensionPaths::read(self::PARTIALS . 'RecordCardActions.html'),
+            'The "More actions" dropdown comes from records_list_types.',
+        );
+    }
+
+    #[Test]
+    public function backendFragmentsAreSanitizedInsteadOfPrintedRaw(): void
     {
         foreach ($this->templates() as $relativePath => $template) {
-            self::assertStringNotContainsString('f:format.raw', $template, $relativePath . ': Core fragments are printed by the parent partials.');
+            self::assertStringNotContainsString('f:format.raw', $template, $relativePath . ' must sanitize TYPO3-generated fragments.');
+            // Fragments also appear in f:if conditions; only output positions count.
+            $output = (string)preg_replace('/\bcondition="[^"]*"/', '', $template);
+            preg_match_all('/\{table\.(?:actionButtons\.[a-zA-Z]+|multiRecordSelectionActionsHtml)\}/', $output, $fragments);
+            preg_match_all('/<f:sanitize\.html build="records-list-types-backend-fragments">\{table\.(?:actionButtons\.[a-zA-Z]+|multiRecordSelectionActionsHtml)\}<\/f:sanitize\.html>/', $output, $sanitized);
+            self::assertCount(count($fragments[0]), $sanitized[0], $relativePath . ': every backend fragment must go through the records-list-types-backend-fragments sanitizer build.');
+        }
+    }
+
+    #[Test]
+    public function visibilityTogglesCarryStateAwareAccessibleNames(): void
+    {
+        foreach ($this->templates() as $relativePath => $template) {
+            self::assertSame(
+                substr_count($template, 'data-gridview-action="show"'),
+                substr_count($template, 'aria-label="{f:translate(key: \'records_list_types.messages:action.unhide\')}"'),
+                $relativePath . ': every unhide toggle needs the "Unhide record" accessible name.',
+            );
+            self::assertSame(
+                substr_count($template, 'data-gridview-action="hide"'),
+                substr_count($template, 'aria-label="{f:translate(key: \'records_list_types.messages:action.hide\')}"'),
+                $relativePath . ': every hide toggle needs the "Hide record" accessible name.',
+            );
+        }
+    }
+
+    #[Test]
+    public function iconOnlyActionsHaveAccessibleNames(): void
+    {
+        foreach ($this->templates() as $relativePath => $template) {
+            preg_match_all('/<(?:button|a|typo3-backend-contextual-record-edit-trigger|typo3-backend-localization-button)\b[^>]*(?:data-gridview-action="(?:delete|info|show|hide)"|popovertarget=)[^>]*>/s', $template, $matches);
+            foreach ($matches[0] as $element) {
+                if (str_contains($element, 'dropdown-item')) {
+                    continue; // menu entries carry visible text
+                }
+                self::assertMatchesRegularExpression('/\baria-label="\{f:translate\(/', $element, $relativePath . ': icon-only action lacks an accessible name: ' . $element);
+            }
         }
     }
 

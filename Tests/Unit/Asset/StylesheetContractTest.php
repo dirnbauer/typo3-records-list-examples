@@ -4,30 +4,66 @@ declare(strict_types=1);
 
 namespace Webconsulting\RecordsListExamples\Tests\Unit\Asset;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Webconsulting\RecordsListExamples\Tests\Support\ExtensionPaths;
 
 /**
- * Guards the stylesheets: colours come from TYPO3 design tokens only, so the
- * views follow the colour scheme chosen in the backend, and every rle-*
- * class is both styled and rendered (no dead CSS, no unstyled markup).
+ * Guards the stylesheets: the shared import is cache-busted with the release
+ * version, every rle-* class is both styled and rendered (no dead CSS, no
+ * unstyled markup), and colours come from TYPO3 tokens and light-dark()
+ * instead of duplicated colour-scheme blocks.
  */
 final class StylesheetContractTest extends TestCase
 {
     private const string CSS_DIRECTORY = 'Resources/Public/Css';
+    private const string SHARED_STYLESHEET = 'Resources/Public/Css/record-card-shared.css';
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function viewStylesheetProvider(): iterable
+    {
+        yield 'timeline' => ['Resources/Public/Css/timeline.css'];
+        yield 'catalog' => ['Resources/Public/Css/catalog.css'];
+    }
 
     #[Test]
-    public function coloursComeFromTypo3TokensOnly(): void
+    #[DataProvider('viewStylesheetProvider')]
+    public function viewStylesheetImportsTheSharedFileWithTheReleaseVersionAsCacheBuster(string $file): void
+    {
+        self::assertStringContainsString(
+            '@import "./record-card-shared.css?v=' . ExtensionPaths::composerVersion() . '";',
+            ExtensionPaths::read($file),
+            'TYPO3 busts only the URL of the included file; the import query must be the release version.',
+        );
+    }
+
+    #[Test]
+    #[DataProvider('viewStylesheetProvider')]
+    public function viewStylesheetUsesSharedTokensInsteadOfLiteralColours(string $file): void
+    {
+        self::assertDoesNotMatchRegularExpression('/#[0-9a-f]{3,8}\b/i', ExtensionPaths::read($file), $file . ' must use the --rle-* tokens of record-card-shared.css.');
+    }
+
+    #[Test]
+    public function sharedStylesheetDefinesTheTokensOnTheViewContainerAndImportsNothing(): void
+    {
+        $css = ExtensionPaths::read(self::SHARED_STYLESHEET);
+
+        self::assertStringNotContainsString('@import', $css);
+        self::assertMatchesRegularExpression('/^\.rle-view \{/m', $css, 'Tokens live on the .rle-view container both views carry.');
+    }
+
+    #[Test]
+    public function coloursFollowTheBackendSchemeWithoutDuplicatedSchemeBlocks(): void
     {
         foreach (ExtensionPaths::files(self::CSS_DIRECTORY, 'css') as $relativePath => $path) {
-            $css = (string)preg_replace('#/\*.*?\*/#s', '', (string)file_get_contents($path));
+            $css = (string)file_get_contents($path);
 
-            self::assertDoesNotMatchRegularExpression('/#[0-9a-f]{3,8}\b/i', $css, $relativePath . ' hard-codes a hex colour.');
-            self::assertDoesNotMatchRegularExpression('/\b(?:rgba?|hsla?|oklch|lab|lch|light-dark)\(/', $css, $relativePath . ' defines a colour of its own.');
-            self::assertStringNotContainsString('--bs-', $css, $relativePath . ' uses Bootstrap variables that do not follow the backend scheme.');
-            self::assertStringNotContainsString('prefers-color-scheme', $css, $relativePath . ' queries the OS colour scheme instead of following the backend.');
-            self::assertStringNotContainsString('@import', $css, $relativePath . ': TYPO3 cache-busts only the file it includes.');
+            self::assertStringNotContainsString('data-color-scheme', $css, $relativePath . ': use TYPO3 tokens or light-dark() instead of scheme selectors.');
+            self::assertStringNotContainsString('prefers-color-scheme', $css, $relativePath . ': use TYPO3 tokens or light-dark() instead of media queries.');
         }
     }
 

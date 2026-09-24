@@ -3,59 +3,83 @@
       data-namespace-typo3-fluid="true">
 
 <f:comment>
-    One catalog card: the image (or a placeholder), Core's record icon,
-    title and state badges, the teaser, the translations and Core's
-    controls. The view is registered with displayColumns = label,teaser.
-
+    One catalog card: thumbnail (or placeholder) with a hidden badge, then
+    title, teaser, actions and translations. The view is registered with
+    columnsFromTCA = 0 and displayColumns = label,teaser, so the text loop
+    below yields the teaser field only.
     Arguments: record, table
 </f:comment>
 
-<f:variable name="titleId" value="examples-title-{table.tableIdentifier}-{record.uid}" />
-<li class="rle-catalog__item"
-    data-uid="{record.uid}"
-    {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-element="true"')}>
-    <article class="card rle-catalog-card{f:if(condition: record.hidden, then: ' rle-catalog-card--hidden')}"
-             aria-labelledby="{titleId}"
-             data-table="{record.tableName}"
-             data-uid="{record.uid}"
-             data-record-title="{record.title}">
-        <div class="card-image rle-catalog-card__image">
-            <f:if condition="{record.thumbnailUrl}">
+<div class="rle-catalog-card{f:if(condition: record.hidden, then: ' rle-catalog-card--hidden')}"
+     {f:if(condition: table.multiSelectEnabled, then: 'data-multi-record-selection-element=\"true\"')}
+     data-table="{record.tableName}"
+     data-uid="{record.uid}">
+
+    <div class="rle-catalog-card__image">
+        <f:if condition="{record.thumbnailUrl}">
+            <f:then>
+                <f:if condition="{record.permissions.canEdit}">
+                    <f:then>
+                        <typo3-backend-contextual-record-edit-trigger edit-url="{record.editUrl}" url="{record.contextualEditUrl}">
+                            <img src="{record.thumbnailUrl}" class="rle-catalog-card__img" alt="{record.title}" loading="lazy" />
+                        </typo3-backend-contextual-record-edit-trigger>
+                    </f:then>
+                    <f:else>
+                        <img src="{record.thumbnailUrl}" class="rle-catalog-card__img" alt="{record.title}" loading="lazy" />
+                    </f:else>
+                </f:if>
+                <div class="rle-catalog-card__image-hint">
+                    <core:icon identifier="actions-info" size="small" />
+                    <f:translate key="records_list_types.messages:image.previewOnly" />
+                </div>
+            </f:then>
+            <f:else>
+                <div class="rle-catalog-card__placeholder">
+                    <core:icon identifier="actions-image" size="default" />
+                    <span class="rle-catalog-card__placeholder-text">
+                        <f:translate key="records_list_examples.messages:catalog.placeholder.noImage" />
+                    </span>
+                </div>
+            </f:else>
+        </f:if>
+        <f:if condition="{record.hidden}">
+            <span class="rle-catalog-card__badge">
+                <core:icon identifier="actions-edit-hide" size="small" />
+                <f:translate key="records_list_types.messages:state.hidden" />
+            </span>
+        </f:if>
+    </div>
+
+    <div class="rle-catalog-card__body">
+        <div class="rle-catalog-card__title-row">
+            <f:if condition="{table.multiSelectEnabled}">
+                <label class="rle-record-card__checkbox">
+                    <input class="form-check-input t3js-multi-record-selection-check" type="checkbox" name="CBC[{record.tableName}|{record.uid}]" value="1" />
+                </label>
+            </f:if>
+            <f:if condition="{record.permissions.canEdit}">
                 <f:then>
-                    <img src="{record.thumbnailUrl}" alt="" loading="lazy" />
+                    <typo3-backend-contextual-record-edit-trigger class="rle-catalog-card__title" edit-url="{record.editUrl}" url="{record.contextualEditUrl}">{record.title}</typo3-backend-contextual-record-edit-trigger>
                 </f:then>
                 <f:else>
-                    <p class="rle-catalog-card__placeholder">
-                        <core:icon identifier="actions-image" size="medium" />
-                        <f:translate key="records_list_examples.messages:catalog.placeholder.noImage" />
-                    </p>
+                    <span class="rle-catalog-card__title">{record.title}</span>
                 </f:else>
             </f:if>
+            <span class="rle-catalog-card__uid">#{record.uid}</span>
         </div>
-        <div class="card-header rle-catalog-card__header">
-            <f:if condition="{table.multiSelectEnabled}">
-                <f:render partial="Record/Checkbox" arguments="{record: record}" />
-            </f:if>
-            <span class="rlt-record-icon"><f:render partial="Record/Icon" arguments="{record: record}" /></span>
-            <div class="card-header-body">
-                <h2 class="card-title rle-catalog-card__title" id="{titleId}"><f:render partial="Record/Title" arguments="{record: record}" /></h2>
-                <span class="rlt-badges"><f:render partial="Record/States" arguments="{record: record}" /></span>
-            </div>
-        </div>
-        <f:variable name="teaserShown" value="0" />
+
         <f:for each="{record.displayValues}" as="field">
-            <f:if condition="!{teaserShown} && {field.type} == 'text' && !{field.isLabelField} && {field.formatted}">
-                <div class="card-body"><p class="rle-catalog-card__teaser">{field.formatted}</p></div>
-                <f:variable name="teaserShown" value="1" />
+            <f:if condition="{field.type} == 'text' && !{field.isLabelField} && !{field.isEmpty}">
+                <p class="rle-catalog-card__teaser">{field.formatted -> f:format.crop(maxCharacters: 120, append: '…')}</p>
             </f:if>
         </f:for>
+
+        <f:render partial="RecordCardActions" arguments="{record: record}" />
+
         <f:if condition="{record.translations}">
-            <f:render partial="TranslationStrip" arguments="{record: record}" />
+            <f:render partial="RecordCardTranslations" arguments="{record: record}" />
         </f:if>
-        <div class="card-footer rle-catalog-card__footer">
-            <f:render partial="Record/Controls" arguments="{record: record}" />
-        </div>
-    </article>
-</li>
+    </div>
+</div>
 
 </html>

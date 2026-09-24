@@ -11,10 +11,10 @@ Records List Examples
     webconsulting/records-list-examples
 
 :Version:
-    1.5.0
+    2.0.0
 
 :TYPO3:
-    14.3.7 or later
+    14.3 or later
 
 :PHP:
     8.4 or 8.5

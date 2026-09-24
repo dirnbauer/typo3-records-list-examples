@@ -3,48 +3,13 @@
 All notable changes to `webconsulting/records-list-examples` are documented in
 this file.
 
-## 1.5.0 - 2026-09-23
+## 2.0.0 - 2026-09-24
 
-The Timeline and Catalog views are rebuilt on records_list_types 1.3: every
-record shows what the List View shows, rendered by Core, and the styles use
-TYPO3's design tokens only.
-
-### Changed
-
-- Require `webconsulting/records-list-types` ^1.3 and TYPO3 14.3.7.
-- Both views frame each table with the parent's `Table/Section` partial
-  (filters, heading, sorting mode, selection bar, workspace notices,
-  pagination, empty state) and offer Core's selection menu.
-- Cards are built from the parent's `Record/*` partials: Core's control panel
-  (edit, visibility, move up and down, delete, info, history, clipboard and
-  the actions of other extensions), the record icon with its state overlays
-  and context menu, the contextual edit trigger, text badges for hidden,
-  workspace and free-mode states, named checkboxes, and the parent's
-  translation list with Core's localization wizard. Card titles are headings
-  that name their card.
-- Timeline dates use the backend's date format; without a date the record ID
-  is shown. On narrow modules the date sits above its card.
-- The Catalog shows the "preview only" hint once per table instead of on
-  every image.
-- `timeline.css` and `catalog.css` use `--typo3-*` tokens only; the own
-  colour tokens, `light-dark()` values and the custom checkbox are gone.
-- Address book, Event list, Gallery and Dashboard no longer name a stylesheet:
-  records_list_types 1.3 loads the stylesheet of the template a view renders.
-- Dev tooling: PHPUnit 13.3, PHPStan 2.2, phpstan-typo3 3.1, PHP-CS-Fixer
-  3.95.27, testing-framework 9.7. CI runs every suite on PHP 8.4 and 8.5, both
-  required, with current, pinned actions. Dev files are export-ignored from
-  dist archives.
-
-### Removed
-
-- The partials `TableHeadingBlock`, `RecordCardActions` and
-  `RecordCardTranslations` and `record-card-shared.css`; the parent partials
-  replace them.
-
-### Fixed
-
-- 1.4.0 no longer passed its tests against records_list_types 1.2: it
-  referenced the removed `sorting` label and expected the old empty state.
+- Restore the 1.4.0 example view templates and styles to accompany the classic
+  Records List Types interface. All six example views remain selectable in the
+  Records module's View dropdown.
+- Require Records List Types 2.0.0 exactly. Paired releases now use the same
+  version number and Composer rejects a mismatched pair.
 
 ## 1.4.0 - 2026-09-19
 

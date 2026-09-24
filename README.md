@@ -20,22 +20,20 @@ worked reference for writing your own on top of
 | Gallery | built-in `GridView` | 48 | Images, media files, artwork |
 | Dashboard | built-in `GridView` | 20 | Editorial overview, record management |
 
-Timeline and Catalog ship their own Fluid template, card partial and CSS, and
-build every record from the partials of Records List Types. The other four are
-a TSconfig block each — which is the point: most view types need no template at
-all. All six keep the behaviour editors expect from the Records module (Core's
-record controls and context menu, multi-record selection, contextual editing,
-translations, filters, sorting, pagination, light and dark mode), because they
-render through Records List Types. The package contributes no PHP runtime
-class.
+Timeline and Catalog ship their own Fluid template, partials and CSS. The other
+four are a TSconfig block each — which is the point: most view types need no
+template at all. All six keep the behaviour editors expect from the Records
+module (multi-record selection, permission-aware actions, contextual editing,
+translations, filters, sorting, pagination), because they render through
+Records List Types. The package contributes no PHP runtime class.
 
 ## Requirements
 
 | | |
 | --- | --- |
-| TYPO3 | 14.3.7 or later (v14 series) |
+| TYPO3 | 14.3 or later (v14 series) |
 | PHP | 8.4 or 8.5 |
-| Records List Types | 1.3 or later |
+| Records List Types | Exact matching 2.0.0 release |
 | Installation | Composer mode only |
 
 ## Install
@@ -45,7 +43,7 @@ Neither package is on Packagist, so add both VCS repositories first:
 ```bash
 composer config repositories.records-list-types vcs https://github.com/dirnbauer/typo3-records-list-types.git
 composer config repositories.records-list-examples vcs https://github.com/dirnbauer/typo3-records-list-examples.git
-composer require webconsulting/records-list-examples:^1.5
+composer require webconsulting/records-list-examples:^2.0
 vendor/bin/typo3 extension:setup -e records_list_examples
 vendor/bin/typo3 cache:flush
 ```
@@ -75,6 +73,10 @@ mod.web_list.gridView.table.tx_myshop_domain_model_product {
 ```
 
 Full option reference: [configuration](Documentation/Configuration/Index.rst).
+
+Records List Examples and Records List Types share the same release number.
+The exact parent dependency makes a version mismatch fail at Composer
+resolution rather than appearing as a changed backend view.
 
 ## Use
 

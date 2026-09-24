@@ -33,7 +33,8 @@ installation is:
 
     ``mod.web_list.viewMode.allowed`` replaced ``mod.web_list.allowedViews`` in
     EXT:records_list_types 1.1.0. The old key still works but logs a
-    deprecation and will be removed in its version 2.0.
+    deprecation. It remains a compatibility alias in version 2.0; use
+    ``viewMode.allowed`` in new configuration.
 
 Restrict the available views per page with TYPO3 Page TSconfig conditions:
 
